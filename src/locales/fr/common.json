@@ -1,0 +1,2977 @@
+{
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "health": "Santé",
+    "overview": "Aperçu",
+    "conditions": "Affections",
+    "vitals": "Signes vitaux",
+    "labResults": "Résultats de laboratoire",
+    "diagnosticTests": "Examens diagnostiques et imagerie",
+    "medications": "Médicaments",
+    "appointments": "Rendez-vous",
+    "symptoms": "Symptômes",
+    "exercise": "Exercice et forme physique",
+    "nutrition": "Nutrition",
+    "monitoring": "Suivi",
+    "calendar": "Calendrier",
+    "documents": "Documents médicaux",
+    "planning": "Planification",
+    "finance": "Finances",
+    "financeOverview": "Aperçu",
+    "income": "Revenus",
+    "expenses": "Dépenses",
+    "bills": "Factures",
+    "subscriptions": "Abonnements",
+    "creditAndLoans": "Crédit et prêts",
+    "faith": "Foi",
+    "prayer": "Prière",
+    "dua": "Dua",
+    "projects": "Projets",
+    "goals": "Objectifs",
+    "tasks": "Tâches",
+    "business": "Entreprise",
+    "notes": "Notes",
+    "personalDocuments": "Documents",
+    "menu": "Menu",
+    "settings": "Paramètres",
+    "collapseSidebar": "Réduire la barre latérale",
+    "expandSidebar": "Développer la barre latérale"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "greetingMorning": "Bonjour{name, select, none {} other {, {name}}}",
+    "greetingAfternoon": "Bon après-midi{name, select, none {} other {, {name}}}",
+    "greetingEvening": "Bonsoir{name, select, none {} other {, {name}}}",
+    "subtitle": "Voici ce qui se passe avec votre santé aujourd'hui.",
+    "today": "Aujourd'hui",
+    "noUpcoming": "Rien de prévu aujourd'hui.",
+    "monitoringUpToDate": "Rien à faire pour le moment.",
+    "health": "Santé",
+    "viewHealthOverview": "Voir l'aperçu santé",
+    "currentConditions": "Conditions actives",
+    "currentMedications": "Médicaments actifs",
+    "recentLabs": "Résultats d'analyses récents",
+    "upcomingAppointments": "Rendez-vous à venir",
+    "monitoringDue": "Suivi à faire",
+    "upcoming": "À venir",
+    "viewCalendar": "Voir le calendrier",
+    "noUpcomingEvents": "Rien de prévu.",
+    "appointmentWith": "Rendez-vous avec",
+    "nextAppointment": "Prochain rendez-vous",
+    "viewMonitoring": "Voir le suivi",
+    "viewConditions": "Voir les conditions",
+    "viewLabResults": "Voir les résultats d'analyses",
+    "latestLabResult": "Dernier résultat d'analyse",
+    "unknownTest": "Analyse inconnue",
+    "abnormal": "Anormal",
+    "levels": {
+      "high": "Élevé",
+      "low": "Faible",
+      "normal": "Normal",
+      "critical": "Critique",
+      "abnormal": "Anormal"
+    },
+    "noLabResults": "Aucun résultat d'analyse pour le moment.",
+    "overdueBy": "{count, plural, one {En retard de # jour} other {En retard de # jours}}",
+    "dueToday": "À faire aujourd'hui",
+    "dueInDays": "{count, plural, one {Dans # jour} other {Dans # jours}}",
+    "recentActivity": "Activité récente",
+    "noRecentActivity": "Aucune activité récente pour le moment.",
+    "vitalsLabel": "Signes vitaux",
+    "viewVitals": "Voir les signes vitaux",
+    "noVitals": "Aucun signe vital enregistré pour le moment.",
+    "bloodPressureLabel": "Tension artérielle",
+    "heartRateLabel": "Fréquence cardiaque",
+    "weightLabel": "Poids",
+    "bpm": "bpm",
+    "exerciseLabel": "Exercice",
+    "viewExercise": "Voir l'exercice",
+    "logWorkout": "Enregistrer un entraînement",
+    "workoutsThisWeek": "{count, plural, one {# entraînement cette semaine} other {# entraînements cette semaine}}",
+    "activeThisWeek": "{time} actif",
+    "noWorkouts": "Aucun entraînement enregistré cette semaine",
+    "diagnosticTestsLabel": "Tests diagnostiques récents",
+    "viewDiagnosticTests": "Tout voir",
+    "noDiagnosticTests": "Aucun test diagnostique pour le moment.",
+    "comingSoon": "Bientôt disponible",
+    "comingSoonDescription": "LifeOS s'étendra pour gérer chaque aspect de votre vie."
+  },
+  "healthOverview": {
+    "title": "Aperçu santé",
+    "activeConditions": "Conditions actives",
+    "activeMedications": "Médicaments actifs",
+    "upcomingAppointments": "Rendez-vous à venir",
+    "noUpcomingAppointments": "Aucun rendez-vous à venir.",
+    "monitoring": "Suivi",
+    "monitoringUpToDate": "Rien à faire pour le moment.",
+    "recentLabResults": "Résultats d'analyses récents",
+    "noLabResults": "Aucun résultat d'analyse pour le moment.",
+    "vitalsLabel": "Signes vitaux",
+    "noWeight": "Aucune mesure de poids pour le moment.",
+    "vsLastEntry": "vs dernière mesure",
+    "medicationsLabel": "Médicaments",
+    "activeMedicationsCaption": "Médicament actif",
+    "documentsLabel": "Documents",
+    "totalDocumentsCaption": "Total des documents",
+    "itemsDueCaption": "{count, plural, one {# à faire bientôt} other {# à faire bientôt}}",
+    "activeItemsCaption": "Éléments actifs",
+    "recentActivity": "Activité récente",
+    "noRecentActivity": "Aucune activité récente pour le moment.",
+    "viewAll": "Tout voir",
+    "conditionsLabel": "Conditions",
+    "appointmentsLabel": "Rendez-vous",
+    "upcomingCountCaption": "{count, plural, one {# à venir} other {# à venir}}",
+    "noAppointmentsCaption": "Aucun rendez-vous prévu",
+    "resultsCountCaption": "{count, plural, one {# résultat} other {# résultats}}",
+    "unknownTest": "Analyse inconnue",
+    "bloodPressureLabel": "Tension artérielle",
+    "heartRateLabel": "Fréquence cardiaque",
+    "bpm": "bpm",
+    "levels": {
+      "high": "Élevé",
+      "low": "Faible",
+      "normal": "Normal",
+      "critical": "Critique",
+      "abnormal": "Anormal"
+    }
+  },
+  "conditions": {
+    "title": "Conditions",
+    "addButton": "Ajouter une condition",
+    "empty": "Aucune condition enregistrée pour le moment. Ajoutez votre première condition pour commencer à la suivre.",
+    "diagnosisDate": "Date de diagnostic",
+    "provider": "Prestataire",
+    "deleteConfirmTitle": "Supprimer la condition ?",
+    "deleteConfirmMessage": "Cela supprimera définitivement cette condition.",
+    "relatedMedications": "Médicaments liés",
+    "relatedMonitoring": "Suivi lié",
+    "relatedDocuments": "Documents liés",
+    "noneLinked": "Aucun élément lié pour le moment.",
+    "nextDue": "prochaine échéance",
+    "crossReferenceError": "Impossible de charger les éléments liés.",
+    "status": {
+      "active": "Active",
+      "monitoring": "Surveillance",
+      "resolved": "Résolue"
+    },
+    "form": {
+      "title": "Ajouter une condition",
+      "editTitle": "Modifier la condition",
+      "name": "Nom",
+      "nameRequired": "Veuillez entrer un nom.",
+      "status": "Statut",
+      "statusOptions": {
+        "active": "Active",
+        "monitoring": "Surveillance",
+        "resolved": "Résolue"
+      },
+      "diagnosisDate": "Date de diagnostic",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "description": "Description",
+      "providerReference": "Référence du prestataire",
+      "notes": "Notes",
+      "save": "Enregistrer la condition",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "labs": {
+    "title": "Résultats d'analyses",
+    "addButton": "Ajouter un résultat d'analyse",
+    "empty": "Aucun résultat pour le moment. Ajoutez votre premier résultat pour commencer à suivre les tendances.",
+    "unknownTest": "Analyse inconnue",
+    "abnormal": "Anormal",
+    "referenceRange": "Plage de référence",
+    "levels": {
+      "high": "Élevé",
+      "low": "Faible",
+      "normal": "Normal",
+      "critical": "Critique",
+      "abnormal": "Anormal"
+    },
+    "notSpecified": "Non précisé",
+    "notAvailable": "Non disponible",
+    "generalReferenceRange": "Plage de référence générale",
+    "laboratoryReport": "Rapport de laboratoire",
+    "source": "Source",
+    "viewSource": "Voir la source",
+    "statusBasedOnGeneralRange": "Statut basé sur la plage de référence générale",
+    "referenceRangeChangedNote": "La plage de référence a changé au cours de cette période — consultez l'historique ci-dessous pour la plage propre à chaque résultat.",
+    "viewHistory": "Voir l'historique",
+    "viewHistoryFor": "Voir l'historique de {test}",
+    "backToLabResults": "Retour aux résultats d'analyses",
+    "latestResult": "Dernier résultat",
+    "trend": "Tendance",
+    "historyTitle": "Historique",
+    "compare": "Comparer",
+    "previous": "Précédent",
+    "change": "Changement",
+    "noPreviousResult": "Aucun résultat précédent",
+    "sourceDocument": "Document source",
+    "laboratory": "Laboratoire",
+    "noResultsForTest": "Aucun résultat enregistré pour cette analyse pour le moment.",
+    "historyColumns": {
+      "date": "Date",
+      "result": "Résultat",
+      "unit": "Unité",
+      "referenceRange": "Plage de référence",
+      "status": "Statut"
+    },
+    "chartRange": {
+      "3m": "3M",
+      "6m": "6M",
+      "1y": "1A",
+      "all": "Tout"
+    },
+    "deleteConfirmTitle": "Supprimer le résultat d'analyse ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement ce résultat d'analyse.",
+    "searchPlaceholder": "Rechercher par nom d'analyse…",
+    "allCategories": "Toutes les catégories",
+    "abnormalOnly": "Anormaux seulement",
+    "noFilterResults": "Aucun résultat ne correspond à vos filtres.",
+    "categories": {
+      "hepatitis_b": "Hépatite B",
+      "liver": "Foie",
+      "kidney_renal": "Rein",
+      "blood_cbc": "Sang/FSC",
+      "metabolic": "Métabolique",
+      "thyroid": "Thyroïde",
+      "iron_nutrition": "Fer/Nutrition",
+      "inflammation_immune": "Inflammation/Immunité",
+      "pancreas": "Pancréas",
+      "cardiovascular": "Cardiovasculaire",
+      "other": "Autre"
+    },
+    "form": {
+      "title": "Ajouter un résultat d'analyse",
+      "editTitle": "Modifier le résultat d'analyse",
+      "test": "Analyse",
+      "selectTest": "Sélectionner une analyse…",
+      "testRequired": "Veuillez sélectionner une analyse.",
+      "value": "Valeur",
+      "valuePlaceholder": "p. ex. 42 ou Positif",
+      "valueRequired": "Veuillez entrer une valeur.",
+      "unit": "Unité",
+      "collectionDate": "Date de prélèvement",
+      "referenceLow": "Référence min.",
+      "referenceHigh": "Référence max.",
+      "resultStatus": "Statut",
+      "resultStatusAuto": "Auto (à partir de la plage de référence)",
+      "statusOptions": {
+        "normal": "Normal",
+        "low": "Faible",
+        "high": "Élevé",
+        "critical": "Critique",
+        "abnormal": "Anormal"
+      },
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "resultDate": "Date de résultat",
+      "orderingProvider": "Prescripteur",
+      "facility": "Établissement",
+      "notes": "Notes",
+      "save": "Enregistrer le résultat",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "savedConfirmation": "Résultat enregistré.",
+      "addAnotherResult": "+ Ajouter un autre résultat",
+      "selectTestTitle": "Sélectionner une analyse de laboratoire",
+      "searchTestPlaceholder": "Rechercher une analyse de laboratoire…",
+      "noTestFound": "Aucune analyse trouvée.",
+      "customTestTag": "Personnalisée",
+      "addOtherTest": "+ Ajouter une autre analyse",
+      "customTestNameRequired": "Veuillez entrer un nom d'analyse.",
+      "customTestName": "Nom de l'analyse",
+      "customTestCode": "Code de l'analyse (optionnel)",
+      "customTestCategory": "Catégorie",
+      "customTestUnit": "Unité (optionnel)",
+      "testInformationSection": "Informations sur l'analyse",
+      "referenceInformationSection": "Informations de référence",
+      "additionalInformationSection": "Informations complémentaires",
+      "laboratoryReportHelper": "Si votre rapport de laboratoire indique déjà un statut, sélectionnez-le ici pour le préserver.",
+      "notesPlaceholder": "Ajoutez des notes si nécessaire"
+    }
+  },
+  "diagnosticTests": {
+    "title": "Tests diagnostiques et imagerie",
+    "subtitle": "Suivez vos examens d'imagerie, vos tests diagnostiques et leurs rapports.",
+    "addButton": "Ajouter un test diagnostique",
+    "recentTitle": "Tests diagnostiques récents",
+    "categoryNavLabel": "Catégories de tests diagnostiques",
+    "empty": "Aucun test diagnostique pour le moment. Ajoutez votre premier test pour organiser l'imagerie et les autres examens.",
+    "fibroscanHistory": "Historique FibroScan",
+    "viewDetails": "Voir les détails",
+    "reportAvailable": "Rapport disponible",
+    "associatedReport": "Rapport associé",
+    "relatedCondition": "Condition associée",
+    "savedConfirmation": "Test diagnostique enregistré.",
+    "deleteConfirmTitle": "Supprimer le test diagnostique ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement ce test diagnostique.",
+    "categories": {
+      "imaging": {
+        "label": "Imagerie",
+        "empty": "Aucun examen d'imagerie pour le moment."
+      },
+      "cardiology": {
+        "label": "Cardiologie",
+        "empty": "Aucun test de cardiologie pour le moment. Organisez votre historique diagnostique en ajoutant votre premier test."
+      },
+      "pathology": {
+        "label": "Pathologie",
+        "empty": "Aucun résultat de pathologie pour le moment. Organisez votre historique diagnostique en ajoutant votre premier test."
+      },
+      "microbiology": {
+        "label": "Microbiologie",
+        "empty": "Aucun résultat de microbiologie pour le moment. Organisez votre historique diagnostique en ajoutant votre premier test."
+      },
+      "other": {
+        "label": "Autres tests",
+        "empty": "Aucun autre test diagnostique pour le moment. Organisez votre historique diagnostique en ajoutant votre premier test."
+      }
+    },
+    "history": {
+      "title": "Historique diagnostique",
+      "searchPlaceholder": "Rechercher par test, établissement ou prestataire...",
+      "filterAll": "Tous",
+      "noResults": "Aucun test diagnostique ne correspond à votre recherche ou vos filtres."
+    },
+    "form": {
+      "title": "Ajouter un test diagnostique",
+      "editTitle": "Modifier le test diagnostique",
+      "pickCategoryPrompt": "Quel type de test diagnostique ajoutez-vous ?",
+      "changeCategory": "Changer de catégorie",
+      "testType": "Type de test",
+      "testName": "Nom du test",
+      "testNamePlaceholder": "ex. Panel génétique",
+      "testNameRequired": "Veuillez entrer un nom de test.",
+      "testTypeOptions": {
+        "xray": "Radiographie",
+        "ultrasound": "Échographie",
+        "fibroscan": "FibroScan",
+        "ct": "Tomodensitométrie (CT)",
+        "mri": "IRM",
+        "pet": "TEP",
+        "dexa": "DEXA",
+        "ecg": "ECG",
+        "echocardiogram": "Échocardiogramme",
+        "stress_test": "Épreuve d'effort",
+        "holter_monitor": "Holter",
+        "biopsy": "Biopsie",
+        "culture": "Culture",
+        "microbiology_testing": "Test de microbiologie",
+        "pulmonary_function_test": "Test de fonction pulmonaire",
+        "other": "Autre"
+      },
+      "studyDate": "Date de l'examen",
+      "facility": "Établissement",
+      "bodyArea": "Zone du corps",
+      "bodySite": "Partie/site",
+      "specimenSource": "Spécimen/source",
+      "fibroscanMeasurements": "Mesures FibroScan",
+      "liverStiffness": "Élasticité hépatique (kPa)",
+      "cap": "CAP (dB/m)",
+      "iqr": "IQR",
+      "iqrMedianPercent": "IQR/Médiane (%)",
+      "validMeasurements": "Mesures valides",
+      "totalMeasurements": "Mesures totales",
+      "successRate": "Taux de réussite (%)",
+      "fastingStatus": "À jeun",
+      "findings": "Constatations",
+      "findingsResults": "Constatations/Résultats",
+      "impression": "Impression",
+      "diagnosisImpression": "Diagnostic/Impression",
+      "impressionResult": "Impression/Résultat",
+      "uploadReport": "Téléverser le rapport (optionnel)",
+      "fileTypeInvalid": "Ce type de fichier n'est pas pris en charge. Téléversez un PDF ou une image.",
+      "fileTooLarge": "Ce fichier est trop volumineux (20 Mo max).",
+      "uploadError": "Échec du téléversement du rapport. Veuillez réessayer.",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "provider": "Prestataire prescripteur",
+      "relatedCondition": "Condition associée",
+      "existingDocument": "Ou lier un document existant",
+      "none": "Aucun",
+      "indication": "Indication",
+      "followUp": "Suivi",
+      "notes": "Notes",
+      "saving": "Enregistrement…",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "fibroscan": {
+      "title": "Historique FibroScan",
+      "backToDiagnosticTests": "Tests diagnostiques et imagerie",
+      "empty": "Aucun résultat FibroScan enregistré pour le moment.",
+      "date": "Date",
+      "liverStiffness": "Élasticité hépatique",
+      "cap": "CAP",
+      "iqrMedianPercent": "IQR/Médiane",
+      "successRate": "Taux de réussite",
+      "fastingStatus": "À jeun",
+      "interpretation": "Interprétation",
+      "yes": "Oui",
+      "no": "Non"
+    }
+  },
+  "calendar": {
+    "title": "Calendrier",
+    "subtitle": "Consultez vos événements à venir dans LifeOS.",
+    "empty": "Votre agenda est libre.",
+    "emptyTitle": "Aucun événement à venir",
+    "appointmentWith": "Rendez-vous avec",
+    "viewAgenda": "Agenda",
+    "viewMonth": "Mois",
+    "today": "Aujourd'hui",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "dueLabel": "Échéance",
+    "filterLabel": "Filtrer par module",
+    "filterAll": "Tous",
+    "moreCount": "{count, plural, one {+# de plus} other {+# de plus}}",
+    "modules": {
+      "health": "Santé",
+      "planning": "Planification",
+      "travel": "Voyages",
+      "business": "Entreprise",
+      "finance": "Finances",
+      "projects": "Projets"
+    },
+    "types": {
+      "appointment": "Rendez-vous",
+      "monitoring": "Suivi"
+    },
+    "statuses": {
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "no_show": "Absence"
+    }
+  },
+  "monitoring": {
+    "title": "Suivi de santé",
+    "tabs": {
+      "overview": "Aperçu",
+      "plans": "Plans"
+    },
+    "empty": "Aucun plan de suivi pour le moment.",
+    "dashboard": {
+      "overdue": "En retard",
+      "dueSoon": "Bientôt dû",
+      "upcoming": "À venir",
+      "recentlyCompleted": "Récemment terminé",
+      "none": "Aucun",
+      "dueToday": "dû aujourd'hui",
+      "daysUntil": "{count, plural, one {dû dans # jour} other {dû dans # jours}}",
+      "daysOverdue": "{count, plural, one {# jour de retard} other {# jours de retard}}"
+    },
+    "emptyItems": "Aucun élément de suivi dans ce plan pour le moment.",
+    "noSchedule": "Aucun calendrier défini",
+    "nextDue": "Prochaine échéance",
+    "lastCompleted": "Dernière réalisation",
+    "guidelineCitation": "Selon {organization} — {title}",
+    "addPlanButton": "Ajouter un plan de suivi",
+    "deletePlanConfirmTitle": "Supprimer le plan de suivi ?",
+    "deletePlanConfirmMessage": "Cela supprimera également tous les éléments de suivi de ce plan. Cette action est irréversible.",
+    "deleteItemConfirmTitle": "Supprimer l'élément de suivi ?",
+    "deleteItemConfirmMessage": "Cette action est irréversible.",
+    "frequency": {
+      "every": "Tous les",
+      "days": "jours",
+      "weeks": "semaines",
+      "months": "mois",
+      "years": "ans"
+    },
+    "status": {
+      "overdue": "En retard",
+      "due": "Échéance",
+      "due_soon": "Bientôt dû",
+      "upcoming": "À venir",
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "deferred": "Reporté"
+    },
+    "source": {
+      "guideline": "Recommandation",
+      "clinician": "Clinicien",
+      "user": "Personnel"
+    },
+    "actions": {
+      "markCompleted": "Marquer comme terminé",
+      "editNextDue": "Modifier la prochaine échéance",
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "error": "Une erreur s'est produite. Veuillez réessayer.",
+      "notePlaceholder": "Note facultative (p. ex. résumé du résultat)"
+    },
+    "planForm": {
+      "title": "Créer un plan de suivi",
+      "name": "Nom du plan",
+      "nameRequired": "Veuillez entrer un nom de plan.",
+      "relatedCondition": "Condition associée",
+      "none": "Aucune",
+      "description": "Description",
+      "save": "Enregistrer le plan",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "itemForm": {
+      "addButton": "Ajouter un élément de suivi",
+      "title": "Ajouter un élément de suivi",
+      "name": "Élément de suivi",
+      "namePlaceholder": "p. ex. ADN du VHB",
+      "nameRequired": "Veuillez entrer un nom.",
+      "source": "Source",
+      "sourceOptions": {
+        "user": "Personnel",
+        "clinician": "Clinicien",
+        "guideline": "Recommandation"
+      },
+      "nextDueAt": "Prochaine échéance",
+      "intervalUnit": "Se répète tous les",
+      "noFixedInterval": "Aucun intervalle fixe",
+      "intervalUnitOptions": {
+        "days": "Jours",
+        "weeks": "Semaines",
+        "months": "Mois",
+        "years": "Ans"
+      },
+      "intervalValue": "Nombre d'intervalles",
+      "intervalValueRequired": "Veuillez indiquer le nombre.",
+      "frequencyNote": "Note de fréquence",
+      "frequencyNotePlaceholder": "p. ex. Au besoin",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "category": "Catégorie",
+      "testType": "Type de test",
+      "guideline": "Citer une recommandation",
+      "none": "Aucune",
+      "notes": "Notes (pourquoi ce suivi)",
+      "notesPlaceholder": "Pourquoi cet élément est suivi",
+      "save": "Ajouter l'élément",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "appointments": {
+    "title": "Rendez-vous",
+    "addButton": "Ajouter un rendez-vous",
+    "empty": "Aucun rendez-vous pour le moment. Planifiez votre premier rendez-vous pour organiser vos soins de santé.",
+    "upcoming": "À venir",
+    "past": "Passés",
+    "dateTime": "Date et heure",
+    "location": "Lieu",
+    "deleteConfirmTitle": "Supprimer le rendez-vous ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement ce rendez-vous.",
+    "status": {
+      "scheduled": "Planifié",
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "no_show": "Absence"
+    },
+    "form": {
+      "title": "Ajouter un rendez-vous",
+      "editTitle": "Modifier le rendez-vous",
+      "providerName": "Nom du prestataire",
+      "providerRequired": "Veuillez entrer le nom du prestataire.",
+      "dateTime": "Date et heure",
+      "dateTimeRequired": "Veuillez choisir une date et une heure.",
+      "status": "Statut",
+      "statusOptions": {
+        "scheduled": "Planifié",
+        "completed": "Terminé",
+        "cancelled": "Annulé",
+        "no_show": "Absence"
+      },
+      "specialty": "Spécialité",
+      "location": "Lieu",
+      "appointmentType": "Type de rendez-vous",
+      "relatedCondition": "Condition associée",
+      "noCondition": "Aucune",
+      "followUpDate": "Date de suivi",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "preparationNotes": "Notes de préparation",
+      "clinicianInstructions": "Instructions du clinicien",
+      "notes": "Notes",
+      "save": "Enregistrer le rendez-vous",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "symptoms": {
+    "title": "Symptômes",
+    "addButton": "Enregistrer un symptôme",
+    "empty": "Aucun symptôme enregistré pour le moment. Enregistrez un symptôme pour suivre votre état au fil du temps.",
+    "deleteConfirmTitle": "Supprimer le symptôme ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement cette entrée de symptôme.",
+    "severity": "Sévérité",
+    "onset": "Apparition",
+    "duration": "Durée",
+    "frequency": "Fréquence",
+    "form": {
+      "title": "Ajouter un symptôme",
+      "editTitle": "Modifier le symptôme",
+      "symptom": "Symptôme",
+      "symptomRequired": "Veuillez décrire le symptôme.",
+      "severity": "Sévérité",
+      "severityUnset": "Non évaluée",
+      "onset": "Apparition",
+      "duration": "Durée",
+      "frequency": "Fréquence",
+      "context": "Contexte",
+      "relatedCondition": "Condition associée",
+      "noCondition": "Aucune",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "notes": "Notes",
+      "save": "Enregistrer le symptôme",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "weight": {
+    "title": "Poids et mesures corporelles",
+    "addButton": "Enregistrer le poids",
+    "empty": "Aucune mesure pour le moment. Enregistrez votre première mesure pour commencer à suivre les tendances.",
+    "deleteConfirmTitle": "Supprimer la mesure ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement cette mesure.",
+    "currentWeight": "Poids actuel",
+    "weightChange": "Changement",
+    "chartRange": {
+      "3m": "3M",
+      "6m": "6M",
+      "1y": "1A",
+      "all": "Tout"
+    },
+    "metricType": {
+      "weight": "Poids",
+      "height": "Taille",
+      "bmi": "IMC",
+      "waist_circumference": "Tour de taille",
+      "body_fat_percentage": "Pourcentage de graisse corporelle"
+    },
+    "form": {
+      "title": "Ajouter une mesure",
+      "editTitle": "Modifier la mesure",
+      "metricType": "Mesure",
+      "metricTypeOptions": {
+        "weight": "Poids",
+        "height": "Taille",
+        "bmi": "IMC",
+        "waist_circumference": "Tour de taille",
+        "body_fat_percentage": "Pourcentage de graisse corporelle"
+      },
+      "value": "Valeur",
+      "valueRequired": "Veuillez entrer une valeur valide.",
+      "unit": "Unité",
+      "unitRequired": "Veuillez entrer une unité.",
+      "measuredAt": "Mesuré le",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "source": "Source",
+      "notes": "Notes",
+      "save": "Enregistrer la mesure",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "reference": {
+    "source": "Source",
+    "viewSource": "Voir la source",
+    "notAvailable": "Non disponible",
+    "viewDetailsFor": "Voir les détails pour {kind}",
+    "referenceRange": "Plage de référence",
+    "referenceValue": "Valeur de référence",
+    "expectedRange": "Plage attendue",
+    "clinicalTarget": "Cible clinique",
+    "guidelineThreshold": "Seuil clinique",
+    "category": "Catégorie",
+    "range": "Plage",
+    "population": "Population",
+    "guidelineVersion": "Version de la recommandation",
+    "retrieved": "Consulté le"
+  },
+  "vitals": {
+    "title": "Signes vitaux",
+    "subtitle": "La tension artérielle, le poids et d'autres mesures corporelles réunis en un seul endroit.",
+    "tabs": {
+      "overview": "Aperçu",
+      "history": "Historique"
+    },
+    "weightSectionTitle": "Poids et mesures corporelles",
+    "sinceLastMeasurement": "depuis la dernière mesure",
+    "viewVitals": "Voir les signes vitaux",
+    "bloodPressure": {
+      "sectionTitle": "Tension artérielle",
+      "addButton": "Enregistrer la tension artérielle",
+      "unit": "mmHg",
+      "heartRate": "Fréquence cardiaque",
+      "bpm": "bpm",
+      "recorded": "Enregistré",
+      "noReadings": "Aucune mesure de tension artérielle pour le moment. Enregistrez votre première mesure pour commencer à suivre les tendances.",
+      "viewHistory": "Voir l'historique",
+      "vsPrevious": "vs mesure précédente",
+      "average": "Moyenne ({count} mesures)",
+      "status": {
+        "normal": "Normal",
+        "outside_range": "En dehors de votre plage habituelle"
+      },
+      "disclaimer": "Discutez de toute mesure préoccupante ou persistante avec un professionnel de la santé.",
+      "history": {
+        "title": "Historique",
+        "searchPlaceholder": "Rechercher dans les notes...",
+        "allDates": "Toutes les dates",
+        "date": "Date",
+        "time": "Heure",
+        "systolic": "Systolique",
+        "diastolic": "Diastolique",
+        "pulse": "Pouls",
+        "notes": "Notes",
+        "noResults": "Aucune mesure ne correspond à votre recherche ou vos filtres.",
+        "sortNewest": "Plus récent d'abord",
+        "sortOldest": "Plus ancien d'abord"
+      },
+      "chart": {
+        "systolic": "Systolique",
+        "diastolic": "Diastolique",
+        "range": {
+          "7d": "7J",
+          "30d": "30J",
+          "3m": "3M",
+          "6m": "6M",
+          "1y": "1A"
+        }
+      },
+      "form": {
+        "title": "Enregistrer la tension artérielle",
+        "editTitle": "Modifier la mesure de tension artérielle",
+        "systolic": "Systolique (mmHg)",
+        "diastolic": "Diastolique (mmHg)",
+        "pulse": "Fréquence cardiaque / pouls (bpm)",
+        "recordedAt": "Date et heure",
+        "position": "Position (optionnel)",
+        "positionNone": "Non précisé",
+        "positionOptions": {
+          "sitting": "Assis",
+          "standing": "Debout",
+          "lying": "Allongé"
+        },
+        "arm": "Bras (optionnel)",
+        "armNone": "Non précisé",
+        "armOptions": {
+          "left": "Gauche",
+          "right": "Droit"
+        },
+        "notes": "Notes (optionnel)",
+        "moreDetails": "Plus de détails",
+        "fewerDetails": "Moins de détails",
+        "valueRequired": "Veuillez entrer des valeurs valides pour la systolique, la diastolique et le pouls.",
+        "saveError": "Impossible d'enregistrer cette mesure. Veuillez réessayer."
+      },
+      "deleteConfirmTitle": "Supprimer la mesure ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette mesure de tension artérielle.",
+      "savedConfirmation": "Mesure de tension artérielle enregistrée."
+    },
+    "recordButton": "Enregistrer les signes vitaux",
+    "historyTitle": "Historique des signes vitaux",
+    "relatedCondition": "Condition associée",
+    "chartRange": {
+      "3m": "3M",
+      "6m": "6M",
+      "1y": "1A",
+      "all": "Tout"
+    },
+    "savedConfirmation": "Mesure enregistrée.",
+    "weightEmpty": "Aucune mesure pour le moment. Enregistrez votre première mesure pour commencer à suivre les tendances.",
+    "weightNoResults": "Aucune mesure ne correspond à la plage de dates sélectionnée.",
+    "otherBodyMetricsNote": "Les mesures de tour de taille et de graisse corporelle sont aussi listées ci-dessus — elles ne font pas partie du sélecteur de Signes vitaux ci-dessus, mais rien n'a été supprimé.",
+    "empty": "Aucun signe vital enregistré pour le moment. Enregistrez des mesures lors de votre prochaine visite ou ajoutez-les manuellement.",
+    "history": {
+      "viewHistory": "Voir l'historique",
+      "title": "Historique",
+      "searchPlaceholder": "Rechercher dans les notes...",
+      "date": "Date",
+      "sortNewest": "Plus récent d'abord",
+      "sortOldest": "Plus ancien d'abord",
+      "pulse": "Pouls",
+      "noResults": "Aucune mesure ne correspond à votre recherche ou vos filtres.",
+      "deleteConfirmTitle": "Supprimer la mesure ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette mesure."
+    },
+    "form": {
+      "vitalType": "Type de signe vital",
+      "title": "Enregistrer les signes vitaux",
+      "recordedAt": "Date et heure",
+      "notes": "Notes (optionnel)",
+      "valueRequired": "Veuillez entrer une valeur valide.",
+      "saveError": "Impossible d'enregistrer cette mesure. Veuillez réessayer."
+    },
+    "recordForm": {
+      "dateTime": "Date et heure",
+      "bloodPressure": "Tension artérielle",
+      "systolic": "Systolique (mmHg)",
+      "diastolic": "Diastolique (mmHg)",
+      "heartRate": "Fréquence cardiaque (bpm)",
+      "temperature": "Température",
+      "respiratoryRate": "Fréquence respiratoire (/min)",
+      "spo2": "Saturation en oxygène (%)",
+      "weight": "Poids",
+      "height": "Taille",
+      "bmiPreview": "IMC (calculé)",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "source": "Source",
+      "sourceOptions": {
+        "manual": "Saisie manuelle",
+        "medical_visit": "Visite médicale",
+        "imported": "Dossier importé",
+        "other": "Autre"
+      },
+      "relatedCondition": "Condition associée",
+      "relatedAppointment": "Rendez-vous associé",
+      "sourceDocument": "Document source",
+      "none": "Aucun",
+      "notes": "Notes",
+      "saving": "Enregistrement…",
+      "saveError": "Impossible d'enregistrer ces signes vitaux. Veuillez réessayer.",
+      "bpPairRequired": "Entrez à la fois la systolique et la diastolique, ou laissez les deux vides.",
+      "atLeastOneRequired": "Entrez au moins une mesure."
+    },
+    "types": {
+      "blood_pressure": {
+        "label": "Tension artérielle",
+        "unit": "mmHg",
+        "noReadings": "Aucune mesure de tension artérielle pour le moment.",
+        "editTitle": "Modifier la mesure de tension artérielle"
+      },
+      "heart_rate": {
+        "label": "Fréquence cardiaque",
+        "unit": "bpm",
+        "noReadings": "Aucune mesure de fréquence cardiaque pour le moment.",
+        "editTitle": "Modifier la mesure de fréquence cardiaque",
+        "formLabel": "Pouls (bpm)"
+      },
+      "weight": {
+        "label": "Poids",
+        "noReadings": "Aucune mesure de poids pour le moment."
+      },
+      "height": {
+        "label": "Taille",
+        "noReadings": "Aucune mesure de taille pour le moment."
+      },
+      "bmi": {
+        "label": "IMC",
+        "noReadings": "Aucune mesure d'IMC pour le moment."
+      },
+      "spo2": {
+        "label": "Oxygène sanguin",
+        "unit": "%",
+        "noReadings": "Aucune mesure d'oxygène sanguin pour le moment.",
+        "editTitle": "Modifier la mesure d'oxygène sanguin",
+        "formLabel": "Oxygène sanguin (%)"
+      },
+      "temperature": {
+        "label": "Température",
+        "unit": "°F",
+        "noReadings": "Aucune mesure de température pour le moment.",
+        "editTitle": "Modifier la mesure de température",
+        "formLabel": "Température (°F)"
+      },
+      "respiratory_rate": {
+        "label": "Fréquence respiratoire",
+        "unit": "respirations/min",
+        "noReadings": "Aucune mesure de fréquence respiratoire pour le moment.",
+        "editTitle": "Modifier la mesure de fréquence respiratoire",
+        "formLabel": "Fréquence respiratoire (respirations/min)"
+      }
+    }
+  },
+  "exercise": {
+    "title": "Exercice et forme physique",
+    "subtitle": "Suivez vos entraînements et votre activité au fil du temps.",
+    "tabs": {
+      "overview": "Aperçu",
+      "library": "Bibliothèque d'activités",
+      "history": "Historique"
+    },
+    "logWorkout": "Enregistrer un entraînement",
+    "savedConfirmation": "Entraînement enregistré.",
+    "historyTitle": "Historique d'exercice",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "filterAll": "Tous",
+    "empty": "Aucun entraînement enregistré pour le moment. Enregistrez votre premier entraînement pour commencer à suivre votre activité.",
+    "noFilterResults": "Aucun entraînement ne correspond à ce filtre.",
+    "durationValue": "{count} min",
+    "stepsValue": "{count} pas",
+    "setsRepsValue": "{sets} séries x {reps} répétitions",
+    "caloriesValue": "{count} cal",
+    "deleteConfirmTitle": "Supprimer l'entraînement ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement cet entraînement.",
+    "workoutTypeOptions": {
+      "walking": "Marche",
+      "running": "Course",
+      "cycling": "Vélo",
+      "strength": "Musculation",
+      "other": "Autre"
+    },
+    "form": {
+      "title": "Enregistrer un entraînement",
+      "editTitle": "Modifier l'entraînement",
+      "workoutType": "Type d'entraînement",
+      "workoutTypeOptions": {
+        "walking": "Marche",
+        "running": "Course",
+        "cycling": "Vélo",
+        "strength": "Musculation",
+        "other": "Autre"
+      },
+      "startedAt": "Date et heure",
+      "duration": "Durée (minutes)",
+      "distance": "Distance",
+      "distanceUnit": "Unité",
+      "distanceUnitOptions": {
+        "mi": "mi",
+        "km": "km"
+      },
+      "steps": "Pas (optionnel)",
+      "sets": "Séries",
+      "reps": "Répétitions",
+      "weightResistance": "Poids/résistance",
+      "weightUnit": "Unité",
+      "weightUnitOptions": {
+        "lb": "lb",
+        "kg": "kg"
+      },
+      "calories": "Calories (optionnel)",
+      "notes": "Notes (optionnel)",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "dateRequired": "Veuillez entrer une date et une heure.",
+      "saveError": "Impossible d'enregistrer cet entraînement. Veuillez réessayer."
+    },
+    "summary": {
+      "title": "Cette semaine",
+      "workouts": "Entraînements",
+      "activeTime": "Temps actif",
+      "distance": "Distance",
+      "calories": "Calories"
+    },
+    "recommendations": {
+      "title": "Recommandations d'exercice",
+      "tryWalkToday": "Essayez une marche de 20 à 30 minutes aujourd'hui.",
+      "fewerWorkoutsThanUsual": "Vous avez enregistré moins d'entraînements cette semaine que d'habitude.",
+      "considerRecoveryDay": "Envisagez d'ajouter une journée de récupération après plusieurs jours d'entraînement consécutifs."
+    },
+    "preferencesForm": {
+      "triggerLabel": "Préférences",
+      "title": "Préférences d'exercice",
+      "intro": "Ces préférences aident à personnaliser les suggestions d'activités. Ce ne sont pas des conseils médicaux.",
+      "saveError": "Impossible d'enregistrer vos préférences. Veuillez réessayer.",
+      "equipment": "Équipement auquel vous avez accès",
+      "equipmentOptions": {
+        "none": "Aucun",
+        "home_equipment": "Équipement à domicile",
+        "resistance_bands": "Bandes de résistance",
+        "dumbbells": "Haltères",
+        "kettlebells": "Kettlebells",
+        "full_gym": "Salle de sport complète",
+        "other": "Autre"
+      },
+      "activityPreferences": "Activités que vous préférez",
+      "activityPreferenceOptions": {
+        "walking": "Marche",
+        "running": "Course à pied",
+        "cycling": "Vélo",
+        "swimming": "Natation",
+        "gym": "Salle de sport",
+        "home_workout": "Entraînement à domicile",
+        "sports": "Sports",
+        "yoga_pilates": "Yoga/Pilates",
+        "mobility": "Mobilité",
+        "other": "Autre"
+      },
+      "fitnessLevel": "Niveau de forme physique",
+      "fitnessLevelOptions": {
+        "beginner": "Débutant",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé"
+      },
+      "availableTime": "Temps disponible",
+      "availableTimeOptions": {
+        "quick": "Rapide (moins de 20 min)",
+        "moderate": "Modéré (20-45 min)",
+        "extended": "Long (45 min et plus)"
+      },
+      "environment": "Environnement habituel",
+      "environmentOptions": {
+        "home_no_equipment": "À domicile, sans équipement",
+        "outdoor": "Extérieur",
+        "gym": "Salle de sport",
+        "limited_mobility": "Mobilité réduite",
+        "small_space": "Petit espace",
+        "flexible": "Flexible / variable"
+      },
+      "customActivities": "Autres activités que vous aimez",
+      "customActivitiesHelper": "Facultatif — ajoutez un sport ou une activité courante là où vous vivez. Séparez plusieurs entrées par des virgules."
+    },
+    "activityLibrary": {
+      "title": "Bibliothèque d'activités",
+      "subtitle": "Des activités généralement accessibles dans la plupart des endroits, quel que soit votre équipement ou environnement.",
+      "filterByEquipment": "Afficher seulement ce que je peux faire avec mon équipement",
+      "categories": {
+        "cardio": "Cardio",
+        "sports": "Sports",
+        "strength": "Force",
+        "mobility_flexibility": "Mobilité / Flexibilité",
+        "daily_activity": "Activité quotidienne"
+      }
+    },
+    "environmentSuggestions": {
+      "title": "Suggestions pour votre situation",
+      "noPreferenceSet": "Définissez votre environnement habituel dans les Préférences pour voir des suggestions adaptées à votre situation.",
+      "noMatches": "Aucune activité correspondante pour le moment.",
+      "explanations": {
+        "home_no_equipment": "Sans équipement, à domicile — les activités au poids du corps conviennent bien.",
+        "outdoor": "Extérieur — la marche, la course et le vélo sont des options pratiques au quotidien.",
+        "gym": "Salle de sport — les exercices de musculation conviennent bien ici.",
+        "limited_mobility": "Mobilité réduite — ces options à faible impact constituent un bon point de départ.",
+        "small_space": "Petit espace — de courtes routines au poids du corps ou de mobilité conviennent bien.",
+        "flexible": "Situation flexible — voici un large éventail d'options."
+      }
+    }
+  },
+  "nutrition": {
+    "title": "Nutrition",
+    "subtitle": "Suivez vos repas, comprenez vos objectifs et trouvez des conseils généraux pour une alimentation saine.",
+    "addMealButton": "Ajouter un repas",
+    "addRestrictionButton": "Ajouter une restriction",
+    "mealLog": "Journal alimentaire",
+    "emptyMeals": "Aucun repas enregistré pour le moment. Ajoutez votre premier repas pour suivre votre alimentation.",
+    "mealType": {
+      "breakfast": "Petit-déjeuner",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "snack": "Collation"
+    },
+    "restrictions": "Restrictions",
+    "emptyRestrictions": "Aucune restriction pour le moment. Ajoutez une restriction donnée par un clinicien pour la conserver.",
+    "source": {
+      "clinician": "Clinicien",
+      "self_reported": "Autodéclaré"
+    },
+    "dashboard": {
+      "title": "Nutrition d'aujourd'hui",
+      "fruitVeg": "Fruits et légumes",
+      "fiber": "Fibres",
+      "salt": "Sel",
+      "freeSugar": "Sucres libres",
+      "noData": "Aucune donnée enregistrée aujourd'hui",
+      "portions": "portions",
+      "sodiumEquivalent": "≈ {sodium} mg de sodium",
+      "mealsLogged": "{count, plural, one {# repas enregistré aujourd'hui} other {# repas enregistrés aujourd'hui}}"
+    },
+    "saltSodium": {
+      "title": "Sel vs sodium",
+      "salt": "Sel",
+      "sodium": "Sodium",
+      "conversionNote": "5 g de sel équivalent à environ 2 g de sodium (sel ≈ sodium × {ratio}).",
+      "sourcesNote": "Le sodium ne provient pas seulement du sel de table — les aliments transformés, les sauces, les bouillons cubes, les conserves et les charcuteries en sont aussi des sources courantes.",
+      "source": "Source"
+    },
+    "liverConscious": {
+      "title": "Alimentation consciente du foie",
+      "disclaimer": "Une alimentation saine et équilibrée peut soutenir votre santé globale, mais aucun aliment ni régime ne traite, ne guérit ni ne prévient l'hépatite B. Ceci est une information nutritionnelle générale, qui ne remplace pas les conseils de votre clinicien ou d'un(e) diététicien(ne) agréé(e).",
+      "focusOn": "Privilégier",
+      "focusItems": {
+        "vegetables": "Légumes",
+        "fruits": "Fruits",
+        "legumes": "Légumineuses (haricots, lentilles, pois chiches)",
+        "wholeGrains": "Céréales complètes",
+        "nuts": "Noix",
+        "fish": "Poisson",
+        "leanProtein": "Protéines maigres",
+        "unsaturatedFats": "Graisses insaturées plus saines"
+      },
+      "limit": "Limiter",
+      "limitItems": {
+        "processedFoods": "Aliments hautement transformés",
+        "excessSugar": "Excès de sucre",
+        "excessSodium": "Excès de sodium",
+        "excessAlcohol": "Excès d'alcool"
+      },
+      "notMedicalAdvice": "Cette information générale ne remplace pas un avis médical ou diététique individualisé."
+    },
+    "alcohol": {
+      "title": "Alcool et santé du foie",
+      "body": "L'alcool peut être un sujet important à discuter avec votre professionnel de santé lorsque vous avez une maladie du foie.",
+      "recommendation": "Discutez de votre consommation d'alcool avec votre clinicien pour comprendre ce qui convient à votre situation individuelle."
+    },
+    "sources": {
+      "title": "Sources des informations nutritionnelles",
+      "targets": {
+        "salt": "Objectif de sel",
+        "sodium": "Objectif de sodium",
+        "freeSugar": "Objectif de sucres libres",
+        "fiber": "Objectif de fibres",
+        "fruitVeg": "Objectif fruits et légumes",
+        "fat": "Recommandations sur les graisses saturées/trans"
+      }
+    },
+    "weekly": {
+      "title": "Cette semaine",
+      "mealTypeShort": {
+        "breakfast": "Petit-déj.",
+        "lunch": "Déjeuner",
+        "dinner": "Dîner"
+      }
+    },
+    "mealForm": {
+      "title": "Enregistrer un repas",
+      "editTitle": "Modifier le repas",
+      "deleteConfirmTitle": "Supprimer l'entrée de repas ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette entrée de repas.",
+      "date": "Date",
+      "mealType": "Repas",
+      "mealTypeOptions": {
+        "breakfast": "Petit-déjeuner",
+        "lunch": "Déjeuner",
+        "dinner": "Dîner",
+        "snack": "Collation"
+      },
+      "description": "Description",
+      "descriptionPlaceholder": "p. ex. Gruau avec baies et noix non salées",
+      "descriptionRequired": "Veuillez décrire ce qui a été mangé.",
+      "notes": "Notes",
+      "mealInformationSection": "Informations sur le repas",
+      "nutritionDetailsSection": "Détails nutritionnels",
+      "nutritionDetailsHelper": "Tout est optionnel — indiquez ce que vous savez d'après une étiquette ou une estimation.",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "calories": "Calories",
+      "protein": "Protéines (g)",
+      "carbs": "Glucides (g)",
+      "fat": "Lipides (g)",
+      "fiber": "Fibres (g)",
+      "sugar": "Sucre (g)",
+      "sugarHelper": "Tel qu'indiqué sur une étiquette ou votre meilleure estimation — pas le sucre naturellement présent dans un fruit entier.",
+      "sodium": "Sodium (mg)",
+      "fruitVegG": "Fruits et légumes (g)",
+      "fruitVegPortions": "Fruits et légumes (portions)",
+      "save": "Enregistrer le repas",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "restrictionForm": {
+      "title": "Ajouter une restriction",
+      "editTitle": "Modifier la restriction",
+      "deleteConfirmTitle": "Supprimer la restriction ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette restriction.",
+      "restriction": "Restriction",
+      "restrictionRequired": "Veuillez décrire la restriction.",
+      "source": "Source",
+      "sourceOptions": {
+        "clinician": "Clinicien",
+        "self_reported": "Autodéclaré"
+      },
+      "relatedCondition": "Condition associée",
+      "noCondition": "Aucune",
+      "save": "Enregistrer la restriction",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "prioritize": {
+      "title": "Aliments à privilégier",
+      "categories": {
+        "wholeGrains": "Céréales complètes & féculents",
+        "legumes": "Légumineuses",
+        "proteins": "Protéines",
+        "vegetables": "Légumes",
+        "fruits": "Fruits",
+        "healthierFats": "Matières grasses plus saines"
+      },
+      "items": {
+        "millet": "Mil",
+        "fonio": "Fonio",
+        "wholeGrains": "Céréales complètes",
+        "rice": "Riz (en portion modérée)",
+        "sweetPotato": "Patate douce",
+        "niebe": "Niébé (haricots à œil noir)",
+        "beans": "Haricots",
+        "lentils": "Lentilles",
+        "chickpeas": "Pois chiches",
+        "fish": "Poisson",
+        "chicken": "Poulet (sans peau, avec modération)",
+        "eggs": "Œufs",
+        "leanProtein": "Autres protéines maigres",
+        "okra": "Gombo",
+        "cabbage": "Chou",
+        "carrots": "Carottes",
+        "tomato": "Tomate",
+        "onion": "Oignon",
+        "eggplant": "Aubergine",
+        "leafyVegetables": "Légumes-feuilles (feuilles de bissap, feuilles de manioc)",
+        "squash": "Courge",
+        "peppers": "Poivrons",
+        "mango": "Mangue",
+        "papaya": "Papaye",
+        "watermelon": "Pastèque",
+        "orange": "Orange",
+        "guava": "Goyave",
+        "pineapple": "Ananas",
+        "banana": "Banane",
+        "melon": "Melon",
+        "peanuts": "Arachides (avec modération)",
+        "unsaltedNuts": "Noix non salées",
+        "seeds": "Graines",
+        "moderateOils": "Huile végétale, en quantité modérée"
+      }
+    },
+    "limitFoods": {
+      "title": "Aliments à limiter",
+      "subtitle": "Ces aliments ne sont pas interdits — consommez-les simplement moins souvent ou en plus petite quantité.",
+      "items": {
+        "verySaltyFoods": "Aliments très salés",
+        "excessiveBouillon": "Excès de cubes bouillon / assaisonnement en poudre",
+        "saltedFish": "Poisson très salé ou séché",
+        "processedMeats": "Viandes transformées",
+        "processedSnacks": "Collations industrielles transformées",
+        "sugaryDrinks": "Boissons sucrées et sodas",
+        "excessiveAddedSugar": "Excès de sucre ajouté (thé, bissap, thiakry, lakh)",
+        "veryOilyMeals": "Plats très gras",
+        "excessiveFriedFoods": "Excès d'aliments frits",
+        "largeRefinedStarchPortions": "Très grandes portions de féculents raffinés",
+        "excessiveAlcohol": "Alcool"
+      }
+    },
+    "education": {
+      "title": "Éducation nutritionnelle",
+      "topics": {
+        "whatIsFiber": {
+          "question": "Qu'est-ce que les fibres et pourquoi sont-elles importantes ?",
+          "answer": "Les fibres sont la partie des aliments végétaux (légumes, légumineuses, céréales complètes, fruits) que le corps ne digère pas. Elles favorisent une digestion régulière et une alimentation équilibrée. Le niébé, les lentilles, le gombo, le fonio et les fruits sont de bonnes sources sénégalaises."
+        },
+        "saltVsSodium": {
+          "question": "Quelle est la différence entre le sel et le sodium ?",
+          "answer": "Le sodium est un minéral ; le sel de table en contient environ 40 % en poids. Les recommandations nutritionnelles sont souvent données en sodium (mg), tandis que le sel ajouté à la maison se mesure en grammes — LifeOS affiche les deux pour plus de clarté."
+        },
+        "whatIsFreeSugar": {
+          "question": "Qu'est-ce que le « sucre libre » ?",
+          "answer": "Le sucre libre est le sucre ajouté aux aliments ou boissons (comme le sucre ajouté au thé, au bissap, au lakh ou au thiakry) — pas le sucre naturellement présent dans un fruit entier. Réduire le sucre libre signifie utiliser moins de sucre ajouté, pas éviter les fruits."
+        },
+        "howMuchSalt": {
+          "question": "Quelle quantité de sel est généralement recommandée ?",
+          "answer": "L'Organisation mondiale de la santé recommande moins de 5 grammes de sel par jour (environ une cuillère à café) pour la santé générale. Il s'agit d'une recommandation générale pour la population, pas d'une prescription médicale personnelle — consultez un professionnel de santé pour un avis adapté à votre situation."
+        },
+        "reduceSodiumSenegalese": {
+          "question": "Comment réduire le sodium dans la cuisine sénégalaise ?",
+          "answer": "Utilisez moins de cube bouillon par marmite, construisez la saveur avec de l'oignon, de l'ail, du gingembre, des agrumes et des herbes fraîches plutôt que du sel supplémentaire, rincez le poisson salé ou séché avant cuisson, et salez à table en petite quantité plutôt que fortement pendant la cuisson."
+        },
+        "balanceTraditionalMeals": {
+          "question": "Puis-je continuer à manger des plats traditionnels ?",
+          "answer": "Oui. L'objectif n'est pas d'abandonner le ceebu jën, le mafé ou le yassa — ce sont de petits ajustements (moins d'huile, moins de bouillon, plus de légumes, portions de féculents plus petites) qui préservent les plats que vous aimez tout en rendant l'alimentation globale plus équilibrée."
+        },
+        "whyVegetables": {
+          "question": "Pourquoi privilégier les légumes ?",
+          "answer": "Les légumes apportent des fibres, des vitamines et du volume à un repas sans beaucoup de sodium ni de sucre ajouté, ce qui favorise une alimentation globalement équilibrée."
+        },
+        "whyWholeGrains": {
+          "question": "Pourquoi choisir des céréales complètes quand c'est possible ?",
+          "answer": "Les céréales complètes (comme le fonio, le mil ou le pain complet) conservent davantage les fibres naturelles de la céréale par rapport aux versions raffinées, ce qui favorise une digestion plus équilibrée."
+        },
+        "whatIsLiverConscious": {
+          "question": "Que signifie « attentif au foie » sur LifeOS ?",
+          "answer": "Cela signifie privilégier une alimentation globalement équilibrée — sodium modéré, sucre ajouté limité, moins de fritures/graisses, plus de légumes et de fibres, et peu ou pas d'alcool. Il s'agit d'éducation nutritionnelle générale, pas d'un traitement médical d'une maladie du foie."
+        }
+      }
+    },
+    "hepatitisB": {
+      "title": "Hépatite B et nutrition",
+      "intro": "Il n'existe pas de régime spécial qui traite, guérit, élimine ou contrôle l'hépatite B. L'alimentation ne remplace pas le suivi ni le traitement médical.",
+      "focus": "L'alimentation générale attentive au foie repose sur un équilibre global : sodium modéré, sucre ajouté limité, moins d'aliments frits ou gras, plus de légumes et de fibres, et peu ou pas d'alcool — les mêmes principes d'équilibre alimentaire présentés dans toute cette section Nutrition.",
+      "individualizedAdvice": "Les besoins nutritionnels varient selon chaque personne, en particulier en présence d'autres conditions comme le diabète, une maladie rénale, l'hypertension ou la grossesse. Suivez toujours les conseils personnalisés de votre médecin ou d'un(e) diététicien(ne)."
+    },
+    "mealRatings": {
+      "best_choice": "Meilleur choix",
+      "good_choice": "Bon choix",
+      "moderation": "À apprécier avec modération",
+      "consider_modifying": "À adapter"
+    },
+    "mealDetail": {
+      "servingSize": "Portion",
+      "why": "Pourquoi cette note",
+      "ingredients": "Ingrédients",
+      "nutrition": "Nutrition (estimée)",
+      "nutritionEstimateNote": "Ces valeurs sont des estimations basées sur les ingrédients et portions habituels, pas des données mesurées en laboratoire.",
+      "calories": "Calories",
+      "protein": "Protéines",
+      "carbs": "Glucides",
+      "fat": "Lipides",
+      "fiber": "Fibres",
+      "sugar": "Sucre",
+      "sodium": "Sodium",
+      "preparation": "Préparation traditionnelle",
+      "liverConsciousPreparation": "Adaptation attentive au foie",
+      "foodsToReduce": "À réduire",
+      "substitutions": "Idées de substitution",
+      "addToShoppingList": "Ajouter à la liste de courses",
+      "swapWith": "Remplacer par"
+    },
+    "senegaleseMeals": {
+      "title": "Plats sénégalais attentifs au foie",
+      "subtitle": "Des plats traditionnels que vous connaissez déjà, avec des conseils pratiques pour un équilibre plus favorable.",
+      "explanation": "Touchez un plat pour voir les ingrédients, la préparation et une adaptation attentive au foie.",
+      "mealTypeLabel": {
+        "breakfast": "Petit-déjeuner",
+        "lunch": "Déjeuner",
+        "dinner": "Dîner",
+        "snack": "Collation"
+      }
+    },
+    "weeklyPlan": {
+      "title": "Plan de repas hebdomadaire (exemple)",
+      "generateShoppingList": "Générer la liste de courses",
+      "exampleDisclaimer": "Ceci est une semaine type pour illustrer un modèle équilibré — remplacez librement par les plats que vous préférez.",
+      "days": {
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi",
+        "sunday": "Dimanche"
+      },
+      "breakfast": "Petit-déjeuner",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "snack": "Collation"
+    },
+    "shoppingList": {
+      "title": "Liste de courses",
+      "empty": "Votre liste de courses est vide. Ajoutez des ingrédients depuis un plat ou le plan hebdomadaire.",
+      "categories": {
+        "vegetables": "Légumes",
+        "fruits": "Fruits",
+        "fish": "Poisson",
+        "protein": "Protéines",
+        "grains": "Céréales",
+        "legumes": "Légumineuses",
+        "nuts_seeds": "Noix & graines",
+        "seasonings": "Assaisonnements",
+        "dairy": "Produits laitiers",
+        "other": "Autre"
+      },
+      "remove": "Retirer"
+    },
+    "preferencesForm": {
+      "triggerLabel": "Modifier les objectifs",
+      "title": "Préférences nutritionnelles",
+      "intro": "Ces préférences aident à personnaliser les suggestions. Ce ne sont pas des prescriptions médicales.",
+      "saveError": "Impossible d'enregistrer vos préférences. Veuillez réessayer.",
+      "dailyTargetsSection": "Objectifs quotidiens",
+      "dailyTargetsHelper": "Facultatif — définissez vos propres objectifs. LifeOS ne les prescrit jamais à votre place.",
+      "calorieTarget": "Objectif de calories (kcal)",
+      "proteinTarget": "Objectif de protéines (g)",
+      "carbsTarget": "Objectif de glucides (g)",
+      "fatTarget": "Objectif de lipides (g)",
+      "cuisine": "Cuisine préférée",
+      "goal": "Objectif nutritionnel",
+      "budget": "Budget",
+      "budgetOptions": {
+        "low": "Limité",
+        "moderate": "Modéré",
+        "flexible": "Flexible"
+      },
+      "cookingTime": "Temps de cuisine disponible",
+      "cookingTimeOptions": {
+        "quick": "Rapide (moins de 20 min)",
+        "moderate": "Modéré (20-45 min)",
+        "extended": "Long (45 min et plus)"
+      },
+      "dietPreferences": "Préférences alimentaires",
+      "dislikes": "Aliments que vous n'aimez pas",
+      "allergies": "Allergies",
+      "commaSeparatedHelper": "Séparez plusieurs entrées par des virgules.",
+      "hydrationUnit": "Unité d'hydratation",
+      "hydrationUnitOptions": {
+        "L": "Litres (L)",
+        "mL": "Millilitres (mL)",
+        "fl_oz": "Onces liquides (fl oz)"
+      },
+      "hydrationTarget": "Objectif quotidien de liquide personnalisé (L)",
+      "hydrationTargetHelper": "Facultatif — laissez vide pour utiliser l'estimation générale de 2,0 à 2,5 L/jour.",
+      "cuisinePreferences": "Préférences de cuisine",
+      "cuisinePreferencesHelper": "Sélectionnez-en autant que vous le souhaitez — vous les verrez toutes dans Aliments et repas et dans un plan de repas hebdomadaire mixte.",
+      "goals": "Objectifs nutritionnels",
+      "countryRegion": "Pays / région",
+      "favoriteFoods": "Aliments préférés"
+    },
+    "hydration": {
+      "sectionTitle": "Hydratation et boissons",
+      "title": "Hydratation",
+      "fluidRestrictionNotice": "Vos besoins en hydratation peuvent être différents en raison de vos conditions de santé. Suivez les conseils de votre professionnel de santé.",
+      "generalEstimateNote": "Estimation générale d'hydratation ({low}-{high}/jour) — pas une prescription médicale.",
+      "customTargetNote": "Votre propre objectif, défini dans les Préférences.",
+      "logADrink": "Enregistrer une boisson",
+      "beverage": "Boisson",
+      "beverages": {
+        "water": "Eau",
+        "sparkling_water": "Eau gazeuse",
+        "unsweetened_tea": "Thé non sucré",
+        "coffee": "Café",
+        "other": "Autre"
+      },
+      "amount": "Quantité",
+      "unit": "Unité",
+      "add": "Ajouter",
+      "todaysDrinks": "Boissons d'aujourd'hui",
+      "remove": "Retirer"
+    },
+    "drinkRecommendations": {
+      "title": "Meilleurs choix au quotidien",
+      "items": {
+        "water": "Eau",
+        "sparklingWater": "Eau gazeuse non sucrée",
+        "lemonLimeWater": "Eau au citron/citron vert",
+        "herbalTea": "Tisane non sucrée",
+        "unsweetenedCoffeeTea": "Café/thé non sucré",
+        "unsweetenedMilk": "Lait non sucré ou alternative appropriée"
+      }
+    },
+    "senegaleseDrinks": {
+      "title": "Options de boissons sénégalaises / ouest-africaines",
+      "items": {
+        "water": "Eau",
+        "herbalTeas": "Tisanes non sucrées",
+        "fruitInfusedWater": "Eau infusée aux fruits frais"
+      },
+      "traditional": "Traditionnel",
+      "lifeosVersion": "Version LifeOS",
+      "betterChoice": "Meilleur choix : réduire le sucre ajouté.",
+      "noDetoxClaim": "Ces boissons ne sont pas un traitement, un remède ou une « détox » pour l'hépatite B ou toute maladie du foie.",
+      "comparisons": {
+        "bissap": {
+          "name": "Bissap",
+          "traditional": "Souvent préparé avec beaucoup de sucre ajouté.",
+          "lifeosVersion": "Bissap non sucré ou avec moins de sucre ajouté."
+        },
+        "ginger": {
+          "name": "Jus de gingembre",
+          "traditional": "Souvent préparé avec beaucoup de sucre ajouté.",
+          "lifeosVersion": "Jus de gingembre non sucré ou peu sucré."
+        },
+        "baobab": {
+          "name": "Jus de baobab",
+          "traditional": "Peut être préparé avec beaucoup de sucre ajouté.",
+          "lifeosVersion": "Préparé avec peu ou pas de sucre ajouté."
+        }
+      }
+    },
+    "drinksToLimit": {
+      "title": "Boissons à limiter",
+      "explanation": "Elles peuvent apporter beaucoup de sucre libre/ajouté sans grande valeur nutritionnelle.",
+      "items": {
+        "sugarySodas": "Sodas sucrés",
+        "sugarSweetenedJuices": "Jus sucrés",
+        "highlySweetenedBeverages": "Boissons très sucrées",
+        "verySugaryCoffeeTea": "Café/thé très sucré",
+        "sweetenedTraditionalDrinks": "Boissons traditionnelles sucrées",
+        "energyDrinks": "Boissons énergisantes"
+      }
+    },
+    "fruitJuice": {
+      "title": "Fruit entier vs jus de fruit",
+      "body": "Le jus de fruit peut contenir beaucoup de sucre libre même sans sucre ajouté — il n'est pas nutritionnellement identique au fruit entier.",
+      "recommendation": "Privilégiez le fruit entier plus souvent que le jus."
+    },
+    "liverDetoxWarning": {
+      "title": "Attention aux boissons « détox pour le foie »",
+      "body": "Il n'est pas nécessaire de recourir à des boissons détox pour traiter l'hépatite B. LifeOS ne recommande aucun produit à base de plantes ni complément comme traitement de l'hépatite B, et aucune boisson — eau citronnée, gingembre, bissap, baobab ou thé — ne nettoie ni ne répare le foie."
+    },
+    "hydrationEducation": {
+      "title": "Éducation à l'hydratation",
+      "topics": {
+        "howMuchShouldIDrink": {
+          "question": "Combien devrais-je boire ?",
+          "answer": "Les besoins en liquides varient selon la taille du corps, l'âge, le niveau d'activité, le climat, l'alimentation, la grossesse/l'allaitement, la maladie, les médicaments et les problèmes rénaux/cardiaques. Une fourchette générale de départ pour un adulte est d'environ 2,0 à 2,5 L/jour de liquides — une estimation générale, pas une prescription personnelle."
+        },
+        "litersVsFluidOunces": {
+          "question": "Litres ou onces liquides ?",
+          "answer": "1 L équivaut à environ 34 fl oz. LifeOS affiche les deux unités pour que vous puissiez utiliser celle qui vous est familière."
+        },
+        "whatCountsAsAFluid": {
+          "question": "Qu'est-ce qui compte comme liquide ?",
+          "answer": "L'eau, l'eau gazeuse, le thé non sucré, le café et les autres boissons non alcoolisées comptent. Les boissons alcoolisées ne sont pas comptées comme hydratation."
+        },
+        "doesFoodProvideWater": {
+          "question": "Les aliments apportent-ils de l'eau ?",
+          "answer": "Oui — les fruits, légumes et soupes contiennent de l'eau et contribuent à l'apport en liquide global, bien que le suivi de LifeOS ne compte ici que les boissons."
+        },
+        "howCanIDrinkMoreWater": {
+          "question": "Comment boire plus d'eau ?",
+          "answer": "Gardez de l'eau visible et à portée de main, ajoutez une tranche de citron ou de citron vert pour le goût, et associez un verre d'eau à des habitudes que vous avez déjà."
+        },
+        "areSugaryDrinksGoodForHydration": {
+          "question": "Les boissons sucrées sont-elles bonnes pour l'hydratation ?",
+          "answer": "Elles peuvent hydrater, mais elles apportent beaucoup de sucre libre sans grande valeur nutritionnelle — l'eau et les boissons non sucrées sont de meilleurs choix au quotidien."
+        },
+        "isFruitJuiceTheSameAsWholeFruit": {
+          "question": "Le jus de fruit est-il équivalent au fruit entier ?",
+          "answer": "Non. Le jus de fruit peut contenir beaucoup de sucre libre même sans sucre ajouté, et n'a pas les fibres du fruit entier. Privilégiez le fruit entier plus souvent."
+        },
+        "whatDrinksFitLiverConscious": {
+          "question": "Quelles boissons s'intègrent à une alimentation attentive au foie ?",
+          "answer": "L'eau, l'eau gazeuse non sucrée, le thé non sucré et les boissons traditionnelles moins sucrées conviennent bien. Les boissons sucrées et l'alcool sont les principales à limiter."
+        },
+        "shouldIDrinkMoreExercisingHeat": {
+          "question": "Devrais-je boire davantage en cas d'exercice ou de forte chaleur ?",
+          "answer": "Souvent oui — l'activité et la chaleur augmentent la perte de liquide. Il s'agit d'une indication générale ; demandez à votre professionnel de santé un avis adapté à votre situation, surtout en cas de maladie."
+        }
+      }
+    },
+    "tabs": {
+      "overview": "Aperçu",
+      "mealsFood": "Repas et aliments",
+      "water": "Eau",
+      "goals": "Objectifs",
+      "history": "Historique"
+    },
+    "overview": {
+      "title": "Nutrition d'aujourd'hui",
+      "calories": "Calories",
+      "protein": "Protéines",
+      "carbs": "Glucides",
+      "fat": "Lipides",
+      "water": "Eau",
+      "noData": "Aucune donnée pour le moment"
+    },
+    "overviewTab": {
+      "recentMeals": "Repas récents",
+      "viewAll": "Tout voir",
+      "emptyMeals": "Aucun repas enregistré pour le moment. Ajoutez votre premier repas pour suivre votre alimentation.",
+      "dailyProgress": {
+        "title": "Progression quotidienne",
+        "calories": "Calories",
+        "protein": "Protéines",
+        "carbs": "Glucides",
+        "fat": "Lipides",
+        "water": "Eau",
+        "noGoalSet": "Aucun objectif défini"
+      }
+    },
+    "goalsTab": {
+      "targetsTitle": "Objectifs quotidiens",
+      "calorieTarget": "Objectif de calories",
+      "proteinTarget": "Objectif de protéines",
+      "carbsTarget": "Objectif de glucides",
+      "fatTarget": "Objectif de lipides",
+      "waterTarget": "Objectif d'eau",
+      "notSet": "Non défini"
+    },
+    "historyTab": {
+      "empty": "Aucun historique nutritionnel pour le moment. Enregistrez un repas ou de l'eau pour commencer à créer votre historique.",
+      "noResults": "Aucun enregistrement sur cette période."
+    },
+    "quickActions": {
+      "logWater": "Ajouter de l'eau",
+      "manageGoals": "Gérer les objectifs"
+    },
+    "cuisines": {
+      "all": "Toutes les cuisines",
+      "senegalese_west_african": "Sénégalaise / ouest-africaine",
+      "american": "Américaine",
+      "mexican": "Mexicaine",
+      "italian": "Italienne",
+      "indian": "Indienne",
+      "japanese": "Japonaise",
+      "north_african": "Nord-africaine",
+      "other": "Autre / internationale"
+    },
+    "mealTypes": {
+      "breakfast": "Petit-déjeuner",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "snack": "Collation"
+    },
+    "goals": {
+      "increase_vegetables": "Manger plus de légumes",
+      "improve_hydration": "Améliorer l'hydratation",
+      "increase_fiber": "Augmenter les fibres",
+      "reduce_sodium": "Réduire le sodium",
+      "reduce_added_sugar": "Réduire le sucre ajouté/libre",
+      "increase_protein": "Augmenter les protéines",
+      "weight_management": "Gestion du poids",
+      "general_healthy_eating": "Alimentation saine en général"
+    },
+    "nutritionGoals": {
+      "title": "Objectifs nutritionnels",
+      "empty": "Vous n'avez pas encore défini d'objectifs nutritionnels. Ajoutez-en dans les Préférences."
+    },
+    "classification": {
+      "prioritize": "À privilégier",
+      "moderation": "À apprécier avec modération",
+      "limit": "À limiter",
+      "info": "Information générale"
+    },
+    "foodAndMeals": {
+      "title": "Aliments et repas",
+      "searchPlaceholder": "Rechercher des aliments et des repas...",
+      "filterCuisine": "Cuisine",
+      "filterMealType": "Type de repas",
+      "filterCategory": "Catégorie d'aliment",
+      "filterGoal": "Objectif nutritionnel",
+      "allMealTypes": "Tous les types de repas",
+      "allCategories": "Toutes les catégories",
+      "allGoals": "Tous les objectifs",
+      "meals": "Repas ({count})",
+      "foods": "Aliments ({count})",
+      "noResults": "Aucun résultat trouvé."
+    },
+    "foodDetail": {
+      "servingSize": "Portion",
+      "why": "Pourquoi cette classification",
+      "preparation": "Préparation",
+      "nutrition": "Nutrition (estimée)",
+      "nutritionEstimateNote": "Ces valeurs sont des estimations basées sur les ingrédients et portions habituels, pas des données mesurées en laboratoire.",
+      "calories": "Calories",
+      "protein": "Protéines",
+      "carbs": "Glucides",
+      "fat": "Lipides",
+      "fiber": "Fibres",
+      "sugar": "Sucre",
+      "addedSugar": "Sucre ajouté",
+      "sodium": "Sodium",
+      "saturatedFat": "Graisses saturées",
+      "categories": {
+        "proteins": "Protéines",
+        "whole_grains": "Céréales complètes",
+        "vegetables": "Légumes",
+        "fruits": "Fruits",
+        "nuts_seeds": "Noix et graines",
+        "legumes": "Légumineuses",
+        "other": "Autre"
+      }
+    },
+    "mealPlanner": {
+      "title": "Plan de repas hebdomadaire",
+      "generateShoppingList": "Générer la liste de courses",
+      "exampleDisclaimer": "Ce plan combine les cuisines sélectionnées dans vos Préférences — une semaine type, pas une prescription. Remplacez librement par les plats que vous préférez.",
+      "breakfast": "Petit-déjeuner",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "viewFullPlan": "Voir le plan complet",
+      "showLess": "Afficher moins",
+      "days": {
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi",
+        "sunday": "Dimanche"
+      }
+    },
+    "tracking": {
+      "title": "Suivi nutritionnel",
+      "subtitle": "Choisissez les indicateurs que vous voulez suivre — inutile de tout suivre.",
+      "noneSelected": "Sélectionnez un indicateur ci-dessus pour voir la valeur du jour.",
+      "noData": "Aucune donnée pour le moment",
+      "metrics": {
+        "calories": "Calories",
+        "protein": "Protéines",
+        "fiber": "Fibres",
+        "carbs": "Glucides",
+        "fat": "Lipides",
+        "sodium": "Sodium",
+        "added_sugar": "Sucre libre/ajouté",
+        "fruit_veg": "Fruits et légumes",
+        "water": "Eau"
+      }
+    },
+    "healthGuidance": {
+      "title": "Santé et nutrition",
+      "healthyEatingPatternTitle": "Modèle d'alimentation saine",
+      "liverConsciousTitle": "Alimentation attentive au foie",
+      "hepatitisBTitle": "Hépatite B et nutrition",
+      "sodiumTitle": "Sodium",
+      "sugarTitle": "Sucre libre/ajouté",
+      "fiberTitle": "Fibres",
+      "alcoholTitle": "Alcool et santé du foie"
+    },
+    "sugarInfo": {
+      "title": "Sucre libre/ajouté",
+      "ideally": "idéalement",
+      "explanation": "Le sucre libre/ajouté est le sucre ajouté aux aliments et boissons, pas le sucre naturel présent dans un fruit entier — en consommer moins est un objectif général d'alimentation saine, pas une limite médicale personnelle.",
+      "source": "Source"
+    },
+    "fiberInfo": {
+      "title": "Fibres",
+      "explanation": "Les fibres proviennent des légumes, fruits, légumineuses et céréales complètes — elles favorisent une digestion régulière dans le cadre d'une alimentation globalement équilibrée.",
+      "source": "Source"
+    },
+    "drinkChoices": {
+      "title": "Choix de boissons",
+      "subtitle": "Organisées par type, pas une liste de bonnes/mauvaises boissons — la préparation change le classement d'une boisson.",
+      "fruitJuiceNote": "Le jus de fruit peut contenir beaucoup de sucre libre même sans sucre ajouté — le fruit entier est généralement le meilleur choix au quotidien.",
+      "categories": {
+        "water": "Eau",
+        "tea": "Thé",
+        "coffee": "Café",
+        "milkAlternatives": "Lait / alternatives",
+        "fruitDrinks": "Boissons aux fruits",
+        "traditionalDrinks": "Boissons traditionnelles",
+        "sportsEnergy": "Boissons sportives / énergisantes"
+      },
+      "drinks": {
+        "water": "Eau",
+        "sparklingWater": "Eau gazeuse",
+        "lemonWater": "Eau au citron/citron vert",
+        "unsweetenedTea": "Thé non sucré",
+        "sweetenedTea": "Thé sucré",
+        "unsweetenedCoffee": "Café non sucré",
+        "sweetenedCoffee": "Café sucré",
+        "unsweetenedMilk": "Lait/alternative non sucré",
+        "sweetenedMilk": "Lait/alternative sucré",
+        "wholeFruitInfusedWater": "Eau infusée aux fruits frais",
+        "fruitJuice": "Jus de fruit 100 %",
+        "sugarSweetenedJuiceDrink": "Boisson aux fruits sucrée",
+        "bissapUnsweetened": "Bissap (non sucré/moins sucré)",
+        "gingerDrinkLowSugar": "Jus de gingembre (peu sucré)",
+        "bouyeLowSugar": "Bouye (peu sucré)",
+        "traditionalDrinkHighSugar": "Boisson traditionnelle (fortement sucrée)",
+        "sportsEnergyDrinks": "Boissons sportives/énergisantes"
+      }
+    },
+    "learn": {
+      "title": "Apprendre"
+    }
+  },
+  "documents": {
+    "title": "Documents médicaux",
+    "addButton": "Ajouter un document",
+    "empty": "Aucun document téléversé pour le moment. Téléversez votre premier document pour regrouper vos dossiers.",
+    "noDateResults": "Aucun document avec une date dans la plage sélectionnée. Les documents sans date ne sont pas affichés lorsqu'un filtre de date est actif.",
+    "linkedLabResults": "Lié à {count, plural, one {# résultat d'analyse} other {# résultats d'analyse}}",
+    "view": "Voir",
+    "loading": "Chargement…",
+    "viewError": "Impossible d'ouvrir",
+    "deleteConfirmTitle": "Supprimer le document ?",
+    "deleteConfirmMessage": "Cela supprimera définitivement le document et son fichier.",
+    "form": {
+      "title": "Téléverser un document",
+      "file": "Fichier",
+      "fileRequired": "Veuillez choisir un fichier.",
+      "fileTypeInvalid": "Ce type de fichier n'est pas pris en charge. Utilisez PDF, JPEG, PNG, WEBP ou HEIC.",
+      "fileTooLarge": "Le fichier est trop volumineux (max 20 Mo).",
+      "name": "Nom",
+      "namePlaceholder": "Par défaut, le nom du fichier",
+      "type": "Type",
+      "typeOptions": {
+        "lab_report": "Résultat d'analyse",
+        "imaging": "Imagerie",
+        "prescription": "Ordonnance",
+        "appointment_summary": "Résumé de rendez-vous",
+        "doctor_notes": "Notes du médecin",
+        "other": "Autre"
+      },
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "documentDate": "Date du document",
+      "provider": "Prestataire",
+      "relatedCondition": "Condition associée",
+      "relatedAppointment": "Rendez-vous associé",
+      "relatedLabResults": "Résultats d'analyses associés",
+      "unknownTest": "Analyse inconnue",
+      "none": "Aucun",
+      "uploading": "Téléversement…",
+      "save": "Téléverser",
+      "uploadError": "Échec du téléversement. Veuillez réessayer.",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "timeline": {
+    "title": "Chronologie de santé",
+    "empty": "Aucun événement dans la chronologie pour le moment.",
+    "viewDetails": "Voir la section",
+    "tabs": {
+      "all": "Tout",
+      "care": "Événements de soins",
+      "medications": "Médicaments",
+      "labs": "Analyses et tests",
+      "vitals": "Signes vitaux et activité",
+      "documents": "Documents"
+    },
+    "emptyByCategory": {
+      "care": "Aucun événement de soins (conditions, symptômes, rendez-vous, suivi) pour le moment.",
+      "medications": "Aucun événement lié aux médicaments pour le moment.",
+      "labs": "Aucun résultat d'analyse ni test diagnostique pour le moment.",
+      "vitals": "Aucun signe vital, mesure ou entraînement pour le moment.",
+      "documents": "Aucun document pour le moment."
+    },
+    "eventType": {
+      "diagnosis": "Condition",
+      "medication_start": "Médicament",
+      "lab_result": "Résultat d'analyse",
+      "appointment": "Rendez-vous",
+      "symptom": "Symptôme",
+      "body_metric": "Mesure",
+      "document": "Document",
+      "xray": "Radiographie",
+      "ultrasound": "Échographie",
+      "fibroscan": "FibroScan",
+      "ct": "Tomodensitométrie (CT)",
+      "mri": "IRM",
+      "ecg": "ECG",
+      "echocardiogram": "Échocardiogramme",
+      "pulmonary_function_test": "Test de fonction pulmonaire",
+      "dexa": "DEXA",
+      "other": "Autre",
+      "monitoring_completed": "Suivi terminé",
+      "vital": "Signe vital",
+      "vitals_recorded": "Signes vitaux enregistrés",
+      "workout": "Entraînement"
+    }
+  },
+  "medications": {
+    "title": "Médicaments",
+    "addButton": "Ajouter un médicament",
+    "empty": "Aucun médicament pour le moment. Ajoutez votre premier médicament pour suivre votre traitement.",
+    "deleteConfirmTitle": "Supprimer le médicament ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement ce médicament.",
+    "dose": "Dose",
+    "frequency": "Fréquence",
+    "route": "Voie d'administration",
+    "prescriber": "Prescripteur",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "status": {
+      "active": "Actif",
+      "discontinued": "Interrompu",
+      "planned": "Planifié"
+    },
+    "form": {
+      "title": "Ajouter un médicament",
+      "editTitle": "Modifier le médicament",
+      "name": "Nom",
+      "nameRequired": "Veuillez entrer un nom.",
+      "status": "Statut",
+      "statusOptions": {
+        "active": "Actif",
+        "planned": "Planifié",
+        "discontinued": "Interrompu"
+      },
+      "dose": "Dose",
+      "unit": "Unité",
+      "frequency": "Fréquence",
+      "route": "Voie d'administration",
+      "startDate": "Date de début",
+      "relatedCondition": "Condition associée",
+      "noCondition": "Aucune",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "endDate": "Date de fin",
+      "prescriber": "Prescripteur",
+      "reason": "Motif",
+      "instructions": "Instructions",
+      "save": "Enregistrer le médicament",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "signOut": "Se déconnecter",
+    "signOutConfirmTitle": "Se déconnecter ?",
+    "signOutConfirmMessage": "Vous devrez vous reconnecter pour accéder à vos données LifeOS.",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "confirmationSent": "Vérifiez votre courriel pour confirmer votre compte avant de vous connecter.",
+    "forgotPassword": "Mot de passe oublié ?",
+    "forgotPasswordInstructions": "Entrez votre courriel et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "sendResetLink": "Envoyer le lien",
+    "resetEmailSent": "Si un compte existe pour ce courriel, un lien de réinitialisation a été envoyé.",
+    "backToSignIn": "Retour à la connexion",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "resetPasswordInstructions": "Entrez un nouveau mot de passe pour votre compte.",
+    "newPassword": "Nouveau mot de passe",
+    "invalidResetLink": "Ce lien de réinitialisation est invalide ou a expiré. Veuillez en demander un nouveau."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Aucune notification pour le moment.",
+    "markRead": "Marquer comme lue",
+    "markAllRead": "Tout marquer comme lu",
+    "viewAll": "Tout voir",
+    "bellLabel": "Notifications",
+    "unread": "{count, plural, one {# non lue} other {# non lues}}"
+  },
+  "push": {
+    "sectionTitle": "Notifications push",
+    "banner": {
+      "title": "Restez informé de votre santé",
+      "description": "Activez les notifications pour recevoir des rappels de rendez-vous, de suivi et d'autres événements de santé importants.",
+      "enable": "Activer les notifications",
+      "notNow": "Pas maintenant"
+    },
+    "enableButton": "Activer les notifications",
+    "enabling": "Activation…",
+    "enableError": "Impossible d'activer les notifications. Veuillez réessayer.",
+    "status": {
+      "enabled": "Notifications activées",
+      "notEnabled": "Notifications non activées",
+      "denied": "Les notifications sont bloquées. Vous pouvez les activer plus tard dans les paramètres de votre navigateur ou de votre appareil.",
+      "unsupported": "Les notifications push ne sont pas prises en charge par ce navigateur."
+    },
+    "iosSteps": {
+      "title": "Pour activer les notifications sur iPhone/iPad :",
+      "step1": "Ajoutez LifeOS à l'écran d'accueil",
+      "step2": "Ouvrez l'application LifeOS installée",
+      "step3": "Activez les notifications"
+    },
+    "devices": {
+      "title": "Vos appareils",
+      "empty": "Aucun appareil enregistré pour le moment.",
+      "unknownDevice": "Appareil inconnu",
+      "active": "Actif",
+      "remove": "Supprimer",
+      "removeConfirmTitle": "Supprimer cet appareil ?",
+      "removeConfirmMessage": "Cet appareil cessera de recevoir des notifications push. Vous pouvez le réactiver à tout moment."
+    }
+  },
+  "comingSoon": {
+    "badge": "Bientôt disponible",
+    "planning": {
+      "title": "Planification",
+      "description": "Votre centre de planification personnelle arrive bientôt.",
+      "features": [
+        "Tâches",
+        "Objectifs",
+        "Calendrier",
+        "Habitudes",
+        "Rappels"
+      ]
+    },
+    "finance": {
+      "title": "Finances",
+      "description": "Votre centre de gestion financière personnelle arrive bientôt.",
+      "features": [
+        "Revenus",
+        "Dépenses",
+        "Budgets",
+        "Dettes",
+        "Investissements",
+        "Objectifs financiers"
+      ]
+    },
+    "projects": {
+      "title": "Projets",
+      "description": "Le suivi de tout ce que vous construisez arrive bientôt.",
+      "features": [
+        "Projets actifs",
+        "Jalons",
+        "Tâches",
+        "Échéances"
+      ]
+    },
+    "goals": {
+      "title": "Objectifs",
+      "description": "La définition et le suivi de vos objectifs personnels arrivent bientôt.",
+      "features": [
+        "Suivi des objectifs",
+        "Dates cibles",
+        "Mises à jour de progression",
+        "Jalons"
+      ]
+    },
+    "tasks": {
+      "title": "Tâches",
+      "description": "Une liste de tâches dédiée pour tout ce sur quoi vous travaillez arrive bientôt.",
+      "features": [
+        "Tâches à faire",
+        "Dates d'échéance",
+        "Priorités",
+        "Projets liés"
+      ]
+    },
+    "business": {
+      "title": "Entreprise",
+      "description": "Des outils pour gérer votre entreprise arrivent bientôt.",
+      "features": [
+        "Clients",
+        "Factures",
+        "Revenus",
+        "Objectifs d'affaires"
+      ]
+    },
+    "travel": {
+      "title": "Voyages",
+      "description": "La planification de voyages et vos documents de voyage arrivent bientôt.",
+      "features": [
+        "Voyages",
+        "Itinéraires",
+        "Documents de voyage",
+        "Listes de bagages"
+      ]
+    },
+    "assets": {
+      "title": "Biens",
+      "description": "Le suivi de ce que vous possédez arrive bientôt.",
+      "features": [
+        "Propriétés",
+        "Véhicules",
+        "Objets de valeur",
+        "Garanties et assurances"
+      ]
+    },
+    "prayer": {
+      "title": "Prière",
+      "description": "Le suivi des heures de prière arrive bientôt.",
+      "features": [
+        "Heures de prière",
+        "Suivi des prières",
+        "Direction de la Qibla"
+      ]
+    },
+    "notes": {
+      "title": "Notes",
+      "description": "Un espace pour vos notes libres à travers LifeOS arrive bientôt.",
+      "features": [
+        "Notes libres",
+        "Étiquettes et dossiers",
+        "Éléments liés",
+        "Recherche"
+      ]
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "profile": "Profil",
+    "notifications": "Notifications",
+    "displayName": "Nom d'affichage",
+    "notificationsSubtitle": "Choisissez comment LifeOS vous tient informé.",
+    "emailReminders": "M'envoyer des rappels de santé par courriel",
+    "healthNotifications": "Notifications de santé",
+    "categories": {
+      "appointments": {
+        "label": "Rendez-vous",
+        "description": "Rendez-vous médicaux à venir"
+      },
+      "monitoring": {
+        "label": "Suivi",
+        "description": "Analyses, imagerie, vérifications de médicaments et autres tests récurrents"
+      },
+      "general_activity": {
+        "label": "Activité de santé générale",
+        "description": "Résultats d'analyses ajoutés, poids enregistré, symptômes consignés, documents téléversés"
+      },
+      "bills": {
+        "label": "Factures",
+        "description": "Échéances de factures à venir et en retard"
+      },
+      "subscriptions": {
+        "label": "Abonnements",
+        "description": "Dates de renouvellement et de facturation à venir"
+      },
+      "documents": {
+        "label": "Documents",
+        "description": "Documents approchant de leur date d'expiration"
+      },
+      "dua": {
+        "label": "Routine de Dua",
+        "description": "Rappels quotidiens pour votre routine de Dua du matin, du soir et avant le coucher"
+      }
+    },
+    "push": "Notification push",
+    "inApp": "Dans l'appli",
+    "email": "Courriel",
+    "emailReminderTiming": "Délai des rappels par courriel",
+    "timing": {
+      "seven_day": "7 jours avant",
+      "three_day": "3 jours avant",
+      "one_day": "1 jour avant",
+      "day_of": "Le jour même"
+    },
+    "overdue": "En retard",
+    "overdueEmailEnabled": "M'envoyer un courriel pour les éléments en retard",
+    "overdueEmailRecurring": "Continuer à me le rappeler tant que c'est en retard",
+    "timezone": "Fuseau horaire",
+    "testEmailDescription": "Envoyez-vous un courriel de test pour confirmer que les notifications fonctionnent.",
+    "sendTestEmail": "Envoyer un courriel de test",
+    "testEmailSent": "Courriel de test envoyé à {email}. Vérifiez votre boîte de réception.",
+    "testEmailError": "Échec de l'envoi du courriel de test. Veuillez réessayer.",
+    "saved": "Enregistré.",
+    "saveError": "Échec de l'enregistrement. Veuillez réessayer.",
+    "dataPrivacy": {
+      "title": "Données et confidentialité",
+      "exportData": "Exporter les données",
+      "exportDataDescription": "Téléchargez une copie de vos données LifeOS.",
+      "deleteAccount": "Supprimer le compte",
+      "deleteAccountDescription": "Supprimez définitivement votre compte et toutes vos données.",
+      "comingSoon": "Bientôt disponible"
+    },
+    "account": {
+      "title": "Compte"
+    },
+    "twoFactor": {
+      "title": "Authentification à deux facteurs",
+      "description": "Ajoutez une couche de sécurité supplémentaire à votre compte avec un code à usage unique basé sur le temps, recommandé compte tenu de la sensibilité des données stockées ici.",
+      "checking": "Vérification du statut…",
+      "enable": "Activer la 2FA",
+      "disable": "Désactiver la 2FA",
+      "enabled": "L'authentification à deux facteurs est activée.",
+      "scanQrCode": "Scannez ce code QR avec votre application d'authentification.",
+      "qrCodeAlt": "Code QR d'authentification à deux facteurs",
+      "manualEntry": "Ou entrez ce code manuellement",
+      "enterCode": "Entrez le code à 6 chiffres",
+      "verify": "Vérifier",
+      "invalidCode": "Code invalide. Veuillez réessayer."
+    }
+  },
+  "dateRangeFilter": {
+    "label": "Plage de dates",
+    "quickRanges": {
+      "today": "Aujourd'hui",
+      "7d": "7 jours",
+      "30d": "30 jours",
+      "3m": "3 mois",
+      "6m": "6 mois",
+      "thisYear": "Cette année",
+      "custom": "Personnalisé"
+    },
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "apply": "Appliquer",
+    "clear": "Effacer le filtre de date",
+    "bothDatesRequired": "Veuillez choisir une date de début et une date de fin.",
+    "startAfterEnd": "La date de début ne peut pas être après la date de fin."
+  },
+  "planning": {
+    "overview": {
+      "title": "Planification",
+      "subtitle": "Ce sur quoi vous travaillez, ce que vous essayez d'accomplir, ce qui vient ensuite.",
+      "activeProjects": "Projets actifs",
+      "openTasks": "Tâches ouvertes",
+      "goals": "Objectifs",
+      "activeBusinesses": "Entreprises actives",
+      "viewAll": "Tout voir",
+      "upcomingTasks": "Tâches à venir",
+      "noTasks": "Aucune tâche ouverte.",
+      "noGoals": "Aucun objectif actif.",
+      "recentActivity": "Activité récente",
+      "noActivity": "Aucune activité récente pour le moment.",
+      "activityProject": "Projet",
+      "activityTask": "Tâche",
+      "activityGoal": "Objectif"
+    },
+    "projects": {
+      "title": "Projets",
+      "subtitle": "Tous vos projets, y compris les idées naissantes.",
+      "addButton": "Nouveau projet",
+      "addTitle": "Nouveau projet",
+      "editTitle": "Modifier le projet",
+      "emptyTitle": "Aucun projet pour le moment.",
+      "emptyMessage": "Créez votre premier projet pour commencer.",
+      "deleteConfirmTitle": "Supprimer le projet ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement ce projet. Les tâches, objectifs et notes qui y sont liés sont conservés mais dissociés.",
+      "dueDate": "Échéance"
+    },
+    "projectForm": {
+      "name": "Nom du projet",
+      "description": "Description",
+      "status": "Statut",
+      "statusOptions": {
+        "idea": "Idée / Brouillon",
+        "planning": "Planification",
+        "active": "Actif",
+        "completed": "Terminé",
+        "archived": "Archivé"
+      },
+      "priority": "Priorité",
+      "priorityOptions": { "low": "Faible", "medium": "Moyenne", "high": "Élevée" },
+      "startDate": "Date de début",
+      "dueDate": "Date d'échéance",
+      "category": "Catégorie",
+      "business": "Entreprise",
+      "businessHelper": "Facultatif — associez ce projet à une entreprise.",
+      "notes": "Notes",
+      "nameRequired": "Veuillez saisir un nom de projet.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer."
+    },
+    "projectStatus": {
+      "idea": "Idée / Brouillon",
+      "planning": "Planification",
+      "active": "Actif",
+      "completed": "Terminé",
+      "archived": "Archivé"
+    },
+    "projectDetail": {
+      "editProject": "Modifier le projet",
+      "priority": "Priorité",
+      "startDate": "Date de début",
+      "dueDate": "Date d'échéance",
+      "category": "Catégorie",
+      "notes": "Notes",
+      "tasks": "Tâches",
+      "addTask": "Ajouter une tâche",
+      "emptyTasks": "Aucune tâche pour le moment.",
+      "goals": "Objectifs",
+      "addGoal": "Ajouter un objectif",
+      "emptyGoals": "Aucun objectif pour le moment.",
+      "notesSection": "Notes",
+      "emptyNotes": "Aucune note pour le moment.",
+      "activity": "Activité",
+      "emptyActivity": "Aucune activité pour le moment.",
+      "activityTask": "Tâche",
+      "activityGoal": "Objectif",
+      "activityNote": "Note"
+    },
+    "goals": {
+      "title": "Objectifs",
+      "subtitle": "Les résultats vers lesquels vous travaillez.",
+      "addButton": "Ajouter un objectif",
+      "addTitle": "Nouvel objectif",
+      "editTitle": "Modifier l'objectif",
+      "emptyTitle": "Aucun objectif pour le moment.",
+      "emptyMessage": "Ajoutez un objectif pour suivre ce que vous voulez accomplir.",
+      "deleteConfirmTitle": "Supprimer l'objectif ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cet objectif.",
+      "progress": "Progression",
+      "targetDate": "Date cible"
+    },
+    "goalForm": {
+      "title": "Nom de l'objectif",
+      "titlePlaceholder": "ex. Lancer le site web",
+      "description": "Description",
+      "status": "Statut",
+      "statusOptions": {
+        "not_started": "Non commencé",
+        "in_progress": "En cours",
+        "completed": "Terminé",
+        "archived": "Archivé"
+      },
+      "progress": "Progression (%)",
+      "progressHelper": "0-100 — votre propre estimation, non calculée à partir des tâches liées.",
+      "category": "Catégorie",
+      "targetDate": "Date cible",
+      "relatedProject": "Projet associé",
+      "relatedBusiness": "Entreprise associée",
+      "titleRequired": "Veuillez saisir un nom d'objectif.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer."
+    },
+    "goalStatus": {
+      "not_started": "Non commencé",
+      "in_progress": "En cours",
+      "completed": "Terminé",
+      "archived": "Archivé"
+    },
+    "tasks": {
+      "title": "Tâches",
+      "subtitle": "Le travail à accomplir, personnel ou professionnel.",
+      "addButton": "Ajouter une tâche",
+      "addTitle": "Nouvelle tâche",
+      "editTitle": "Modifier la tâche",
+      "emptyTitle": "Aucune tâche pour le moment.",
+      "emptyMessage": "Ajoutez une tâche pour suivre ce qui vient ensuite.",
+      "deleteConfirmTitle": "Supprimer la tâche ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette tâche.",
+      "dueDate": "Échéance",
+      "toggleComplete": "Marquer comme terminée"
+    },
+    "taskForm": {
+      "title": "Nom de la tâche",
+      "description": "Description",
+      "status": "Statut",
+      "statusOptions": { "open": "À faire", "in_progress": "En cours", "done": "Terminée" },
+      "priority": "Priorité",
+      "priorityOptions": { "low": "Faible", "medium": "Moyenne", "high": "Élevée" },
+      "dueDate": "Date d'échéance",
+      "project": "Projet",
+      "goal": "Objectif",
+      "business": "Entreprise",
+      "notes": "Notes",
+      "titleRequired": "Veuillez saisir un nom de tâche.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer."
+    },
+    "taskStatus": {
+      "open": "À faire",
+      "in_progress": "En cours",
+      "done": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "businesses": {
+      "addButton": "Ajouter une entreprise",
+      "addTitle": "Nouvelle entreprise",
+      "editTitle": "Modifier l'entreprise",
+      "deleteConfirmTitle": "Supprimer l'entreprise ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette entreprise. Les projets, objectifs, tâches et notes qui y sont liés sont conservés mais dissociés."
+    },
+    "businessForm": {
+      "name": "Nom de l'entreprise",
+      "description": "Description",
+      "category": "Catégorie / secteur",
+      "status": "Statut",
+      "statusOptions": {
+        "idea": "Idée",
+        "planning": "Planification",
+        "active": "Active",
+        "paused": "En pause",
+        "completed": "Terminée",
+        "archived": "Archivée"
+      },
+      "startDate": "Date de début",
+      "website": "Site web",
+      "notes": "Notes",
+      "nameRequired": "Veuillez saisir un nom d'entreprise.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer."
+    },
+    "businessStatus": {
+      "idea": "Idée",
+      "planning": "Planification",
+      "active": "Active",
+      "paused": "En pause",
+      "completed": "Terminée",
+      "archived": "Archivée"
+    },
+    "businessOverview": {
+      "title": "Entreprise",
+      "subtitle": "Un espace de travail léger pour gérer votre activité professionnelle.",
+      "activeBusinesses": "Entreprises actives",
+      "activeProjects": "Projets actifs",
+      "upcomingTasks": "Tâches à venir",
+      "goals": "Objectifs",
+      "revenue": "Revenus",
+      "expenses": "Dépenses",
+      "estimatedProfit": "Profit estimé",
+      "businesses": "Entreprises",
+      "emptyTitle": "Aucune entreprise pour le moment.",
+      "emptyMessage": "Ajoutez une entreprise pour commencer à organiser ses projets, objectifs, tâches et finances."
+    },
+    "businessDetail": {
+      "editBusiness": "Modifier l'entreprise",
+      "category": "Catégorie",
+      "activityProject": "Projet",
+      "activityTask": "Tâche",
+      "activityGoal": "Objectif",
+      "activityNote": "Note",
+      "addProject": "Ajouter un projet",
+      "emptyProjects": "Aucun projet pour le moment.",
+      "addGoal": "Ajouter un objectif",
+      "emptyGoals": "Aucun objectif pour le moment.",
+      "addTask": "Ajouter une tâche",
+      "emptyTasks": "Aucune tâche pour le moment.",
+      "revenue": "Revenus",
+      "expenses": "Dépenses",
+      "estimatedProfit": "Profit estimé",
+      "addTransaction": "Ajouter une transaction",
+      "emptyTransactions": "Aucun revenu ni dépense associé à cette entreprise pour le moment.",
+      "addNote": "Ajouter une note",
+      "emptyNotes": "Aucune note pour le moment.",
+      "emptyActivity": "Aucune activité pour le moment.",
+      "tabs": {
+        "projects": "Projets",
+        "goals": "Objectifs",
+        "tasks": "Tâches",
+        "finances": "Finances",
+        "notes": "Notes",
+        "activity": "Activité"
+      }
+    }
+  },
+  "finance": {
+    "overview": {
+      "title": "Finances",
+      "subtitle": "Où en est votre argent.",
+      "emptyTitle": "Aucune activité financière pour le moment.",
+      "totalIncome": "Revenus totaux",
+      "totalExpenses": "Dépenses totales",
+      "remaining": "Restant",
+      "thisMonth": "Ce mois-ci",
+      "viewAll": "Tout voir",
+      "recentTransactions": "Transactions récentes",
+      "noTransactions": "Aucune transaction pour le moment.",
+      "upcomingPayments": "Paiements à venir",
+      "noUpcomingPayments": "Aucun paiement à venir.",
+      "debtSummary": "Résumé des dettes",
+      "noDebt": "Aucune dette ajoutée pour le moment.",
+      "billsDueSoon": "Factures à échéance prochaine",
+      "noBillsDueSoon": "Aucune facture à échéance dans les 7 prochains jours.",
+      "subscriptionsMonthlyTotal": "Abonnements (mensuel)",
+      "noSubscriptions": "Aucun abonnement actif."
+    },
+    "quickEntry": {
+      "title": "Saisie rapide",
+      "typeExpense": "Dépense",
+      "typeIncome": "Revenu",
+      "descriptionPlaceholder": "À quoi ça correspond ?",
+      "amountPlaceholder": "Montant",
+      "date": "Date",
+      "categoryPlaceholder": "Catégorie",
+      "addButton": "Ajouter",
+      "descriptionRequired": "Veuillez décrire cette transaction.",
+      "amountRequired": "Veuillez entrer un montant supérieur à 0.",
+      "categoryRequired": "Veuillez entrer une catégorie.",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "income": {
+      "title": "Revenus",
+      "subtitle": "Toutes vos sources de revenus enregistrées.",
+      "addButton": "Ajouter un revenu"
+    },
+    "expenses": {
+      "title": "Dépenses",
+      "subtitle": "Toutes vos dépenses enregistrées.",
+      "addButton": "Ajouter une dépense"
+    },
+    "bills": {
+      "title": "Factures",
+      "subtitle": "L'argent que vous devez payer — distinct des dépenses tant qu'il n'est pas réellement payé.",
+      "addButton": "Ajouter une facture",
+      "addTitle": "Nouvelle facture",
+      "editTitle": "Modifier la facture",
+      "deleteConfirmTitle": "Supprimer la facture ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette facture.",
+      "emptyTitle": "Aucune facture ajoutée pour le moment.",
+      "emptyMessage": "Ajoutez une facture pour suivre ce que vous devez et son échéance.",
+      "dueThisWeek": "Échéance cette semaine",
+      "dueThisMonth": "Échéance ce mois-ci",
+      "totalUpcoming": "Total à venir",
+      "dueOn": "Échéance le {date}",
+      "autoPayLabel": "Paiement automatique activé",
+      "markAsPaid": "Marquer comme payée",
+      "payError": "Impossible de marquer cette facture comme payée. Veuillez réessayer.",
+      "frequencyOptions": {
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "quarterly": "Trimestriel",
+        "yearly": "Annuel",
+        "custom": "Personnalisé"
+      },
+      "sections": {
+        "overdue": "En retard",
+        "dueToday": "Échéance aujourd'hui",
+        "upcoming": "À venir",
+        "paid": "Payées"
+      }
+    },
+    "billStatus": {
+      "overdue": "En retard",
+      "due_today": "Échéance aujourd'hui",
+      "upcoming": "À venir",
+      "paid": "Payée",
+      "cancelled": "Annulée"
+    },
+    "billForm": {
+      "name": "Nom de la facture",
+      "namePlaceholder": "ex. Facture d'électricité",
+      "amount": "Montant",
+      "dueDate": "Date d'échéance",
+      "category": "Catégorie",
+      "paymentMethod": "Mode de paiement",
+      "business": "Entreprise",
+      "isRecurring": "Cette facture se répète",
+      "frequency": "Fréquence",
+      "frequencyOptions": {
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "quarterly": "Trimestriel",
+        "yearly": "Annuel",
+        "custom": "Personnalisé"
+      },
+      "autoPay": "Le paiement automatique est configuré pour cette facture",
+      "remindersEnabled": "Me rappeler avant l'échéance de cette facture",
+      "notes": "Notes",
+      "nameRequired": "Veuillez entrer un nom de facture.",
+      "amountRequired": "Veuillez entrer un montant supérieur à 0.",
+      "dueDateRequired": "Veuillez choisir une date d'échéance.",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "subscriptions": {
+      "title": "Abonnements",
+      "subtitle": "Tous les services récurrents que vous payez.",
+      "addButton": "Ajouter un abonnement",
+      "addTitle": "Nouvel abonnement",
+      "editTitle": "Modifier l'abonnement",
+      "deleteConfirmTitle": "Supprimer l'abonnement ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cet abonnement.",
+      "emptyTitle": "Aucun abonnement ajouté pour le moment.",
+      "emptyMessage": "Ajoutez un abonnement pour suivre ce que vous payez et sa date de renouvellement.",
+      "totalMonthlyCost": "Coût mensuel total",
+      "totalAnnualCost": "Coût annuel total",
+      "activeCount": "Abonnements actifs",
+      "monthlyCost": "Coût mensuel",
+      "annualCost": "Coût annuel",
+      "nextBilling": "Prochaine facturation le {date}",
+      "autoRenewalLabel": "Renouvellement automatique",
+      "recordCharge": "Enregistrer la charge",
+      "chargeError": "Impossible d'enregistrer cette charge. Veuillez réessayer.",
+      "sortBy": "Trier par",
+      "sortOptions": {
+        "name": "Nom",
+        "cost": "Coût",
+        "nextBillingDate": "Prochaine facturation",
+        "category": "Catégorie"
+      },
+      "frequencyOptions": {
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "quarterly": "Trimestriel",
+        "yearly": "Annuel"
+      },
+      "statusOptions": {
+        "active": "Actif",
+        "paused": "En pause",
+        "cancelled": "Annulé"
+      }
+    },
+    "subscriptionForm": {
+      "name": "Nom de l'abonnement",
+      "namePlaceholder": "ex. Netflix",
+      "amount": "Montant",
+      "billingFrequency": "Fréquence de facturation",
+      "nextBillingDate": "Prochaine date de facturation",
+      "category": "Catégorie",
+      "paymentMethod": "Mode de paiement",
+      "website": "Site web",
+      "status": "Statut",
+      "autoRenewal": "Cet abonnement se renouvelle automatiquement",
+      "remindersEnabled": "Me rappeler avant le renouvellement de cet abonnement",
+      "notes": "Notes",
+      "frequencyOptions": {
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "quarterly": "Trimestriel",
+        "yearly": "Annuel"
+      },
+      "statusOptions": {
+        "active": "Actif",
+        "paused": "En pause",
+        "cancelled": "Annulé"
+      },
+      "nameRequired": "Veuillez entrer un nom d'abonnement.",
+      "amountRequired": "Veuillez entrer un montant supérieur à 0.",
+      "nextBillingDateRequired": "Veuillez choisir une prochaine date de facturation.",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "transactions": {
+      "addButton": "Ajouter une transaction",
+      "addTitle": "Nouvelle transaction",
+      "editTitle": "Modifier la transaction",
+      "deleteConfirmTitle": "Supprimer la transaction ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette transaction.",
+      "searchPlaceholder": "Rechercher des transactions...",
+      "categoryFilter": "Filtrer par catégorie",
+      "allCategories": "Toutes les catégories",
+      "emptyMessage": "Aucune transaction pour le moment.",
+      "noResults": "Aucune transaction ne correspond à votre recherche ou vos filtres."
+    },
+    "transactionForm": {
+      "typeIncome": "Revenu",
+      "typeExpense": "Dépense",
+      "source": "Source",
+      "description": "Description",
+      "amount": "Montant",
+      "date": "Date",
+      "category": "Catégorie",
+      "paymentMethod": "Mode de paiement",
+      "business": "Entreprise",
+      "project": "Projet",
+      "recurring": "Il s'agit d'une transaction récurrente",
+      "notes": "Notes",
+      "descriptionRequired": "Veuillez décrire cette transaction.",
+      "amountRequired": "Veuillez saisir un montant supérieur à 0.",
+      "categoryRequired": "Veuillez choisir ou saisir une catégorie.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer.",
+      "categories": {
+        "salary": "Salaire",
+        "business": "Entreprise",
+        "freelance": "Freelance",
+        "other": "Autre",
+        "housing": "Logement",
+        "food": "Alimentation",
+        "transportation": "Transport",
+        "utilities": "Services publics",
+        "healthcare": "Santé",
+        "entertainment": "Loisirs",
+        "shopping": "Achats",
+        "travel": "Voyages"
+      }
+    },
+    "creditAndLoans": {
+      "title": "Crédit et prêts",
+      "subtitle": "Ce que vous devez, ce que vous payez, et quand vous serez libéré de vos dettes.",
+      "emptyTitle": "Aucune dette ajoutée pour le moment.",
+      "emptyMessage": "Ajoutez une carte de crédit ou un prêt pour commencer à planifier son remboursement.",
+      "totalDebt": "Dette totale",
+      "totalMonthlyPayments": "Paiements mensuels totaux",
+      "totalEstimatedInterest": "Intérêts totaux estimés",
+      "nextDueDate": "Prochaine échéance",
+      "none": "Aucune",
+      "creditCards": "Cartes de crédit",
+      "emptyCreditCards": "Aucune carte de crédit ajoutée pour le moment.",
+      "loans": "Prêts",
+      "emptyLoans": "Aucun prêt ajouté pour le moment.",
+      "debtStrategy": "Stratégie de remboursement"
+    },
+    "creditCards": {
+      "addButton": "Ajouter une carte de crédit",
+      "addTitle": "Nouvelle carte de crédit",
+      "editTitle": "Modifier la carte de crédit",
+      "deleteConfirmTitle": "Supprimer la carte de crédit ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement cette carte de crédit.",
+      "of": "sur",
+      "apr": "TAP",
+      "utilization": "{percent} % d'utilisation",
+      "monthlyInterest": "Intérêts mensuels est.",
+      "payoffDate": "Date de remboursement est.",
+      "remainingInterest": "Intérêts restants est.",
+      "remainingPayments": "Paiements restants",
+      "noPaymentSet": "Ajoutez un paiement minimum ou actuel pour voir les estimations de remboursement.",
+      "neverPaysOff": "À ce rythme de paiement, le solde ne sera jamais remboursé.",
+      "estimateDisclaimer": "Estimation basée sur les informations fournies.",
+      "dueDate": "Date d'échéance",
+      "showCalculator": "Afficher le calculateur de remboursement",
+      "hideCalculator": "Masquer le calculateur de remboursement"
+    },
+    "creditCardForm": {
+      "name": "Nom de la carte",
+      "namePlaceholder": "ex. Visa Signature",
+      "balance": "Solde actuel",
+      "creditLimit": "Limite de crédit",
+      "apr": "TAP (%)",
+      "aprHelper": "Taux annuel en pourcentage, tel qu'indiqué sur votre relevé.",
+      "minimumPayment": "Paiement minimum",
+      "currentPayment": "Paiement mensuel actuel",
+      "currentPaymentHelper": "Ce que vous payez réellement chaque mois, si différent du minimum.",
+      "dueDate": "Date d'échéance",
+      "notes": "Notes",
+      "nameRequired": "Veuillez saisir un nom de carte.",
+      "balanceRequired": "Veuillez saisir un solde de 0 ou plus.",
+      "limitRequired": "Veuillez saisir une limite de crédit supérieure à 0.",
+      "aprRequired": "Veuillez saisir un TAP de 0 ou plus.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer."
+    },
+    "loans": {
+      "addButton": "Ajouter un prêt",
+      "addTitle": "Nouveau prêt",
+      "editTitle": "Modifier le prêt",
+      "deleteConfirmTitle": "Supprimer le prêt ?",
+      "deleteConfirmMessage": "Cette action supprimera définitivement ce prêt.",
+      "of": "sur",
+      "apr": "TAP",
+      "estimatedPayment": "Paiement",
+      "payoffDate": "Date de remboursement est.",
+      "remainingInterest": "Intérêts restants est.",
+      "totalRemainingPayments": "Paiements restants",
+      "noPaymentSet": "Ajoutez un paiement minimum pour voir les estimations de remboursement.",
+      "neverPaysOff": "À ce rythme de paiement, le solde ne sera jamais remboursé.",
+      "estimateDisclaimer": "Estimation basée sur les informations fournies.",
+      "nextPaymentDate": "Prochaine date de paiement",
+      "showCalculator": "Afficher le calculateur de remboursement",
+      "hideCalculator": "Masquer le calculateur de remboursement"
+    },
+    "loanForm": {
+      "name": "Nom du prêt",
+      "namePlaceholder": "ex. Prêt automobile",
+      "originalAmount": "Montant initial",
+      "balance": "Solde actuel",
+      "apr": "TAP (%)",
+      "minimumPayment": "Paiement minimum",
+      "paymentFrequency": "Fréquence de paiement",
+      "frequencyOptions": { "monthly": "Mensuelle", "biweekly": "Toutes les 2 semaines", "weekly": "Hebdomadaire" },
+      "remainingTerm": "Durée restante (mois)",
+      "remainingTermHelper": "Facultatif, si connu.",
+      "nextPaymentDate": "Prochaine date de paiement",
+      "notes": "Notes",
+      "nameRequired": "Veuillez saisir un nom de prêt.",
+      "originalAmountRequired": "Veuillez saisir un montant initial supérieur à 0.",
+      "balanceRequired": "Veuillez saisir un solde de 0 ou plus.",
+      "aprRequired": "Veuillez saisir un TAP de 0 ou plus.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer."
+    },
+    "calculator": {
+      "basisLabel": "Calculer en fonction de",
+      "basis": {
+        "minimum": "Paiement minimum",
+        "current": "Paiement actuel",
+        "extra": "Paiement supplémentaire",
+        "target": "Date cible"
+      },
+      "additionalPayment": "Paiement mensuel supplémentaire",
+      "targetDateLabel": "Je veux que ce soit remboursé d'ici le",
+      "chooseTargetDate": "Choisissez une date cible pour voir le paiement requis.",
+      "targetDateTooSoon": "Cette date est trop proche pour calculer un paiement.",
+      "neverPaysOff": "À ce rythme de paiement, le solde ne sera jamais remboursé.",
+      "requiredPayment": "Paiement mensuel requis",
+      "estimatedPayoffDate": "Date de remboursement estimée",
+      "estimatedInterest": "Intérêts estimés",
+      "totalPaid": "Montant total payé",
+      "additionalNeeded": "Supplément nécessaire",
+      "monthsSaved": "Mois économisés",
+      "interestSaved": "Intérêts économisés",
+      "disclaimer": "Estimation basée sur les informations fournies."
+    },
+    "debtStrategy": {
+      "extraBudget": "Budget mensuel supplémentaire pour les dettes",
+      "extraBudgetHelper": "Réparti entre vos dettes selon la stratégie ci-dessous.",
+      "avalanche": "Avalanche (TAP le plus élevé en premier)",
+      "snowball": "Boule de neige (solde le plus faible en premier)",
+      "neverPaysOff": "Ce budget ne couvre pas les intérêts — ces dettes ne seront jamais remboursées à ce rythme.",
+      "payoffDate": "Durée de remboursement",
+      "months": "mois",
+      "monthsCount": "{count, plural, one {# mois} other {# mois}}",
+      "totalInterest": "Intérêts totaux",
+      "timeSaved": "Temps économisé",
+      "interestSaved": "Intérêts économisés",
+      "assumptionsNote": "Estimation basée sur les informations fournies. L'ordre de remboursement est fixé une fois au départ selon le solde et le TAP actuels de chaque dette, et n'est pas réévalué à mesure que les soldes changent."
+    }
+  },
+  "notes": {
+    "title": "Notes",
+    "subtitle": "Capturez les informations que vous voulez retenir.",
+    "addButton": "Nouvelle note",
+    "addTitle": "Nouvelle note",
+    "editTitle": "Modifier la note",
+    "deleteConfirmTitle": "Supprimer la note ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement cette note.",
+    "searchPlaceholder": "Rechercher des notes...",
+    "noResults": "Aucune note trouvée.",
+    "emptyMessage": "Créez une note pour garder une trace de quelque chose d'important.",
+    "pinnedNotes": "Notes épinglées",
+    "recentNotes": "Notes récentes",
+    "pin": "Épingler",
+    "unpin": "Désépingler",
+    "form": {
+      "title": "Titre",
+      "titlePlaceholder": "Titre facultatif",
+      "content": "Contenu",
+      "contentPlaceholder": "Commencez à écrire...",
+      "moreDetails": "Plus de détails",
+      "fewerDetails": "Moins de détails",
+      "category": "Catégorie",
+      "categories": {
+        "health": "Santé",
+        "planning": "Planification",
+        "finance": "Finances",
+        "business": "Entreprise",
+        "personal": "Personnel",
+        "general": "Général"
+      },
+      "tags": "Étiquettes",
+      "tagsHelper": "Séparez plusieurs étiquettes par des virgules.",
+      "relatedProject": "Projet associé",
+      "relatedGoal": "Objectif associé",
+      "relatedBusiness": "Entreprise associée",
+      "contentRequired": "Veuillez écrire quelque chose avant d'enregistrer.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer."
+    }
+  },
+  "personalDocuments": {
+    "title": "Documents",
+    "subtitle": "Fichiers personnels, reçus, certificats, contrats et dossiers.",
+    "emptyTitle": "Aucun document pour le moment",
+    "emptyMessage": "Gardez vos fichiers personnels importants organisés en un seul endroit sécurisé.",
+    "uploadDocument": "Téléverser un document",
+    "addReceipt": "Ajouter un reçu",
+    "searchPlaceholder": "Rechercher des documents...",
+    "empty": "Aucun document pour le moment.",
+    "noResults": "Aucun document ne correspond à votre recherche ou vos filtres.",
+    "categoryFilter": "Filtrer par catégorie",
+    "allCategories": "Tous",
+    "backToOverview": "Retour à l'aperçu",
+    "recentDocuments": "Documents récents",
+    "pinnedDocuments": "Documents épinglés",
+    "categories": "Catégories",
+    "receipts": "Reçus",
+    "requiringAttention": "Nécessitant une attention",
+    "nearingExpiration": "Expiration prochaine",
+    "viewAll": "Tout voir",
+    "loading": "Chargement…",
+    "viewError": "Impossible de charger ce document. Veuillez réessayer.",
+    "downloadInstead": "L'aperçu n'est pas disponible pour ce fichier — téléchargez-le à la place.",
+    "view": "Voir",
+    "download": "Télécharger",
+    "downloadError": "Impossible de télécharger ce document. Veuillez réessayer.",
+    "editMetadata": "Modifier les métadonnées",
+    "editTitle": "Modifier le document",
+    "pin": "Épingler",
+    "unpin": "Désépingler",
+    "pinError": "Échec de la mise à jour. Veuillez réessayer.",
+    "deleteConfirmTitle": "Supprimer le document ?",
+    "deleteConfirmMessage": "Cette action supprimera définitivement ce document et son fichier.",
+    "linkedTo": "Lié à",
+    "notLinked": "Non lié à une dépense",
+    "types": {
+      "personal_document": "Document personnel",
+      "receipt": "Reçu",
+      "certificate": "Certificat",
+      "contract": "Contrat",
+      "identification": "Pièce d'identité",
+      "financial_document": "Document financier",
+      "insurance_document": "Document d'assurance",
+      "employment_document": "Document d'emploi",
+      "military_document": "Document militaire",
+      "education_document": "Document scolaire",
+      "other": "Autre"
+    },
+    "expiration": {
+      "expired": "Expiré",
+      "expiresToday": "Expire aujourd'hui",
+      "expiresTomorrow": "Expire demain",
+      "expiresInDays": "Expire dans {days} jours"
+    },
+    "form": {
+      "file": "Fichier",
+      "fileHelper": "PDF, JPG, JPEG, PNG ou WEBP. Sur mobile, cela peut ouvrir votre appareil photo.",
+      "name": "Nom du document",
+      "nameRequired": "Veuillez entrer un nom de document.",
+      "documentType": "Type de document",
+      "category": "Catégorie",
+      "expirationDate": "Date d'expiration",
+      "tags": "Étiquettes",
+      "tagsHelper": "Séparez plusieurs étiquettes par des virgules.",
+      "remindersEnabled": "Me rappeler avant l'expiration",
+      "reminderLeadDays": "Me rappeler ce nombre de jours avant",
+      "description": "Description",
+      "receiptSectionTitle": "Détails du reçu",
+      "merchant": "Marchand",
+      "amount": "Montant",
+      "amountRequired": "Veuillez entrer un montant supérieur à 0.",
+      "purchaseDate": "Date d'achat",
+      "paymentMethod": "Mode de paiement",
+      "relatedExpense": "Dépense associée",
+      "relatedExpenseHelper": "Facultatif — un reçu est une pièce justificative, pas une seconde dépense.",
+      "notes": "Notes",
+      "fileRequired": "Veuillez choisir un fichier à téléverser.",
+      "fileTypeInvalid": "Veuillez choisir un fichier PDF, JPG, PNG ou WEBP.",
+      "fileTooLarge": "Fichier trop volumineux (max 20 Mo).",
+      "uploadError": "Échec du téléversement du fichier. Veuillez réessayer.",
+      "uploading": "Téléversement...",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
+  "faith": {
+    "dua": {
+      "title": "Dua",
+      "subtitle": "Votre routine personnelle de Dua et de rappel quotidien.",
+      "addDua": "Ajouter une Dua",
+      "exploreDuas": "Explorer les Duas",
+      "viewHistory": "Voir l'historique",
+      "noRoutineTitle": "Construisez votre routine quotidienne de Dua.",
+      "exploreRecommended": "Explorer les Duas recommandées",
+      "dailyDuas": "Duas quotidiennes",
+      "completedLabel": "complétées",
+      "todaysRecommended": "Duas recommandées aujourd'hui",
+      "noRecommended": "Aucune Dua recommandée disponible pour le moment.",
+      "myDuas": "Mes Duas",
+      "noPersonalDuas": "Vous n'avez pas encore ajouté de Dua personnelle.",
+      "reminders": "Rappels",
+      "scheduleTypes": {
+        "morning": "Matin",
+        "evening": "Soir",
+        "before_sleep": "Avant de dormir",
+        "daily": "Quotidien",
+        "custom": "Personnalisé"
+      },
+      "addToRoutine": "Ajouter à la routine",
+      "removeFromRoutine": "Retirer",
+      "markComplete": "Marquer {title} comme terminée",
+      "transliteration": "Translittération",
+      "translation": "Traduction",
+      "meaning": "Signification",
+      "whenToRecite": "Quand la réciter",
+      "frequency": "Fréquence recommandée",
+      "notes": "Notes",
+      "needsVerification": "Ce contenu est en attente de vérification par rapport à une source.",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "share": "Partager",
+      "linkCopied": "Lien copié",
+      "myNotes": "Mes notes",
+      "myNotesPlaceholder": "Ajouter une note privée...",
+      "saving": "Enregistrement...",
+      "copyText": "Copier le texte",
+      "copied": "Copié",
+      "categories": {
+        "morning": "Matin",
+        "evening": "Soir",
+        "before_sleep": "Avant de dormir",
+        "after_waking": "Au réveil",
+        "before_eating": "Avant de manger",
+        "after_eating": "Après avoir mangé",
+        "leaving_home": "En quittant la maison",
+        "entering_home": "En entrant à la maison",
+        "travel": "Voyage",
+        "protection": "Protection",
+        "forgiveness": "Pardon",
+        "guidance": "Guidance",
+        "gratitude": "Gratitude",
+        "rizq": "Subsistance (Rizq)",
+        "family": "Famille",
+        "health": "Santé",
+        "difficulty_stress": "Difficulté / Stress",
+        "personal": "Personnel",
+        "other": "Autre",
+        "work": "Travail",
+        "business": "Entreprise",
+        "finance": "Finances",
+        "marriage": "Mariage",
+        "goals": "Objectifs"
+      },
+      "source": {
+        "title": "Source"
+      },
+      "explore": {
+        "title": "Explorer les Duas",
+        "subtitle": "Parcourez la bibliothèque de Duas et ajoutez celles qui vous parlent.",
+        "searchPlaceholder": "Rechercher des Duas...",
+        "categoryFilter": "Filtrer par catégorie",
+        "allCategories": "Toutes",
+        "empty": "Aucune Dua disponible pour le moment.",
+        "noResults": "Aucune Dua ne correspond à votre recherche ou vos filtres."
+      },
+      "form": {
+        "title": "Titre",
+        "titlePlaceholder": "ex. Ma Dua pour mon avenir",
+        "text": "Texte de la Dua",
+        "arabicText": "Texte arabe",
+        "transliteration": "Translittération",
+        "category": "Catégorie",
+        "addToRoutine": "Ajouter à ma routine quotidienne",
+        "schedule": "Programme",
+        "notes": "Notes",
+        "titleRequired": "Veuillez entrer un titre.",
+        "textRequired": "Veuillez entrer le texte de la Dua.",
+        "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+      },
+      "history": {
+        "title": "Historique des Duas",
+        "subtitle": "Votre historique de complétion dans le temps.",
+        "noRoutine": "Ajoutez des Duas à votre routine pour commencer à suivre l'historique.",
+        "today": "Aujourd'hui",
+        "yesterday": "Hier",
+        "thisWeek": "Cette semaine",
+        "thisMonth": "Ce mois-ci",
+        "streak": "Routine de {days} jours",
+        "bestStreak": "Meilleur : {days} jours"
+      }
+    }
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "loading": "Chargement…",
+    "unsavedChangesWarning": "Vous avez des modifications non enregistrées. Les abandonner ?",
+    "search": "Rechercher",
+    "errorTitle": "Une erreur s'est produite",
+    "errorMessage": "Impossible de charger cette page. Veuillez réessayer.",
+    "tryAgain": "Réessayer",
+    "done": "Terminé",
+    "all": "Tout",
+    "none": "Aucun",
+    "optional": "Optionnel",
+    "close": "Fermer",
+    "offline": {
+      "pendingSync": "Synchronisation en attente",
+      "syncError": "Échec de la synchronisation",
+      "showingCached": "Vous êtes hors ligne — affichage de vos dernières données en cache.",
+      "offlineBanner": "Vous êtes hors ligne. Les modifications se synchroniseront automatiquement dès votre retour en ligne."
+    }
+  }
+}

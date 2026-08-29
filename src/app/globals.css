@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+body {
+  background-color: #ffffff;
+  color: #0f172a;
+  font-family: var(--font-sans);
+}
+
+/* Never hardcode LifeOS brand colors outside tailwind.config.ts.
+   Use bg-primary / text-secondary / bg-surface / text-muted /
+   bg-status-attention / bg-status-urgent / bg-status-normal / bg-status-inactive. */

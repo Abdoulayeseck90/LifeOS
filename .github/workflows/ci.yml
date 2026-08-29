@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Security audit Section 39: least-privilege by default. Nothing in this
+# workflow needs to write to the repo, comment on PRs, or touch packages.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      # Build-time only placeholders — no route in this app reads Supabase
+      # env vars during `next build`, only at request time, but next-intl/
+      # Next.js still evaluate process.env.NEXT_PUBLIC_* references while
+      # bundling client code, so these must be defined (not necessarily
+      # real) for the build step to succeed in CI.
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Deterministic install from the committed lockfile (Section 7) —
+      # never `npm install` in CI, which can silently drift from it.
+      - run: npm ci
+
+      # Non-blocking: reports findings without failing the build, since
+      # transitive dev-tooling advisories (e.g. vitest/esbuild, dev-only)
+      # shouldn't block every PR the way a real regression should. High/
+      # critical findings in production dependencies are reviewed
+      # manually — see the security audit report for the current list.
+      - run: npm audit --audit-level=critical || true
+
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
