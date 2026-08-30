@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { PushSubscriptionRecord } from "@/types/core/entities";
 
 // Follows the Conditions pattern. Multiple active rows per user are
@@ -41,9 +41,7 @@ export async function upsertPushSubscription(input: {
   userAgent?: string;
 }): Promise<PushSubscriptionRecord> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -70,9 +68,7 @@ export async function upsertPushSubscription(input: {
 
 export async function deactivatePushSubscriptionByEndpoint(endpoint: string): Promise<void> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase

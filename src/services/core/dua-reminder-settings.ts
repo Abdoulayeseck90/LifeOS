@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { DuaReminderScheduleType, DuaReminderSetting } from "@/types/core/entities";
 
 const SCHEDULE_TYPES: DuaReminderScheduleType[] = ["morning", "evening", "before_sleep"];
@@ -8,9 +8,7 @@ const SCHEDULE_TYPES: DuaReminderScheduleType[] = ["morning", "evening", "before
 // every caller handle a partial/missing settings row.
 export async function listDuaReminderSettings(): Promise<DuaReminderSetting[]> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase.from("dua_reminder_settings").select("*").order("schedule_type");
@@ -48,9 +46,7 @@ export async function updateDuaReminderSetting(
   input: { enabled: boolean; time_of_day: string }
 ): Promise<DuaReminderSetting> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

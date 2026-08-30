@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Subscription, SubscriptionBillingFrequency, FinanceTransaction } from "@/types/core/entities";
 import { UserFacingError } from "@/lib/errors";
 
@@ -21,9 +21,7 @@ export async function createSubscription(
     Partial<Omit<Subscription, "id" | "user_id" | "name" | "amount" | "billing_frequency" | "next_billing_date" | "created_at" | "updated_at">>
 ): Promise<Subscription> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -83,9 +81,7 @@ export async function recordSubscriptionCharge(
   input: { chargeDate?: string; amount?: number } = {}
 ): Promise<{ subscription: Subscription; transaction: FinanceTransaction }> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new UserFacingError("Not authenticated");
 
   const subscription = await getSubscription(id);

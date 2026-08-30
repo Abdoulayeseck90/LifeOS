@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { monitoringItemCompletionSchema } from "@/lib/validation/health";
 import { completeMonitoringItem } from "@/services/health/monitoring";
 import { createTimelineEvent } from "@/services/core/timeline";
@@ -13,9 +13,7 @@ import { scheduleRemindersForEvent, cancelRemindersForEntity } from "@/services/
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

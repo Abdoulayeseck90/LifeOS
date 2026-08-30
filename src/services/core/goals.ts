@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Goal } from "@/types/core/entities";
 
 export async function listGoals(): Promise<Goal[]> {
@@ -19,9 +19,7 @@ export async function createGoal(
   input: Pick<Goal, "title"> & Partial<Omit<Goal, "id" | "user_id" | "title" | "created_at" | "updated_at">>
 ): Promise<Goal> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { symptomEntryInputSchema } from "@/lib/validation/health";
 import { listSymptomEntries, createSymptomEntry } from "@/services/health/symptoms";
 import { createTimelineEvent } from "@/services/core/timeline";
@@ -8,10 +8,7 @@ import { createGeneralActivityNotification } from "@/services/core/reminders";
 // Mirrors src/app/api/health/conditions/route.ts.
 
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
@@ -26,9 +23,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

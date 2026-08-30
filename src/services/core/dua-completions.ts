@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { DuaCompletion } from "@/types/core/entities";
 
 export async function listCompletionsForDate(date: string): Promise<DuaCompletion[]> {
@@ -28,9 +28,7 @@ export async function listCompletionsInRange(fromDate: string, toDate: string): 
 // without a second round trip.
 export async function toggleCompletion(routineId: string, duaId: string): Promise<{ completed: boolean }> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const today = new Date().toISOString().slice(0, 10);

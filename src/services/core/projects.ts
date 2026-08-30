@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Project } from "@/types/core/entities";
 
 // Planning & Business spec — same list/get/create/update/delete shape
@@ -26,9 +26,7 @@ export async function createProject(
   input: Pick<Project, "name"> & Partial<Omit<Project, "id" | "user_id" | "name" | "created_at" | "updated_at">>
 ): Promise<Project> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

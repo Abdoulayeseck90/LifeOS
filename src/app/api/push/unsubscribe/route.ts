@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { pushUnsubscribeInputSchema } from "@/lib/validation/core";
 import { deactivatePushSubscriptionByEndpoint } from "@/services/core/push-subscriptions";
 
@@ -8,10 +8,7 @@ import { deactivatePushSubscriptionByEndpoint } from "@/services/core/push-subsc
 // rather than deletes, consistent with reminders/reminders never
 // hard-deleting a record of what happened.
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

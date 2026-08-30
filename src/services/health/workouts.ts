@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Activity, ExercisePreferences, Workout } from "@/types/health/entities";
 
 // Follows the Conditions pattern.
@@ -24,9 +24,7 @@ export async function createWorkout(
     Partial<Omit<Workout, "id" | "user_id" | "workout_type" | "started_at" | "created_at" | "updated_at">>
 ): Promise<Workout> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -79,9 +77,7 @@ export async function upsertExercisePreferences(
   input: Partial<Omit<ExercisePreferences, "id" | "user_id" | "created_at" | "updated_at">>
 ): Promise<ExercisePreferences> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

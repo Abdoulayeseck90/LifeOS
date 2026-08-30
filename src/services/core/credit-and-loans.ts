@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { CreditCard, Loan } from "@/types/core/entities";
 
 export async function listCreditCards(): Promise<CreditCard[]> {
@@ -13,9 +13,7 @@ export async function createCreditCard(
     Partial<Omit<CreditCard, "id" | "user_id" | "name" | "balance" | "credit_limit" | "apr" | "created_at" | "updated_at">>
 ): Promise<CreditCard> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -56,9 +54,7 @@ export async function createLoan(
     Partial<Omit<Loan, "id" | "user_id" | "name" | "original_amount" | "balance" | "apr" | "created_at" | "updated_at">>
 ): Promise<Loan> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

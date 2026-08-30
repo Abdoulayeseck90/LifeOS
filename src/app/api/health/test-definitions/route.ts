@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { customTestDefinitionInputSchema } from "@/lib/validation/health";
 import { createCustomTestDefinition } from "@/services/health/labs";
 
@@ -7,10 +7,7 @@ import { createCustomTestDefinition } from "@/services/health/labs";
 // custom test definition from the "+ Add other test" / "+ Add custom
 // test" flow in the test picker. Mirrors src/app/api/health/conditions/route.ts.
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

@@ -2815,7 +2815,11 @@
     },
     "form": {
       "file": "File",
-      "fileHelper": "PDF, JPG, JPEG, PNG, or WEBP. On mobile, this can open your camera.",
+      "fileHelper": "PDF, JPG, JPEG, PNG, or WEBP.",
+      "takePicture": "Take Picture",
+      "photoLibrary": "Photo Library",
+      "chooseFile": "Choose File",
+      "removeFile": "Remove file",
       "name": "Document name",
       "nameRequired": "Please enter a document name.",
       "documentType": "Document type",

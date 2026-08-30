@@ -1,6 +1,6 @@
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { format, addDays } from "date-fns";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Reminder, ReminderDeliveryChannel, LeadTimeBucket, NotificationCategoryPreference } from "@/types/core/entities";
 import { getEmailSender, buildReminderEmail } from "@/services/core/email";
 import { getProfile } from "@/services/core/profile";
@@ -145,10 +145,7 @@ export async function scheduleRemindersForEvent(input: {
   title: string;
 }): Promise<void> {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getAuthenticatedUser();
     if (!user) return;
 
     const profile = await getProfile();
@@ -232,10 +229,7 @@ export async function scheduleCustomLeadReminder(input: {
   title: string;
 }): Promise<void> {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getAuthenticatedUser();
     if (!user) return;
 
     const profile = await getProfile();
@@ -311,9 +305,7 @@ export async function createGeneralActivityNotification(input: {
 }): Promise<void> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getAuthenticatedUser();
     if (!user) return;
 
     const profile = await getProfile();
@@ -587,9 +579,7 @@ async function ensureDailyDuaReminders(userId: string): Promise<void> {
 // the exact scheduled moment.
 export async function processDueReminders(): Promise<void> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) return;
   const userId = user.id;
   const userEmail = user.email;

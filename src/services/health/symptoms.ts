@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { SymptomEntry } from "@/types/health/entities";
 import type { UtcBounds } from "@/lib/dates/range";
 
@@ -37,9 +37,7 @@ export async function createSymptomEntry(
   input: Pick<SymptomEntry, "symptom"> & Partial<Omit<SymptomEntry, "id" | "user_id" | "symptom" | "created_at">>
 ): Promise<SymptomEntry> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

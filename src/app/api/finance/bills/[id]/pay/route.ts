@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { payBillInputSchema } from "@/lib/validation/core";
 import { payBill } from "@/services/core/bills";
 import { scheduleRemindersForEvent, cancelRemindersForEntity } from "@/services/core/reminders";
@@ -12,9 +12,7 @@ import { UserFacingError } from "@/lib/errors";
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

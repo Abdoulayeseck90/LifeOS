@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { DuaUserData } from "@/types/core/entities";
 
 export async function listDuaUserData(): Promise<DuaUserData[]> {
@@ -10,9 +10,7 @@ export async function listDuaUserData(): Promise<DuaUserData[]> {
 
 export async function toggleFavorite(duaId: string): Promise<DuaUserData> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data: existing, error: lookupError } = await supabase
@@ -37,9 +35,7 @@ export async function toggleFavorite(duaId: string): Promise<DuaUserData> {
 
 export async function updateDuaNote(duaId: string, notes: string): Promise<DuaUserData> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

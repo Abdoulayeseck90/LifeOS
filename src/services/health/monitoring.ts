@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type {
   MonitoringPlan,
   MonitoringItem,
@@ -47,9 +47,7 @@ export async function createMonitoringPlan(
   input: Pick<MonitoringPlan, "name"> & Partial<Omit<MonitoringPlan, "id" | "user_id" | "name" | "created_at" | "updated_at">>
 ): Promise<MonitoringPlan> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -105,9 +103,7 @@ export async function createMonitoringItem(
     Partial<Omit<MonitoringItem, "id" | "user_id" | "monitoring_plan_id" | "name" | "last_completed_at" | "status" | "created_at" | "updated_at">>
 ): Promise<MonitoringItem> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -149,9 +145,7 @@ function addInterval(date: Date, value: number, unit: MonitoringIntervalUnit): D
 // standing `notes` (its rationale for existing) with a one-off log line.
 export async function completeMonitoringItem(id: string, completedAt?: string): Promise<MonitoringItem> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const item = await getMonitoringItem(id);

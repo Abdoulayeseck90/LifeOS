@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { deleteMonitoringPlan, listMonitoringItems } from "@/services/health/monitoring";
 import { cancelRemindersForEntity } from "@/services/core/reminders";
 
@@ -8,9 +8,7 @@ import { cancelRemindersForEntity } from "@/services/core/reminders";
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

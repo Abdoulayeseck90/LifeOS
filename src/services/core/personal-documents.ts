@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { PersonalDocument } from "@/types/core/entities";
 import type { PersonalDocumentUpdateInput } from "@/lib/validation/core";
 
@@ -26,9 +26,7 @@ export async function createPersonalDocument(
     Partial<Omit<PersonalDocument, "id" | "user_id" | "name" | "storage_path" | "mime_type" | "file_size" | "created_at" | "updated_at">>
 ): Promise<PersonalDocument> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

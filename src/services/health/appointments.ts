@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Appointment } from "@/types/health/entities";
 import type { UtcBounds } from "@/lib/dates/range";
 
@@ -38,9 +38,7 @@ export async function createAppointment(
     Partial<Omit<Appointment, "id" | "user_id" | "provider_name" | "date_time" | "created_at" | "updated_at">>
 ): Promise<Appointment> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

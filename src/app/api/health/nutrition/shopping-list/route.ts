@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { shoppingListItemsInputSchema } from "@/lib/validation/health";
 import { listShoppingListItems, addShoppingListItems } from "@/services/health/nutrition";
 
 // Senegal-Focused Liver-Conscious Nutrition System, Section 16.
 
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   try {
@@ -23,10 +20,7 @@ export async function GET() {
 // Accepts an array so "Generate Shopping List" can add a whole week's
 // ingredients in one request.
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const body = await request.json();

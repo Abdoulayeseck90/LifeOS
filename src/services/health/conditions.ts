@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Condition, Medication, MonitoringItem } from "@/types/health/entities";
 import type { Document } from "@/types/core/entities";
 
@@ -34,9 +34,7 @@ export async function createCondition(
   input: Pick<Condition, "name"> & Partial<Omit<Condition, "id" | "user_id" | "name" | "created_at" | "updated_at">>
 ): Promise<Condition> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

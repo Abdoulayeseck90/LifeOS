@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Dua, DuaCategory } from "@/types/core/entities";
 import type { DuaInput } from "@/lib/validation/core";
 
@@ -27,9 +27,7 @@ export async function getDua(id: string): Promise<Dua | null> {
 // request always satisfies it.
 export async function createDua(input: DuaInput): Promise<Dua> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

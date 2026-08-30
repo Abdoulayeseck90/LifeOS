@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { BodyMetric } from "@/types/health/entities";
 import type { UtcBounds } from "@/lib/dates/range";
 
@@ -35,9 +35,7 @@ export async function createBodyMetric(
     Partial<Omit<BodyMetric, "id" | "user_id" | "metric_type" | "value" | "unit" | "measured_at" | "created_at">>
 ): Promise<BodyMetric> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

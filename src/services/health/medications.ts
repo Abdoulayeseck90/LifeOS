@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Medication } from "@/types/health/entities";
 
 // Follows the Conditions pattern (src/services/health/conditions.ts) —
@@ -33,9 +33,7 @@ export async function createMedication(
   input: Pick<Medication, "name"> & Partial<Omit<Medication, "id" | "user_id" | "name" | "created_at" | "updated_at">>
 ): Promise<Medication> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

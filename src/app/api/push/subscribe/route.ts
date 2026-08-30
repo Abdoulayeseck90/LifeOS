@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { pushSubscriptionInputSchema } from "@/lib/validation/core";
 import { upsertPushSubscription } from "@/services/core/push-subscriptions";
 
@@ -9,10 +9,7 @@ import { upsertPushSubscription } from "@/services/core/push-subscriptions";
 // belongs to the authenticated user making the request (Spec Section
 // 17), never a client-supplied user id.
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

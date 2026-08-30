@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { DuaScheduleType, UserDuaRoutineWithDua } from "@/types/core/entities";
 
 // Embedded-resource select (same syntax as services/health/labs.ts's
@@ -18,9 +18,7 @@ export async function listUserDuaRoutines(): Promise<UserDuaRoutineWithDua[]> {
 
 export async function addToRoutine(duaId: string, scheduleType: DuaScheduleType): Promise<UserDuaRoutineWithDua> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

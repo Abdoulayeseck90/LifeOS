@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { duaReminderSettingUpdateSchema } from "@/lib/validation/core";
 import { listDuaReminderSettings, updateDuaReminderSetting } from "@/services/core/dua-reminder-settings";
 
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
@@ -25,10 +22,7 @@ export async function GET() {
 // ensureDailyDuaReminders runs (every authenticated page load), the same
 // interim-sweep pattern every other reminder category already uses.
 export async function PATCH(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

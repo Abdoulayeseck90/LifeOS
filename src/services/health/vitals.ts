@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Vital, VitalType } from "@/types/health/entities";
 import type { UtcBounds } from "@/lib/dates/range";
 
@@ -34,9 +34,7 @@ export async function createVital(
     Partial<Omit<Vital, "id" | "user_id" | "vital_type" | "recorded_at" | "created_at" | "updated_at">>
 ): Promise<Vital> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

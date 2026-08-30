@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Bill, BillFrequency, FinanceTransaction } from "@/types/core/entities";
 import { UserFacingError } from "@/lib/errors";
 
@@ -20,9 +20,7 @@ export async function createBill(
   input: Pick<Bill, "name" | "amount" | "due_date"> & Partial<Omit<Bill, "id" | "user_id" | "name" | "amount" | "due_date" | "created_at" | "updated_at">>
 ): Promise<Bill> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -87,9 +85,7 @@ export async function payBill(
   input: { paidDate?: string; amount?: number } = {}
 ): Promise<{ bill: Bill; transaction: FinanceTransaction }> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new UserFacingError("Not authenticated");
 
   const bill = await getBill(id);

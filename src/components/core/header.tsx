@@ -1,5 +1,5 @@
 import { CalendarDays } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
 import { getProfile } from "@/services/core/profile";
@@ -24,10 +24,7 @@ import { LanguageSwitcher } from "@/components/core/language-switcher";
 // header, would just be the same brand mark shown twice on screen.
 export async function Header() {
   const t = await getTranslations("nav");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   const [profile, notifications, unreadCount] = await Promise.all([
     getProfile(),

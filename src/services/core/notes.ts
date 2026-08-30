@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Note } from "@/types/core/entities";
 
 // Pinned-first, then newest-first — matches the Notes spec's "pinned
@@ -25,9 +25,7 @@ export async function createNote(
   input: Partial<Omit<Note, "id" | "user_id" | "created_at" | "updated_at">>
 ): Promise<Note> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

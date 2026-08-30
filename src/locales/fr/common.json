@@ -2815,7 +2815,11 @@
     },
     "form": {
       "file": "Fichier",
-      "fileHelper": "PDF, JPG, JPEG, PNG ou WEBP. Sur mobile, cela peut ouvrir votre appareil photo.",
+      "fileHelper": "PDF, JPG, JPEG, PNG ou WEBP.",
+      "takePicture": "Prendre une photo",
+      "photoLibrary": "Photothèque",
+      "chooseFile": "Choisir un fichier",
+      "removeFile": "Supprimer le fichier",
       "name": "Nom du document",
       "nameRequired": "Veuillez entrer un nom de document.",
       "documentType": "Type de document",

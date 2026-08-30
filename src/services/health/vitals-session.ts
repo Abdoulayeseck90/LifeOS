@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Vital, BodyMetric, VitalEntrySource } from "@/types/health/entities";
 import type { RecordVitalsInput } from "@/lib/validation/health";
 import { computeBmi } from "@/lib/health/bmi";
@@ -19,9 +19,7 @@ export interface RecordVitalsResult {
 // measurement").
 export async function recordVitalsSession(input: RecordVitalsInput): Promise<RecordVitalsResult> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new UserFacingError("Not authenticated");
 
   const shared = {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { getEmailSender, buildTestEmail } from "@/services/core/email";
 
 // Settings → Notifications → "Send Test Email". Sends to the signed-in
@@ -9,10 +9,7 @@ import { getEmailSender, buildTestEmail } from "@/services/core/email";
 // RESEND_FROM_EMAIL, not a separate code path that could drift from
 // what reminders actually do.
 export async function POST() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

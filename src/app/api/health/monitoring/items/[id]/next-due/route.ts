@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { monitoringItemNextDueUpdateSchema } from "@/lib/validation/health";
 import { updateMonitoringItemNextDue } from "@/services/health/monitoring";
 import { scheduleRemindersForEvent } from "@/services/core/reminders";
@@ -9,9 +9,7 @@ import { scheduleRemindersForEvent } from "@/services/core/reminders";
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

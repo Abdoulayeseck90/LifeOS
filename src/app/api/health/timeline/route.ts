@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { listTimelineEvents } from "@/services/core/timeline";
 
 // Read-only — timeline rows are written by domain services as a side
@@ -7,10 +7,7 @@ import { listTimelineEvents } from "@/services/core/timeline";
 // POST, so there is no write endpoint here.
 
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

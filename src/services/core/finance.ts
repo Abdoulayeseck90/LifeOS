@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { FinanceTransaction } from "@/types/core/entities";
 
 export async function listFinanceTransactions(): Promise<FinanceTransaction[]> {
@@ -20,9 +20,7 @@ export async function createFinanceTransaction(
     Partial<Omit<FinanceTransaction, "id" | "user_id" | "type" | "description" | "amount" | "category" | "created_at" | "updated_at">>
 ): Promise<FinanceTransaction> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

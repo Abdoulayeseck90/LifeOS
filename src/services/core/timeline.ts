@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { TimelineEvent } from "@/types/core/entities";
 
 // Core-level service. Read-only from the end user's perspective — rows
@@ -37,9 +37,7 @@ export async function createTimelineEvent(
 ): Promise<TimelineEvent | null> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getAuthenticatedUser();
     if (!user) return null;
 
     const { data, error } = await supabase

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { recordVitalsInputSchema } from "@/lib/validation/health";
 import { recordVitalsSession } from "@/services/health/vitals-session";
 import { UserFacingError } from "@/lib/errors";
@@ -11,10 +11,7 @@ import { UserFacingError } from "@/lib/errors";
 // and weight/height/BMI rows, all sharing one recorded_at and one
 // consolidated timeline event.
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

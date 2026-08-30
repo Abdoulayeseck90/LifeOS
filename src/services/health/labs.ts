@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { LabResult, TestDefinition, ReferenceStandard } from "@/types/health/entities";
 import type { DateRange } from "@/lib/dates/range";
 
@@ -68,9 +68,7 @@ export async function createCustomTestDefinition(input: {
   default_unit?: string;
 }): Promise<TestDefinition> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -181,9 +179,7 @@ export async function createLabResult(
     >
 ): Promise<LabResult> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   // category is denormalized onto lab_results for query convenience, but

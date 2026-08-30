@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { vitalInputSchema } from "@/lib/validation/health";
 import { listVitals, createVital } from "@/services/health/vitals";
 import { createTimelineEvent } from "@/services/core/timeline";
@@ -11,10 +11,7 @@ import type { VitalType } from "@/types/health/entities";
 // without filtering the full list client-side.
 
 export async function GET(request: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
@@ -39,9 +36,7 @@ const VITAL_TITLES: Record<VitalType, string> = {
 
 export async function POST(request: Request) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

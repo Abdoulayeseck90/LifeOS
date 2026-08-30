@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Document } from "@/types/core/entities";
 import type { DateRange } from "@/lib/dates/range";
 
@@ -44,9 +44,7 @@ export async function createDocument(
     >
 ): Promise<Document> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

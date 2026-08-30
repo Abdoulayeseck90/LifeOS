@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type {
   MealLogEntry,
   NutritionRestriction,
@@ -39,9 +39,7 @@ export async function createMealLogEntry(
     Partial<Omit<MealLogEntry, "id" | "user_id" | "date" | "meal_type" | "description" | "created_at">>
 ): Promise<MealLogEntry> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -95,9 +93,7 @@ export async function createNutritionRestriction(
     Partial<Omit<NutritionRestriction, "id" | "user_id" | "restriction" | "source" | "created_at">>
 ): Promise<NutritionRestriction> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -190,9 +186,7 @@ export async function upsertNutritionPreferences(
   input: Partial<Omit<NutritionPreferences, "id" | "user_id" | "created_at" | "updated_at">>
 ): Promise<NutritionPreferences> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -224,9 +218,7 @@ export async function addShoppingListItems(
   items: { name: string; category: ShoppingListCategory; source?: string }[]
 ): Promise<ShoppingListItem[]> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const existing = await listShoppingListItems();
@@ -282,9 +274,7 @@ export async function addHydrationLogEntry(
   input: Pick<HydrationLogEntry, "date" | "beverage_type" | "amount_ml">
 ): Promise<HydrationLogEntry> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase

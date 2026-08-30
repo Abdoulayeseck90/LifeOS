@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Profile } from "@/types/core/entities";
 import { mergeNotificationPreferences } from "@/lib/notifications/preferences";
 
@@ -32,9 +32,7 @@ function normalizeProfile(data: Record<string, unknown>): Profile {
 
 export async function getProfile(): Promise<Profile | null> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -51,9 +49,7 @@ export async function updateProfile(
   input: Partial<Pick<Profile, "display_name" | "preferred_language" | "timezone" | "notification_preferences">>
 ): Promise<Profile> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) throw new Error("Not authenticated");
 
   const { data, error } = await supabase
@@ -76,9 +72,7 @@ export async function updateProfile(
 // can run once against an unauthenticated request in practice.
 export async function syncTwoFactorStatus(): Promise<Profile | null> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) return null;
 
   const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
