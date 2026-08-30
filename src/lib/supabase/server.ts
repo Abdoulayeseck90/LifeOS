@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import type { CookieOptions } from "@supabase/ssr";
-import type { User } from "@supabase/supabase-js";
+import { isAuthSessionMissingError, type User } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { cache as reactCache } from "react";
 import type { Database } from "@/types/core/database";
@@ -67,8 +67,24 @@ export async function createClient() {
 // effect anyway.
 export const getAuthenticatedUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
+  const first = await supabase.auth.getUser();
+  if (!first.error) return first.data.user;
+
+  // Supabase's own AuthSessionMissingError ("Auth session missing!") is
+  // not a failure at all — it's how getUser() reports "there is no
+  // session cookie," which is the completely normal state for e.g. every
+  // visit to the (auth) layout's own getAuthenticatedUser() call while
+  // logged out. Retrying that changes nothing (a second call a
+  // millisecond later still has no cookie) and logging it as an error
+  // would cry wolf on every ordinary logged-out page view. Only a real
+  // error here — a transient network blip talking to Supabase's Auth
+  // server — is worth one immediate retry before giving up.
+  if (isAuthSessionMissingError(first.error)) return null;
+
+  console.error("[auth] getUser() failed, retrying once:", first.error.message);
+  const retry = await supabase.auth.getUser();
+  if (retry.error && !isAuthSessionMissingError(retry.error)) {
+    console.error("[auth] getUser() failed again on retry:", retry.error.message);
+  }
+  return retry.data.user;
 });

@@ -1,9 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import { syncTwoFactorStatus } from "@/services/core/profile";
 import { listMyActivePushSubscriptions } from "@/services/core/push-subscriptions";
+import { getCalendarFeedStatus } from "@/services/core/calendar-feed";
 import { ProfileForm } from "@/components/core/profile-form";
 import { NotificationPreferencesForm } from "@/components/core/notification-preferences-form";
 import { PushNotificationSettings } from "@/components/core/push-notification-settings";
+import { AppleCalendarSettings } from "@/components/core/apple-calendar-settings";
 import { TwoFactorEnrollment } from "@/components/core/two-factor-enrollment";
 import { SignOutButton } from "@/components/core/sign-out-button";
 
@@ -12,7 +14,11 @@ export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const t = await getTranslations("settings");
-  const [profile, pushDevices] = await Promise.all([syncTwoFactorStatus(), listMyActivePushSubscriptions()]);
+  const [profile, pushDevices, calendarFeedStatus] = await Promise.all([
+    syncTwoFactorStatus(),
+    listMyActivePushSubscriptions(),
+    getCalendarFeedStatus(),
+  ]);
 
   // Null only when the (app) layout's redirect races this fetch for an
   // unauthenticated request — the redirect wins before this ever renders.
@@ -39,6 +45,13 @@ export default async function SettingsPage() {
           <PushNotificationSettings initialDevices={pushDevices} />
         </div>
         <NotificationPreferencesForm profile={profile} />
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold text-secondary">{t("calendar")}</h2>
+        <div className="max-w-lg">
+          <AppleCalendarSettings initialStatus={calendarFeedStatus} />
+        </div>
       </section>
 
       <section className="mb-8">

@@ -11,9 +11,17 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 // a materially larger change than this audit's scope). connect-src/
 // img-src are scoped to Supabase's own domain (every LifeOS project
 // lives at <ref>.supabase.co) rather than left wide open.
+//
+// 'unsafe-eval' is added to script-src ONLY in development: Next.js's
+// dev-mode Fast Refresh/HMR runtime (webpack's eval-based source maps)
+// calls eval() internally to rebuild modules quickly — blocking it
+// breaks the dev server's own tooling with a CSP violation, not
+// anything the app itself does. Production's build never uses eval(),
+// so the production CSP stays exactly as strict as before.
+const isDev = process.env.NODE_ENV !== "production";
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.supabase.co",
   "font-src 'self' data:",

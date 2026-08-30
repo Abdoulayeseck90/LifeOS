@@ -14,6 +14,10 @@ import type {
 // through the app, so there is no createGuideline().
 export async function listGuidelines(): Promise<Guideline[]> {
   const supabase = await createClient();
+  // guidelines is one of the tables explicitly revoked from anon in
+  // 0042_security_hardening.sql (same reasoning as listVitals in
+  // vitals.ts applies to every list function on this page).
+  if (!(await getAuthenticatedUser())) return [];
   const { data, error } = await supabase.from("guidelines").select("*").order("organization", { ascending: true });
 
   if (error) throw error;
@@ -22,6 +26,9 @@ export async function listGuidelines(): Promise<Guideline[]> {
 
 export async function listMonitoringPlans(): Promise<MonitoringPlan[]> {
   const supabase = await createClient();
+  // monitoring_plans is one of the tables explicitly revoked from anon
+  // in 0042_security_hardening.sql (same reasoning as listVitals).
+  if (!(await getAuthenticatedUser())) return [];
   const { data, error } = await supabase
     .from("monitoring_plans")
     .select("*")
@@ -72,6 +79,11 @@ export type MonitoringItemWithGuideline = MonitoringItem & {
 
 export async function listMonitoringItems(planId?: string): Promise<MonitoringItemWithGuideline[]> {
   const supabase = await createClient();
+  // monitoring_items is one of the tables explicitly revoked from anon
+  // in 0042_security_hardening.sql — called directly from both the
+  // dashboard and the global Calendar page's Promise.all, so this race
+  // is reachable from more than one route (same reasoning as listVitals).
+  if (!(await getAuthenticatedUser())) return [];
   let query = supabase
     .from("monitoring_items")
     .select("*, guidelines(organization, title, publication_year)")

@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Camera, FileText, Image as ImageIcon, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeFileName } from "@/lib/files";
 import type { FinanceTransaction, PersonalDocument, PersonalDocumentType } from "@/types/core/entities";
@@ -43,7 +42,6 @@ const SUGGESTED_CATEGORIES = [
 ];
 
 const ALLOWED_MIME_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
-const IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
 
 // Documents spec, Sections 67-72: one unified form for every document
@@ -74,15 +72,12 @@ export function DocumentUploadForm({
   const tTypes = useTranslations("personalDocuments.types");
   const tCommon = useTranslations("common");
   const router = useRouter();
-  // Security-audit-adjacent UX bug: a single <input capture="environment">
-  // forces mobile browsers straight into the camera, skipping the OS's
-  // own "choose source" sheet entirely — there was never a way to pick
-  // an existing photo or a non-image file from that one input. Three
-  // separate hidden inputs, each with the exact accept/capture combo for
-  // its one purpose, restore all three sources as explicit buttons.
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const libraryInputRef = useRef<HTMLInputElement>(null);
-  const chooseFileInputRef = useRef<HTMLInputElement>(null);
+  // Same simple pattern as Health's document-upload-form.tsx: one plain
+  // file input, no `capture` attribute, so the OS's own picker decides
+  // what options to offer (on iOS, a mixed image+PDF accept list already
+  // surfaces both "Take Photo or Video" and "Choose File" natively,
+  // without the app needing to build that choice itself).
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(document?.name ?? "");
   const [documentType, setDocumentType] = useState<PersonalDocumentType>(document?.document_type ?? initialDocumentType ?? "personal_document");
@@ -98,8 +93,7 @@ export function DocumentUploadForm({
   const [purchaseDate, setPurchaseDate] = useState(document?.purchase_date ?? "");
   const [paymentMethod, setPaymentMethod] = useState(document?.payment_method ?? "");
   const [relatedExpenseId, setRelatedExpenseId] = useState(document?.related_expense_id ?? "");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileName = selectedFile?.name ?? "";
+  const [fileName, setFileName] = useState("");
 
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -129,20 +123,6 @@ export function DocumentUploadForm({
   useEffect(() => {
     registerDirty(JSON.stringify(fieldValues) !== initialSnapshot.current);
   });
-
-  function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
-    setSelectedFile(event.target.files?.[0] ?? null);
-  }
-
-  function clearSelectedFile() {
-    setSelectedFile(null);
-    // Reset every input's own FileList too — without this, re-picking the
-    // exact same file from the same source afterward wouldn't fire
-    // onChange again (the browser treats it as no change).
-    if (cameraInputRef.current) cameraInputRef.current.value = "";
-    if (libraryInputRef.current) libraryInputRef.current.value = "";
-    if (chooseFileInputRef.current) chooseFileInputRef.current.value = "";
-  }
 
   function toTagsArray(value: string): string[] {
     return value
@@ -212,7 +192,7 @@ export function DocumentUploadForm({
 
     // Create mode: file is required and uploaded directly to Storage
     // before the metadata row exists.
-    const file = selectedFile;
+    const file = fileInputRef.current?.files?.[0];
     if (!file) {
       setSubmitting(false);
       setError(t("fileRequired"));
@@ -281,72 +261,15 @@ export function DocumentUploadForm({
 
       {!document && (
         <FormField label={t("file")} htmlFor="document-file" required helperText={t("fileHelper")}>
-          <div className="flex flex-col gap-2">
-            {/* Take Picture: image-only, camera launches directly — the
-                one input that should ever carry capture="environment". */}
-            <input
-              ref={cameraInputRef}
-              type="file"
-              accept={IMAGE_MIME_TYPES.join(",")}
-              capture="environment"
-              onChange={handleFileSelected}
-              className="hidden"
-            />
-            {/* Photo Library: same image types, no capture — opens the
-                OS photo picker instead of forcing the camera. */}
-            <input ref={libraryInputRef} type="file" accept={IMAGE_MIME_TYPES.join(",")} onChange={handleFileSelected} className="hidden" />
-            {/* Choose File: every supported format (incl. PDF), no capture.
-                No explicit id here — FormField's htmlFor="document-file"
-                already clones that id onto this whole wrapper div (its
-                direct child), and duplicating it here would be an
-                invalid-HTML id collision. All three inputs are opened via
-                ref/click(), never native label-for association. */}
-            <input ref={chooseFileInputRef} type="file" accept={ALLOWED_MIME_TYPES.join(",")} onChange={handleFileSelected} className="hidden" />
-
-            {fileName ? (
-              <div className="flex items-center justify-between gap-2 rounded border border-slate-300 bg-white px-3.5 py-3 text-sm text-secondary">
-                <span className="truncate">{fileName}</span>
-                <button
-                  type="button"
-                  onClick={clearSelectedFile}
-                  aria-label={t("removeFile")}
-                  className="shrink-0 rounded p-1 text-muted hover:bg-surface hover:text-secondary"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2 sm:flex-row">
-                {/* Camera/Photo Library aren't meaningful concepts on
-                    desktop (capture is simply ignored there) — hidden past
-                    the sm breakpoint per spec, Choose File covers it. */}
-                <button
-                  type="button"
-                  onClick={() => cameraInputRef.current?.click()}
-                  className="flex flex-1 items-center justify-center gap-2 rounded border border-slate-300 bg-white px-3.5 py-3 text-sm font-medium text-secondary hover:bg-surface sm:hidden"
-                >
-                  <Camera size={16} />
-                  {t("takePicture")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => libraryInputRef.current?.click()}
-                  className="flex flex-1 items-center justify-center gap-2 rounded border border-slate-300 bg-white px-3.5 py-3 text-sm font-medium text-secondary hover:bg-surface sm:hidden"
-                >
-                  <ImageIcon size={16} />
-                  {t("photoLibrary")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => chooseFileInputRef.current?.click()}
-                  className="flex flex-1 items-center justify-center gap-2 rounded border border-slate-300 bg-white px-3.5 py-3 text-sm font-medium text-secondary hover:bg-surface"
-                >
-                  <FileText size={16} />
-                  {t("chooseFile")}
-                </button>
-              </div>
-            )}
-          </div>
+          <input
+            id="document-file"
+            ref={fileInputRef}
+            type="file"
+            required
+            accept={ALLOWED_MIME_TYPES.join(",")}
+            onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")}
+            className="w-full rounded border border-slate-300 bg-white px-3.5 py-3 text-sm text-secondary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
         </FormField>
       )}
 

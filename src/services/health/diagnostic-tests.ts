@@ -8,6 +8,13 @@ import type { DateRange } from "@/lib/dates/range";
 // conversion needed (see labs.ts's listLabResults for the same reasoning).
 export async function listDiagnosticTests(testType?: string, dateRange?: DateRange): Promise<DiagnosticTest[]> {
   const supabase = await createClient();
+  // Same reasoning as listVitals in vitals.ts: diagnostic_tests is one
+  // of the tables explicitly revoked from anon in
+  // 0042_security_hardening.sql, so an unauthenticated call here (the
+  // dashboard page's Promise.all can start rendering before a parent
+  // layout's redirect takes effect) hits a hard "permission denied"
+  // instead of RLS's usual empty result.
+  if (!(await getAuthenticatedUser())) return [];
   let query = supabase.from("diagnostic_tests").select("*");
 
   if (testType) query = query.eq("test_type", testType);

@@ -11,6 +11,17 @@ import type { UtcBounds } from "@/lib/dates/range";
 // rather than raw date strings.
 export async function listVitals(vitalType?: VitalType, utcBounds?: UtcBounds): Promise<Vital[]> {
   const supabase = await createClient();
+  // vitals is one of the tables 0042_security_hardening.sql revoked
+  // anon's base grant on (defense-in-depth, since RLS already blocked
+  // anon anyway) — but that revoke turns an unauthenticated call into a
+  // hard "permission denied" instead of RLS's usual empty result. This
+  // function is called directly from Server Component pages (e.g. the
+  // dashboard's Promise.all), which can start rendering fractionally
+  // before a parent layout's redirect takes effect for a genuinely
+  // unauthenticated request — same race getProfile() already guards
+  // against. An empty list is the correct, boring answer here, same as
+  // what RLS alone would have returned pre-hardening.
+  if (!(await getAuthenticatedUser())) return [];
   let query = supabase.from("vitals").select("*");
   if (vitalType) query = query.eq("vital_type", vitalType);
   if (utcBounds?.fromUtc) query = query.gte("recorded_at", utcBounds.fromUtc);

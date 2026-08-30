@@ -5,6 +5,12 @@ import type { Activity, ExercisePreferences, Workout } from "@/types/health/enti
 
 export async function listWorkouts(): Promise<Workout[]> {
   const supabase = await createClient();
+  // Same reasoning as listVitals in vitals.ts: workouts is one of the
+  // tables explicitly revoked from anon in 0042_security_hardening.sql,
+  // so an unauthenticated call here (the dashboard page's Promise.all
+  // can start rendering before a parent layout's redirect takes effect)
+  // hits a hard "permission denied" instead of RLS's usual empty result.
+  if (!(await getAuthenticatedUser())) return [];
   const { data, error } = await supabase.from("workouts").select("*").order("started_at", { ascending: false });
 
   if (error) throw error;

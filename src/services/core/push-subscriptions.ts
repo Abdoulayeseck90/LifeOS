@@ -7,6 +7,11 @@ import type { PushSubscriptionRecord } from "@/types/core/entities";
 
 export async function listMyActivePushSubscriptions(): Promise<PushSubscriptionRecord[]> {
   const supabase = await createClient();
+  // push_subscriptions is one of the tables explicitly revoked from anon
+  // in 0042_security_hardening.sql, so an unauthenticated call (this is
+  // called directly from the Settings page's Promise.all) hits a hard
+  // "permission denied" instead of RLS's usual empty result.
+  if (!(await getAuthenticatedUser())) return [];
   const { data, error } = await supabase
     .from("push_subscriptions")
     .select("*")

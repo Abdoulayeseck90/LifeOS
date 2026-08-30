@@ -30,10 +30,20 @@ function normalizeProfile(data: Record<string, unknown>): Profile {
   };
 }
 
+// Returns null rather than throwing when unauthenticated — same reason
+// as syncTwoFactorStatus below: the (app) route group layout is the
+// actual auth gate, but Next.js can start a page's data fetch in
+// parallel with a parent layout's redirect, so this can run once
+// against an unauthenticated request in practice (e.g. the dashboard's
+// Promise.all). Every caller already handles a null profile (optional
+// chaining on profile?.timezone/display_name, or its own separate auth
+// gate before ever calling this), so this was always safe to return
+// rather than throw — the throw was just inconsistent with this
+// function's own `Profile | null` return type.
 export async function getProfile(): Promise<Profile | null> {
   const supabase = await createClient();
   const user = await getAuthenticatedUser();
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return null;
 
   const { data, error } = await supabase
     .from("profiles")

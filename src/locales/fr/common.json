@@ -2043,6 +2043,27 @@
     "notifications": "Notifications",
     "displayName": "Nom d'affichage",
     "notificationsSubtitle": "Choisissez comment LifeOS vous tient informé.",
+    "calendar": "Calendrier",
+    "appleCalendar": {
+      "title": "Calendrier Apple",
+      "description": "Abonnez-vous à votre calendrier LifeOS dans Calendrier Apple. Les événements créés dans LifeOS apparaîtront dans Calendrier Apple.",
+      "generateButton": "Générer le lien du calendrier",
+      "generating": "Génération en cours...",
+      "generateError": "Échec de la génération du lien. Veuillez réessayer.",
+      "copyError": "Impossible de copier le lien. Veuillez le sélectionner et le copier manuellement.",
+      "yourLink": "Votre abonnement au calendrier",
+      "securityNote": "Toute personne disposant de ce lien peut voir votre calendrier LifeOS. Gardez-le privé.",
+      "connectedStatus": "Votre calendrier LifeOS est connecté à Calendrier Apple.",
+      "regenerateButton": "Régénérer le lien",
+      "regenerateConfirmTitle": "Régénérer le lien du calendrier ?",
+      "regenerateConfirmMessage": "Le lien actuel cessera de fonctionner immédiatement. Tout appareil abonné avec ce lien devra être reconnecté avec le nouveau lien.",
+      "howToAdd": {
+        "title": "Comment ajouter à Calendrier Apple",
+        "step1": "Copiez le lien ci-dessus.",
+        "step2": "Sur votre iPhone, ouvrez Réglages, puis Calendrier, puis Comptes, puis Ajouter un compte, puis Autre, puis Ajouter un calendrier par abonnement.",
+        "step3": "Collez le lien et enregistrez. Vos événements LifeOS apparaîtront dans l'application Calendrier."
+      }
+    },
     "emailReminders": "M'envoyer des rappels de santé par courriel",
     "healthNotifications": "Notifications de santé",
     "categories": {
@@ -2816,10 +2837,6 @@
     "form": {
       "file": "Fichier",
       "fileHelper": "PDF, JPG, JPEG, PNG ou WEBP.",
-      "takePicture": "Prendre une photo",
-      "photoLibrary": "Photothèque",
-      "chooseFile": "Choisir un fichier",
-      "removeFile": "Supprimer le fichier",
       "name": "Nom du document",
       "nameRequired": "Veuillez entrer un nom de document.",
       "documentType": "Type de document",
@@ -2959,6 +2976,8 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "edit": "Modifier",
+    "copy": "Copier",
+    "copied": "Copié",
     "view": "Voir",
     "loading": "Chargement…",
     "unsavedChangesWarning": "Vous avez des modifications non enregistrées. Les abandonner ?",
