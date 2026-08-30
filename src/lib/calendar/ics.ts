@@ -49,9 +49,25 @@ function formatIcsLine(name: string, value: string): string {
   return foldIcsLine(`${name}:${escapeIcsText(value)}`);
 }
 
+// Bug found via a real Apple Calendar subscription showing zero events:
+// this used to strip "-"/":" from the raw string and assume it always
+// ended in exactly ".000Z". Postgres/PostgREST actually serializes
+// timestamptz as e.g. "2026-08-29T22:01:57.468358+00:00" — six-digit
+// microseconds and a "+00:00" offset instead of a literal "Z" — so the
+// old regex left "+0000" straight in the output (e.g.
+// "20260829T220157.468358+0000"), which isn't a valid RFC 5545 UTC
+// date-time (that form requires a literal trailing "Z", never a numeric
+// offset). Apple's parser silently drops any VEVENT it can't parse,
+// which is exactly why nothing appeared. Parsing with Date and rebuilding
+// from its UTC components is correct regardless of the input's exact
+// precision or offset notation.
 function formatDateTimeUtc(iso: string): string {
-  // "2026-06-15T14:00:00.000Z" -> "20260615T140000Z"
-  return iso.replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+  const d = new Date(iso);
+  const pad = (n: number, width = 2) => String(n).padStart(width, "0");
+  return (
+    `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}` +
+    `T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`
+  );
 }
 
 function formatDateOnly(dateStr: string): string {

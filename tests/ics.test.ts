@@ -85,6 +85,28 @@ describe("buildIcsFeed", () => {
     expect(ics).toMatch(/\r\n [A-Z]/);
   });
 
+  // Regression test for a real bug: Postgres/PostgREST serializes
+  // timestamptz as e.g. "2026-08-29T22:01:57.468358+00:00" (six-digit
+  // microseconds, "+00:00" instead of "Z") — not the clean ".000Z" shape
+  // every other fixture in this file uses. The old implementation left
+  // "+0000" straight in the DTSTART/CREATED/LAST-MODIFIED output, which
+  // is invalid RFC 5545 and made Apple Calendar silently drop every
+  // event. This exact input string is what actually broke it in
+  // production.
+  it("correctly formats a real Supabase-style timestamp (microseconds + +00:00 offset)", () => {
+    const ics = buildIcsFeed([
+      appointment({
+        startsAt: "2026-09-02T04:00:00+00:00",
+        createdAt: "2026-08-29T22:01:57.468358+00:00",
+        updatedAt: "2026-08-29T22:01:57.468358+00:00",
+      }),
+    ]);
+    expect(ics).toContain("DTSTART:20260902T040000Z");
+    expect(ics).toContain("CREATED:20260829T220157Z");
+    expect(ics).toContain("LAST-MODIFIED:20260829T220157Z");
+    expect(ics).not.toContain("+0000");
+  });
+
   it("renders multiple events independently", () => {
     const ics = buildIcsFeed([
       appointment({ id: "aaaa1111-0000-0000-0000-000000000000" }),
