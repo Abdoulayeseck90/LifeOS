@@ -81,7 +81,12 @@ export function BodyMetricForm({
       metric_type: metricType,
       value: numericValue,
       unit: unit.trim(),
-      measured_at: measuredAt,
+      // Same fix as appointment-form.tsx: datetime-local's value has no
+      // timezone info, so it must be converted from local wall-clock
+      // time to a real UTC instant before saving — new Date() parses a
+      // bare datetime-local string as local time by default, which is
+      // exactly the interpretation needed here.
+      measured_at: new Date(measuredAt).toISOString(),
       source: source.trim() || undefined,
       notes: notes.trim() || undefined,
     });

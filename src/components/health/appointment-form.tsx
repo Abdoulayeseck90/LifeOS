@@ -96,7 +96,14 @@ export function AppointmentForm({
 
     const body = JSON.stringify({
       provider_name: providerName.trim(),
-      date_time: dateTime,
+      // datetime-local's value is a bare "YYYY-MM-DDTHH:mm" wall-clock
+      // string with no timezone info — sending it as-is let Postgres
+      // interpret it as literal UTC instead of the browser's local time,
+      // silently shifting every saved appointment by the user's UTC
+      // offset. new Date() parses a bare datetime-local string as local
+      // time (the one context where that default is exactly right), so
+      // .toISOString() correctly converts it to the real UTC instant.
+      date_time: new Date(dateTime).toISOString(),
       specialty: specialty.trim() || undefined,
       appointment_type: appointmentType.trim() || undefined,
       location: location.trim() || undefined,
