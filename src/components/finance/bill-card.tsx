@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type { Bill, Business } from "@/types/core/entities";
+import type { Bill, Business, CreditCard, Loan } from "@/types/core/entities";
 import { BillForm } from "@/components/finance/bill-form";
 import { BillStatusBadge } from "@/components/finance/bill-status-badge";
 import { RecordFormModal } from "@/components/core/record-form-modal";
@@ -17,7 +17,17 @@ function formatAmount(amount: number): string {
 // Expense server-side (services/core/bills.ts payBill) — this button
 // carries no amount/date override UI, matching the same one-click
 // "complete" affordance already used for Health monitoring items.
-export function BillCard({ bill, businesses }: { bill: Bill; businesses: Business[] }) {
+export function BillCard({
+  bill,
+  businesses,
+  creditCards,
+  loans,
+}: {
+  bill: Bill;
+  businesses: Business[];
+  creditCards: CreditCard[];
+  loans: Loan[];
+}) {
   const t = useTranslations("finance.bills");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -25,6 +35,8 @@ export function BillCard({ bill, businesses }: { bill: Bill; businesses: Busines
   const [payError, setPayError] = useState<string | null>(null);
 
   const canPay = bill.status === "pending";
+  const linkedCreditCard = bill.linked_credit_card_id ? creditCards.find((c) => c.id === bill.linked_credit_card_id) : null;
+  const linkedLoan = bill.linked_loan_id ? loans.find((l) => l.id === bill.linked_loan_id) : null;
 
   async function handleMarkAsPaid() {
     setPaying(true);
@@ -53,6 +65,9 @@ export function BillCard({ bill, businesses }: { bill: Bill; businesses: Busines
         <div>
           <p className="font-medium text-secondary">{bill.name}</p>
           {bill.category && <p className="text-xs text-muted">{bill.category}</p>}
+          {(linkedCreditCard || linkedLoan) && (
+            <p className="mt-0.5 text-xs text-primary">{t("linkedTo", { name: (linkedCreditCard ?? linkedLoan)!.name })}</p>
+          )}
         </div>
         <BillStatusBadge bill={bill} />
       </div>
@@ -86,7 +101,7 @@ export function BillCard({ bill, businesses }: { bill: Bill; businesses: Busines
           )}
           modalTitle={t("editTitle")}
         >
-          {(modalProps) => <BillForm bill={bill} businesses={businesses} {...modalProps} />}
+          {(modalProps) => <BillForm bill={bill} businesses={businesses} creditCards={creditCards} loans={loans} {...modalProps} />}
         </RecordFormModal>
 
         <ConfirmDialog

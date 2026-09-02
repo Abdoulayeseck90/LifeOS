@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeFileName } from "@/lib/files";
 import type { Condition, Appointment } from "@/types/health/entities";
+import type { Document } from "@/types/core/entities";
 import type { LabResultWithTest } from "@/services/health/labs";
 import type { RecordFormRenderProps } from "@/components/core/record-form-modal";
 
@@ -18,13 +19,16 @@ const ALLOWED_MIME_TYPES = ["application/pdf", "image/jpeg", "image/png", "image
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
 
 // Hosted inside RecordFormModal — see appointment-form.tsx for the
-// pattern. Create-only (see the delete-only [id] route note — a
-// document's file can't meaningfully be re-uploaded via a generic edit
-// form).
+// pattern. Passing `document` switches this into edit mode (PATCH
+// against /api/health/documents/[id] instead of POST) — metadata only,
+// same as Personal Documents' equivalent form: the file input disappears
+// entirely rather than allowing a re-upload, since the underlying
+// Storage file is fixed once uploaded.
 export function DocumentUploadForm({
   conditions,
   appointments,
   labResults,
+  document,
   closeAfterSave,
   requestClose,
   registerDirty,
@@ -32,19 +36,20 @@ export function DocumentUploadForm({
   conditions: Condition[];
   appointments: Appointment[];
   labResults: LabResultWithTest[];
+  document?: Document;
 } & RecordFormRenderProps) {
   const t = useTranslations("documents.form");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [name, setName] = useState("");
-  const [type, setType] = useState("lab_report");
-  const [documentDate, setDocumentDate] = useState("");
-  const [provider, setProvider] = useState("");
-  const [relatedConditionId, setRelatedConditionId] = useState("");
-  const [relatedAppointmentId, setRelatedAppointmentId] = useState("");
-  const [relatedLabResultIds, setRelatedLabResultIds] = useState<string[]>([]);
+  const [name, setName] = useState(document?.name ?? "");
+  const [type, setType] = useState(document?.type ?? "lab_report");
+  const [documentDate, setDocumentDate] = useState(document?.document_date ?? "");
+  const [provider, setProvider] = useState(document?.provider ?? "");
+  const [relatedConditionId, setRelatedConditionId] = useState(document?.related_condition_id ?? "");
+  const [relatedAppointmentId, setRelatedAppointmentId] = useState(document?.related_appointment_id ?? "");
+  const [relatedLabResultIds, setRelatedLabResultIds] = useState<string[]>(document?.related_lab_result_ids ?? []);
   const [fileName, setFileName] = useState("");
 
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +78,40 @@ export function DocumentUploadForm({
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
+
+    if (document) {
+      // Edit mode: metadata only, no file. Clearing a date/relation
+      // needs an explicit null (undefined would just be "leave
+      // unchanged" on a partial PATCH) — same convention as Personal
+      // Documents' edit path.
+      setSubmitting(true);
+
+      const response = await fetch(`/api/health/documents/${document.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          type,
+          document_date: documentDate || null,
+          provider: provider.trim() || null,
+          related_condition_id: relatedConditionId || null,
+          related_appointment_id: relatedAppointmentId || null,
+          related_lab_result_ids: relatedLabResultIds,
+        }),
+      });
+
+      setSubmitting(false);
+
+      if (!response.ok) {
+        setError(t("saveError"));
+        return;
+      }
+
+      registerDirty(false);
+      closeAfterSave();
+      router.refresh();
+      return;
+    }
 
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
@@ -147,17 +186,19 @@ export function DocumentUploadForm({
       {error && <p className="text-sm text-status-urgent">{error}</p>}
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <label className="flex flex-col gap-1.5 text-sm text-muted md:col-span-3">
-          {t("file")}
-          <input
-            ref={fileInputRef}
-            type="file"
-            required
-            accept={ALLOWED_MIME_TYPES.join(",")}
-            onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")}
-            className="rounded border border-slate-300 bg-white px-3.5 py-3 placeholder:text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-secondary"
-          />
-        </label>
+        {!document && (
+          <label className="flex flex-col gap-1.5 text-sm text-muted md:col-span-3">
+            {t("file")}
+            <input
+              ref={fileInputRef}
+              type="file"
+              required
+              accept={ALLOWED_MIME_TYPES.join(",")}
+              onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")}
+              className="rounded border border-slate-300 bg-white px-3.5 py-3 placeholder:text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-secondary"
+            />
+          </label>
+        )}
 
         <label className="flex flex-col gap-1.5 text-sm text-muted md:col-span-2">
           {t("name")}
@@ -279,7 +320,7 @@ export function DocumentUploadForm({
           disabled={submitting}
           className="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
-          {submitting ? t("uploading") : t("save")}
+          {submitting && !document ? t("uploading") : tCommon("save")}
         </button>
       </div>
     </form>

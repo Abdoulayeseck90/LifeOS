@@ -8,6 +8,17 @@ export async function listCreditCards(): Promise<CreditCard[]> {
   return data as CreditCard[];
 }
 
+// RLS-scoped like every other getX(id) in this app — resolves to null
+// for another user's card, never a leak. Used by bills.ts to verify a
+// bill's linked_credit_card_id actually belongs to the caller before
+// it's ever written.
+export async function getCreditCard(id: string): Promise<CreditCard | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("credit_cards").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data as CreditCard | null;
+}
+
 export async function createCreditCard(
   input: Pick<CreditCard, "name" | "balance" | "credit_limit" | "apr"> &
     Partial<Omit<CreditCard, "id" | "user_id" | "name" | "balance" | "credit_limit" | "apr" | "created_at" | "updated_at">>
@@ -47,6 +58,14 @@ export async function listLoans(): Promise<Loan[]> {
   const { data, error } = await supabase.from("loans").select("*").order("created_at", { ascending: false });
   if (error) throw error;
   return data as Loan[];
+}
+
+// Same reasoning as getCreditCard above.
+export async function getLoan(id: string): Promise<Loan | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("loans").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data as Loan | null;
 }
 
 export async function createLoan(

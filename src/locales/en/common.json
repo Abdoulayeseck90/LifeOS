@@ -1744,6 +1744,13 @@
     "noDateResults": "No documents with a date in the selected range. Documents without a date aren't shown while a date filter is active.",
     "linkedLabResults": "Linked to {count, plural, one {# lab result} other {# lab results}}",
     "view": "View",
+    "download": "Download",
+    "downloadError": "Failed to download the file. Please try again.",
+    "editMetadata": "Edit metadata",
+    "editTitle": "Edit document",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinError": "Failed to update. Please try again.",
     "loading": "Loading…",
     "viewError": "Couldn't open",
     "deleteConfirmTitle": "Delete document?",
@@ -2454,6 +2461,7 @@
       "autoPayLabel": "Auto-pay enabled",
       "markAsPaid": "Mark as Paid",
       "payError": "Failed to mark this bill as paid. Please try again.",
+      "linkedTo": "Linked to {name}",
       "frequencyOptions": {
         "weekly": "Weekly",
         "monthly": "Monthly",
@@ -2498,6 +2506,17 @@
       "nameRequired": "Please enter a bill name.",
       "amountRequired": "Please enter an amount greater than 0.",
       "dueDateRequired": "Please choose a due date.",
+      "paymentCategory": "Payment category",
+      "paymentCategoryHelper": "Linking this bill to a Credit Card or Loan means marking it Paid will also apply the payment to that debt's balance.",
+      "paymentCategoryOptions": {
+        "regular": "Regular Bill",
+        "credit_card": "Credit Card Payment",
+        "loan": "Loan Payment"
+      },
+      "selectCreditCard": "Select credit card",
+      "selectLoan": "Select loan",
+      "linkedCreditCardRequired": "Please select a credit card.",
+      "linkedLoanRequired": "Please select a loan.",
       "saveError": "Failed to save. Please try again."
     },
     "subscriptions": {

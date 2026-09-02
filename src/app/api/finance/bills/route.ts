@@ -3,6 +3,7 @@ import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { billInputSchema } from "@/lib/validation/core";
 import { listBills, createBill } from "@/services/core/bills";
 import { scheduleRemindersForEvent } from "@/services/core/reminders";
+import { UserFacingError } from "@/lib/errors";
 
 export async function GET() {
   const user = await getAuthenticatedUser();
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ data: bill }, { status: 201 });
   } catch (err) {
-    return NextResponse.json({ error: "Failed to create bill" }, { status: 500 });
+    const message = err instanceof UserFacingError ? err.message : "Failed to create bill";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

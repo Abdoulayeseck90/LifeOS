@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { listBills } from "@/services/core/bills";
 import { getBillDisplayStatus } from "@/lib/finance/bill-status";
 import { listBusinesses } from "@/services/core/businesses";
+import { listCreditCards, listLoans } from "@/services/core/credit-and-loans";
 import { BillAddButton } from "@/components/finance/bill-add-button";
 import { BillCard } from "@/components/finance/bill-card";
 import { InfoCard } from "@/components/core/info-card";
@@ -21,7 +22,7 @@ function formatAmount(amount: number): string {
 
 export default async function BillsPage() {
   const t = await getTranslations("finance.bills");
-  const [bills, businesses] = await Promise.all([listBills(), listBusinesses()]);
+  const [bills, businesses, creditCards, loans] = await Promise.all([listBills(), listBusinesses(), listCreditCards(), listLoans()]);
 
   const today = new Date();
   const in7Days = new Date(today.getTime() + 7 * 86_400_000).toISOString().slice(0, 10);
@@ -51,7 +52,7 @@ export default async function BillsPage() {
           <h1 className="text-3xl font-semibold text-secondary">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
         </div>
-        <BillAddButton businesses={businesses} />
+        <BillAddButton businesses={businesses} creditCards={creditCards} loans={loans} />
       </div>
 
       {bills.length === 0 ? (
@@ -59,7 +60,7 @@ export default async function BillsPage() {
           <p className="text-sm font-medium text-secondary">{t("emptyTitle")}</p>
           <p className="mt-1 text-sm text-muted">{t("emptyMessage")}</p>
           <div className="mt-4 flex justify-center">
-            <BillAddButton businesses={businesses} />
+            <BillAddButton businesses={businesses} creditCards={creditCards} loans={loans} />
           </div>
         </div>
       ) : (
@@ -83,7 +84,7 @@ export default async function BillsPage() {
                   <SectionHeader title={`${section.label} (${section.items.length})`} />
                   <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {section.items.map((bill) => (
-                      <BillCard key={bill.id} bill={bill} businesses={businesses} />
+                      <BillCard key={bill.id} bill={bill} businesses={businesses} creditCards={creditCards} loans={loans} />
                     ))}
                   </div>
                 </div>

@@ -168,11 +168,35 @@ export const billInputSchema = z.object({
   auto_pay: z.boolean().optional(),
   payment_method: z.string().max(100).optional(),
   business_id: z.string().uuid().optional(),
+  // At most one of these two may be set — enforced again at the
+  // database level (bills_single_debt_link) since a client could always
+  // send both regardless of what the form does.
+  linked_credit_card_id: z.string().uuid().optional(),
+  linked_loan_id: z.string().uuid().optional(),
   reminders_enabled: z.boolean().optional(),
   notes: z.string().max(2000).optional(),
+}).refine((data) => !(data.linked_credit_card_id && data.linked_loan_id), {
+  message: "A bill cannot be linked to both a credit card and a loan.",
+  path: ["linked_credit_card_id"],
 });
-export const billUpdateSchema = billInputSchema.partial();
+// billInputSchema.partial() would lose the refine() above and wouldn't
+// allow explicitly clearing a link back to null (switching a bill from
+// "Credit Card Payment" back to "Regular Bill") — extended from the
+// plain partial with just those two fields made nullable, everything
+// else keeps its exact prior partial()-derived shape.
+export const billUpdateSchema = billInputSchema
+  .innerType()
+  .partial()
+  .extend({
+    linked_credit_card_id: z.string().uuid().nullable().optional(),
+    linked_loan_id: z.string().uuid().nullable().optional(),
+  })
+  .refine((data) => !(data.linked_credit_card_id && data.linked_loan_id), {
+    message: "A bill cannot be linked to both a credit card and a loan.",
+    path: ["linked_credit_card_id"],
+  });
 export type BillInput = z.infer<typeof billInputSchema>;
+export type BillUpdateInput = z.infer<typeof billUpdateSchema>;
 
 export const payBillInputSchema = z.object({
   paid_date: z.string().date().optional(),

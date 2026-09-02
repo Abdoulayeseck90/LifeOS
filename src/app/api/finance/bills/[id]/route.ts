@@ -3,6 +3,7 @@ import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { billUpdateSchema } from "@/lib/validation/core";
 import { getBill, updateBill, deleteBill } from "@/services/core/bills";
 import { scheduleRemindersForEvent, cancelRemindersForEntity } from "@/services/core/reminders";
+import { UserFacingError } from "@/lib/errors";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -57,7 +58,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     return NextResponse.json({ data: bill });
   } catch (err) {
-    return NextResponse.json({ error: "Failed to update bill" }, { status: 500 });
+    const message = err instanceof UserFacingError ? err.message : "Failed to update bill";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -68,8 +70,11 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   try {
-    await cancelRemindersForEntity("bill", id);
+    // deleteBill first — it can now legitimately reject the delete (a
+    // debt-linked bill with a recorded payment), and reminders must not
+    // be cancelled for a bill that, in that case, still exists.
     await deleteBill(id);
+    await cancelRemindersForEntity("bill", id);
 
     await supabase.rpc("write_audit_event", {
       p_actor: user.id,
@@ -81,6 +86,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
 
     return NextResponse.json({ data: { id } });
   } catch (err) {
-    return NextResponse.json({ error: "Failed to delete bill" }, { status: 500 });
+    const message = err instanceof UserFacingError ? err.message : "Failed to delete bill";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

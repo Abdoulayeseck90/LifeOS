@@ -393,6 +393,26 @@ export const documentInputSchema = z.object({
 
 export type DocumentInput = z.infer<typeof documentInputSchema>;
 
+// The file itself is fixed at upload time (same reasoning as Personal
+// Documents' update schema) — only metadata can change afterward.
+// pinned is toggled through this same PATCH (a dedicated Pin action
+// just sends { pinned: true/false }), matching the Personal Documents
+// pattern exactly.
+export const documentUpdateSchema = z.object({
+  name: z.string().min(1).max(200).optional(),
+  type: z.string().min(1).optional(),
+  category: z.string().nullable().optional(),
+  document_date: z.string().date().nullable().optional(),
+  provider: z.string().nullable().optional(),
+  source: z.string().nullable().optional(),
+  tags: z.array(z.string()).optional(),
+  related_condition_id: z.string().uuid().nullable().optional(),
+  related_appointment_id: z.string().uuid().nullable().optional(),
+  related_lab_result_ids: z.array(z.string().uuid()).optional(),
+  pinned: z.boolean().optional(),
+});
+export type DocumentUpdateInput = z.infer<typeof documentUpdateSchema>;
+
 // test_type is intentionally an open string, not z.enum(...) — see the
 // comment on DiagnosticTest in types/health/entities.ts.
 export const diagnosticTestInputSchema = z.object({

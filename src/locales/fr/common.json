@@ -1744,6 +1744,13 @@
     "noDateResults": "Aucun document avec une date dans la plage sélectionnée. Les documents sans date ne sont pas affichés lorsqu'un filtre de date est actif.",
     "linkedLabResults": "Lié à {count, plural, one {# résultat d'analyse} other {# résultats d'analyse}}",
     "view": "Voir",
+    "download": "Télécharger",
+    "downloadError": "Échec du téléchargement. Veuillez réessayer.",
+    "editMetadata": "Modifier les métadonnées",
+    "editTitle": "Modifier le document",
+    "pin": "Épingler",
+    "unpin": "Désépingler",
+    "pinError": "Échec de la mise à jour. Veuillez réessayer.",
     "loading": "Chargement…",
     "viewError": "Impossible d'ouvrir",
     "deleteConfirmTitle": "Supprimer le document ?",
@@ -2454,6 +2461,7 @@
       "autoPayLabel": "Paiement automatique activé",
       "markAsPaid": "Marquer comme payée",
       "payError": "Impossible de marquer cette facture comme payée. Veuillez réessayer.",
+      "linkedTo": "Liée à {name}",
       "frequencyOptions": {
         "weekly": "Hebdomadaire",
         "monthly": "Mensuel",
@@ -2498,6 +2506,17 @@
       "nameRequired": "Veuillez entrer un nom de facture.",
       "amountRequired": "Veuillez entrer un montant supérieur à 0.",
       "dueDateRequired": "Veuillez choisir une date d'échéance.",
+      "paymentCategory": "Catégorie de paiement",
+      "paymentCategoryHelper": "Lier cette facture à une carte de crédit ou un prêt fera que la marquer comme payée appliquera aussi le paiement au solde de cette dette.",
+      "paymentCategoryOptions": {
+        "regular": "Facture normale",
+        "credit_card": "Paiement de carte de crédit",
+        "loan": "Paiement de prêt"
+      },
+      "selectCreditCard": "Sélectionner une carte de crédit",
+      "selectLoan": "Sélectionner un prêt",
+      "linkedCreditCardRequired": "Veuillez sélectionner une carte de crédit.",
+      "linkedLoanRequired": "Veuillez sélectionner un prêt.",
       "saveError": "Échec de l'enregistrement. Veuillez réessayer."
     },
     "subscriptions": {

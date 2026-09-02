@@ -57,6 +57,17 @@ export async function createDocument(
   return data as Document;
 }
 
+// Metadata only — the underlying Storage file is never touched here.
+// storage_path/mime_type/file_size aren't accepted by
+// documentUpdateSchema, so there's no way for this to ever be called
+// with a payload that could change which file the row points at.
+export async function updateDocument(id: string, input: Partial<Omit<Document, "id" | "user_id" | "created_at" | "updated_at">>): Promise<Document> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("documents").update(input).eq("id", id).select().single();
+  if (error) throw error;
+  return data as Document;
+}
+
 export async function deleteDocument(id: string): Promise<void> {
   const supabase = await createClient();
 

@@ -37,9 +37,9 @@ export default async function DocumentsPage({ searchParams }: { searchParams: Pr
           <p className="text-sm text-muted">{hasActiveRange ? t("noDateResults") : t("empty")}</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {documents.map((document) => (
-            <DocumentCard key={document.id} document={document} />
+            <DocumentCard key={document.id} document={document} conditions={conditions} appointments={appointments} labResults={labResults} />
           ))}
         </div>
       )}

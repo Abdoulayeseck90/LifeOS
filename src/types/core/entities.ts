@@ -91,6 +91,7 @@ export interface Document {
   related_condition_id: string | null;
   related_appointment_id: string | null;
   related_lab_result_ids: string[];
+  pinned: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -293,8 +294,26 @@ export interface Bill {
   status: BillStatus;
   paid_at: string | null;
   linked_transaction_id: string | null;
+  linked_credit_card_id: string | null;
+  linked_loan_id: string | null;
   reminders_enabled: boolean;
   notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// One row per bill ever paid toward a Credit Card or Loan — bill_id is
+// unique at the database level, which is the actual idempotency
+// guarantee ("the same bill must never reduce the debt balance more
+// than once"), not just an application-level check.
+export interface DebtPayment {
+  id: string;
+  user_id: string;
+  credit_card_id: string | null;
+  loan_id: string | null;
+  bill_id: string | null;
+  amount: number;
+  paid_at: string;
   created_at: string;
   updated_at: string;
 }

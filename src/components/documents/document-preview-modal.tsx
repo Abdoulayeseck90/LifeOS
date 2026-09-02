@@ -9,18 +9,26 @@ import { Modal } from "@/components/core/modal";
 // download link. Fetches the signed URL only once the modal is actually
 // open (not at render time), same lazy pattern as document-view-link.tsx
 // (Section 6.2).
+//
+// Shared between Personal Documents and Medical Documents — nothing in
+// here reads a Personal-Document-specific field, only the generic
+// id/name/mimeType any document type already has. signedUrlEndpoint
+// defaults to Personal Documents' own route so its existing caller
+// doesn't need to change; Medical Documents passes its own path.
 export function DocumentPreviewModal({
   documentId,
   name,
   mimeType,
   open,
   onOpenChange,
+  signedUrlEndpoint,
 }: {
   documentId: string;
   name: string;
   mimeType: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  signedUrlEndpoint?: string;
 }) {
   const t = useTranslations("personalDocuments");
   const [url, setUrl] = useState<string | null>(null);
@@ -38,7 +46,7 @@ export function DocumentPreviewModal({
     setLoading(true);
     setError(false);
 
-    fetch(`/api/documents/${documentId}/signed-url`)
+    fetch(signedUrlEndpoint ?? `/api/documents/${documentId}/signed-url`)
       .then((response) => (response.ok ? response.json() : Promise.reject(new Error("failed"))))
       .then((body) => {
         if (!cancelled) setUrl(body.url);
@@ -53,7 +61,7 @@ export function DocumentPreviewModal({
     return () => {
       cancelled = true;
     };
-  }, [open, documentId]);
+  }, [open, documentId, signedUrlEndpoint]);
 
   const isImage = mimeType.startsWith("image/");
   const isPdf = mimeType === "application/pdf";
