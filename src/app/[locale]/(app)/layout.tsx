@@ -1,11 +1,8 @@
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getAuthenticatedUser } from "@/lib/supabase/server";
-import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/core/header";
 import { AppSidebar } from "@/components/core/app-sidebar";
 import { OfflineSyncInit } from "@/components/core/offline-sync-init";
-import { LoadingState } from "@/components/core/loading-state";
 import { processDueReminders } from "@/services/core/reminders";
 
 // Auth gate for every authenticated route (dashboard, health/*, settings).
@@ -13,15 +10,18 @@ import { processDueReminders } from "@/services/core/reminders";
 // pages — fail fast with a redirect per Spec Section 30, same principle
 // as the 401 checks in the API routes.
 //
-// Startup-flash fix: the auth check + Header's own data fetches are a
-// real network round trip with nothing to show for it. loading.tsx only
-// wraps this segment's *page*, not this layout, so without a Suspense
-// boundary here the browser sits on a blank painted body for that whole
-// round trip before anything else can stream in. Wrapping the
-// auth-gated shell in its own Suspense (same LoadingState used by
-// (app)/loading.tsx) paints an app-styled spinner immediately instead —
-// the redirect and all protected rendering below still fully happen
-// before any of it reaches the client, nothing is weakened.
+// A prior attempt to close the startup-flash gap moved `children` out of
+// this exported function and into a separate async component wrapped in
+// a manually-added <Suspense>. That broke Dashboard specifically on a
+// full/cold page load (worked fine again after any client-side
+// navigation) — Next.js's App Router wires the `children` prop passed to
+// a layout's default export directly into that segment's own routing/
+// Suspense machinery (what lets loading.tsx auto-wrap it); relocating
+// `children` one level deeper breaks that wiring on the initial SSR
+// pass, but not on a client-side route swap, which never remounts this
+// layout at all. Reverted back to rendering `children` directly here.
+// The color-scheme meta tag in [locale]/layout.tsx (a separate, safe
+// fix) still stands on its own for the black-flash issue.
 export default async function AppLayout({
   children,
   params,
@@ -30,22 +30,6 @@ export default async function AppLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations("common");
-
-  return (
-    <Suspense fallback={<LoadingState label={t("loading")} />}>
-      <AuthenticatedShell locale={locale}>{children}</AuthenticatedShell>
-    </Suspense>
-  );
-}
-
-async function AuthenticatedShell({
-  children,
-  locale,
-}: {
-  children: React.ReactNode;
-  locale: string;
-}) {
   const user = await getAuthenticatedUser();
 
   if (!user) {
@@ -55,14 +39,14 @@ async function AuthenticatedShell({
   // Interim substitute for a real scheduled trigger — see the comment
   // on processDueReminders() in services/core/reminders.ts. Runs on
   // every authenticated page load; a no-op query when nothing is due.
-  // Still awaited (not fire-and-forget): on a serverless deployment an
-  // un-awaited background promise can be killed the moment the response
-  // finishes streaming, which would make reminders silently stop firing
-  // — a functional regression, not an acceptable trade for a visual fix.
-  // The Suspense boundary above is what actually fixes the blank-flash
-  // problem (something paints immediately regardless of how long this
-  // takes); this only still needs its own error containment so a
-  // failure here can't take down the whole authenticated shell.
+  // Never let this best-effort background side effect take the whole
+  // app down: it runs in the layout itself (not a page), so a thrown
+  // error here bypasses this segment's own error.tsx boundary entirely
+  // and would otherwise surface as a hard, unrecoverable server crash on
+  // every single authenticated route — e.g. if the database schema is
+  // temporarily out of sync with the code (see the reminders schema
+  // migration notes). Log it for real diagnosis, but always render the
+  // page the user actually asked for.
   try {
     await processDueReminders();
   } catch (err) {

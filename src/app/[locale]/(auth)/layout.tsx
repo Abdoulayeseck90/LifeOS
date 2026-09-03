@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getAuthenticatedUser } from "@/lib/supabase/server";
 import { Logo } from "@/components/core/logo";
@@ -7,12 +6,14 @@ import { Logo } from "@/components/core/logo";
 // visitor has no health nav to show. Already-authenticated visitors are
 // bounced to the dashboard rather than shown the login form again.
 //
-// Same startup-flash fix as (app)/layout.tsx: the already-authenticated
-// check below is a network round trip with nothing rendered while it's
-// in flight. A background matching the eventual card (bg-surface, same
-// as the real shell) as the Suspense fallback keeps that gap from
-// reading as an unstyled flash, without needing a spinner for what's
-// normally a near-instant check.
+// A prior attempt to close the startup-flash gap moved `children` into a
+// separate async component wrapped in a manually-added <Suspense> — see
+// the comment in (app)/layout.tsx for why that broke Dashboard on a cold
+// page load (Next.js wires a layout's `children` prop directly into that
+// segment's own routing/Suspense machinery; relocating it breaks that on
+// the initial SSR pass). Reverted here too, since this layout had the
+// identical structure and the identical risk, even though it hadn't yet
+// been reported broken.
 export default async function AuthLayout({
   children,
   params,
@@ -21,15 +22,6 @@ export default async function AuthLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-surface" />}>
-      <AuthGate locale={locale}>{children}</AuthGate>
-    </Suspense>
-  );
-}
-
-async function AuthGate({ children, locale }: { children: React.ReactNode; locale: string }) {
   const user = await getAuthenticatedUser();
 
   if (user) {
