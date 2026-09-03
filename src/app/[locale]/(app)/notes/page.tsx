@@ -24,7 +24,7 @@ export default async function NotesPage() {
         <NoteAddButton projects={projects} goals={goals} businesses={businesses} />
       </div>
 
-      <NotesList notes={notes} projects={projects} goals={goals} businesses={businesses} />
+      <NotesList notes={notes} />
     </div>
   );
 }

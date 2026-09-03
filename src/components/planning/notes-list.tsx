@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import type { Business, Goal, Note, Project } from "@/types/core/entities";
+import type { Note } from "@/types/core/entities";
 import { NoteCard } from "@/components/planning/note-card";
 import { useOfflineList } from "@/lib/offline/use-offline-list";
 import type { OfflineNote } from "@/lib/offline/db";
@@ -10,17 +10,7 @@ import type { OfflineNote } from "@/lib/offline/db";
 // Notes spec, Section 33/36: search over title/content/tags,
 // client-side over the already-fetched list (same pattern as
 // vital-history.tsx), pinned notes shown first.
-export function NotesList({
-  notes,
-  projects,
-  goals,
-  businesses,
-}: {
-  notes: Note[];
-  projects: Project[];
-  goals: Goal[];
-  businesses: Business[];
-}) {
+export function NotesList({ notes }: { notes: Note[] }) {
   const t = useTranslations("notes");
   const tOffline = useTranslations("common.offline");
   const [query, setQuery] = useState("");
@@ -62,7 +52,7 @@ export function NotesList({
               <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">{t("pinnedNotes")}</h2>
               <div className="flex flex-col gap-3">
                 {pinned.map((n) => (
-                  <NoteCard key={n.id} note={n} projects={projects} goals={goals} businesses={businesses} />
+                  <NoteCard key={n.id} note={n} />
                 ))}
               </div>
             </section>
@@ -73,7 +63,7 @@ export function NotesList({
               <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">{t("recentNotes")}</h2>
               <div className="flex flex-col gap-3">
                 {recent.map((n) => (
-                  <NoteCard key={n.id} note={n} projects={projects} goals={goals} businesses={businesses} />
+                  <NoteCard key={n.id} note={n} />
                 ))}
               </div>
             </section>

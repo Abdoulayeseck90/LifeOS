@@ -1,74 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Pin } from "lucide-react";
-import type { Business, Goal, Project } from "@/types/core/entities";
 import type { OfflineNote } from "@/lib/offline/db";
-import { NoteForm } from "@/components/planning/note-form";
-import { RecordFormModal } from "@/components/core/record-form-modal";
-import { ConfirmDialog } from "@/components/core/confirm-dialog";
+import { Link } from "@/lib/i18n/navigation";
 import { PendingSyncBadge } from "@/components/core/pending-sync-badge";
-import { attemptFetch } from "@/lib/offline/attempt-fetch";
-import { getDB } from "@/lib/offline/db";
-import { enqueue, SYNC_UPDATED_EVENT } from "@/lib/offline/sync-queue";
+import { useNotePinToggle } from "@/lib/notes/use-note-pin-toggle";
+import { stripMarkdownForPreview } from "@/lib/notes/strip-markdown-preview";
 
-export function NoteCard({
-  note,
-  projects,
-  goals,
-  businesses,
-}: {
-  note: OfflineNote;
-  projects: Project[];
-  goals: Goal[];
-  businesses: Business[];
-}) {
+// Notes Reading Experience spec: the list is for finding and opening a
+// note, not acting on it — Edit/Delete moved to the reading view
+// (NoteReadingView, at /notes/[id], which fetches its own
+// projects/goals/businesses for the Edit form), reached by opening the
+// note. Pin stays here as a quick-toggle (a common list-level
+// affordance, e.g. starring an email without opening it), deliberately
+// understated so it never dominates visually.
+export function NoteCard({ note }: { note: OfflineNote }) {
   const t = useTranslations("notes");
-  const tCommon = useTranslations("common");
-  const router = useRouter();
-  const [pinning, setPinning] = useState(false);
-
-  async function togglePin() {
-    setPinning(true);
-    const nextPinned = !note.pinned;
-    const body = { pinned: nextPinned };
-
-    const attempt = await attemptFetch(`/api/notes/${note.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    if (attempt.networkFailure) {
-      const db = await getDB();
-      await db.put("notes", { ...note, pinned: nextPinned, _pendingSync: true }, note.id);
-      await enqueue({ feature: "note", operation: "update", entityId: note.id, payload: body });
-      setPinning(false);
-      window.dispatchEvent(new Event(SYNC_UPDATED_EVENT));
-      return;
-    }
-
-    setPinning(false);
-    router.refresh();
-  }
-
-  async function handleDelete() {
-    const response = await fetch(`/api/notes/${note.id}`, { method: "DELETE" });
-    if (response.ok) router.refresh();
-  }
+  const { pinning, togglePin } = useNotePinToggle(note);
+  const preview = stripMarkdownForPreview(note.content);
 
   return (
     <div className="rounded-card border border-surface bg-white p-4">
       <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
+        <Link href={`/notes/${note.id}`} className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             {note.title && <p className="truncate font-medium text-secondary">{note.title}</p>}
             {note._pendingSync && <PendingSyncBadge />}
           </div>
-          <p className={`text-sm text-muted ${note.title ? "mt-1 line-clamp-2" : "line-clamp-3"}`}>{note.content}</p>
-        </div>
+          <p className={`text-sm text-muted ${note.title ? "mt-1 line-clamp-2" : "line-clamp-3"}`}>{preview}</p>
+        </Link>
         <button
           type="button"
           onClick={togglePin}
@@ -95,30 +56,6 @@ export function NoteCard({
           ))}
         </div>
       )}
-
-      <div className="mt-3 flex gap-4">
-        <RecordFormModal
-          trigger={(open) => (
-            <button type="button" onClick={open} className="text-xs text-primary hover:underline">
-              {tCommon("edit")}
-            </button>
-          )}
-          modalTitle={t("editTitle")}
-          variant="drawer"
-        >
-          {(modalProps) => <NoteForm note={note} projects={projects} goals={goals} businesses={businesses} {...modalProps} />}
-        </RecordFormModal>
-        <ConfirmDialog
-          trigger={(open) => (
-            <button type="button" onClick={open} className="text-xs text-status-urgent hover:underline">
-              {tCommon("delete")}
-            </button>
-          )}
-          title={t("deleteConfirmTitle")}
-          description={t("deleteConfirmMessage")}
-          onConfirm={handleDelete}
-        />
-      </div>
     </div>
   );
 }

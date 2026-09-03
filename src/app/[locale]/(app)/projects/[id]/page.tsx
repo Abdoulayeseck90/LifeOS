@@ -134,7 +134,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         ) : (
           <div className="flex flex-col gap-3">
             {notes.map((n) => (
-              <NoteCard key={n.id} note={n} projects={[project]} goals={goals} businesses={businesses} />
+              <NoteCard key={n.id} note={n} />
             ))}
           </div>
         )}
