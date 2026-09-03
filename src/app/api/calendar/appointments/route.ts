@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
-import { appointmentInputSchema } from "@/lib/validation/health";
-import { listAppointments, createAppointment } from "@/services/health/appointments";
+import { appointmentInputSchema } from "@/lib/validation/core";
+import { listAppointments, createAppointment } from "@/services/core/appointments";
 import { createTimelineEvent } from "@/services/core/timeline";
-import { scheduleRemindersForEvent } from "@/services/core/reminders";
+import { scheduleAppointmentSeriesReminders } from "@/services/core/reminders";
 
-// Mirrors src/app/api/health/conditions/route.ts.
+// Moved from src/app/api/health/appointments/route.ts — appointments are
+// now a global Calendar feature (Calendar spec), not Health-specific.
+// Mirrors src/app/api/health/conditions/route.ts otherwise.
 
 export async function GET() {
   const user = await getAuthenticatedUser();
@@ -36,6 +38,7 @@ export async function POST(request: Request) {
 
   try {
     const appointment = await createAppointment(parsed.data);
+    const title = appointment.title ?? appointment.provider_name ?? "Appointment";
 
     await supabase.rpc("write_audit_event", {
       p_actor: user.id,
@@ -48,22 +51,15 @@ export async function POST(request: Request) {
     await createTimelineEvent({
       event_type: "appointment",
       date_time: new Date(appointment.date_time).toISOString(),
-      title: appointment.provider_name,
+      title,
       domain: "health",
       related_entity_type: "appointment",
       related_entity_id: appointment.id,
     });
 
-    if (appointment.status === "scheduled") {
-      await scheduleRemindersForEvent({
-        relatedEntityType: "appointment",
-        relatedEntityId: appointment.id,
-        dueAt: appointment.date_time,
-        isDateOnly: false,
-        category: "appointments",
-        title: appointment.provider_name,
-      });
-    }
+    // Handles both recurring and non-recurring appointments uniformly —
+    // a non-recurring row just expands to its own single occurrence.
+    await scheduleAppointmentSeriesReminders(appointment.id);
 
     return NextResponse.json({ data: appointment }, { status: 201 });
   } catch (err) {

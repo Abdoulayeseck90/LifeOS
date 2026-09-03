@@ -1,36 +1,37 @@
 import { getTranslations } from "next-intl/server";
 import { listMonitoringItems } from "@/services/health/monitoring";
-import { listAppointments } from "@/services/health/appointments";
+import { listAppointmentOccurrences } from "@/services/core/appointments";
 import { listConditions } from "@/services/health/conditions";
-import { CalendarView, type CalendarEntry } from "@/components/health/calendar-view";
-import { AppointmentAddButton } from "@/components/health/appointment-add-button";
+import { CalendarView, type CalendarEntry } from "@/components/calendar/calendar-view";
+import { AppointmentAddButton } from "@/components/calendar/appointment-add-button";
 
-// The global LifeOS Calendar (Master Redesign Section 18), not a
-// Health-only page — moved from health/calendar. It answers "what's
-// scheduled and when?" — the Health Timeline (health/timeline/page.tsx)
-// answers "what happened and when?"; the two are deliberately not
-// merged. Only Health has real event sources today (monitoring due
-// dates + upcoming appointments); Planning/Travel/Business are meant to
-// append their own sources to the same `entries` array once those
-// modules exist — CalendarView's rendering is already domain-agnostic,
-// keyed only by module/type strings (see its CalendarEntry type: id,
-// title, date, time, type, module, status, location all already
-// supported), so no rework is needed when that happens. "+ Add" reuses
-// the existing Appointment form — appointments are the only entity a
-// user can directly schedule today; no fake generic "event" entity
-// invented for the button to feed into.
-// Per-user data behind auth — never statically prerendered.
+// The global LifeOS Calendar (Calendar spec) — the one place appointments
+// of any kind (medical, work, personal, financial, travel, other) are
+// created, viewed, edited, and deleted; Health's own Appointments page
+// now just redirects here. Occurrences (including recurring ones) are
+// expanded server-side via listAppointmentOccurrences() over a bounded
+// +/-2 year window — generous enough for realistic month/week/day
+// navigation without materializing an unbounded series. Only Health has
+// a second real event source today (monitoring due dates);
+// Planning/Travel/Business are meant to append their own sources to the
+// same `entries` array once those modules exist — CalendarView's
+// rendering is already domain-agnostic, keyed only by module/type
+// strings. Per-user data behind auth — never statically prerendered.
 export const dynamic = "force-dynamic";
 
 export default async function CalendarPage() {
   const t = await getTranslations("calendar");
-  const [items, appointments, conditions] = await Promise.all([
+  const now = new Date();
+  const rangeStart = new Date(now.getTime() - 2 * 365 * 86_400_000);
+  const rangeEnd = new Date(now.getTime() + 2 * 365 * 86_400_000);
+
+  const [items, occurrences, conditions] = await Promise.all([
     listMonitoringItems(),
-    listAppointments(),
+    listAppointmentOccurrences(rangeStart, rangeEnd),
     listConditions(),
   ]);
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = now.toISOString().slice(0, 10);
 
   const entries: CalendarEntry[] = [
     ...items
@@ -42,17 +43,17 @@ export default async function CalendarPage() {
         module: "health",
         type: "monitoring",
       })),
-    ...appointments
-      .filter((appointment) => appointment.status === "scheduled" && appointment.date_time.slice(0, 10) >= today)
-      .map((appointment) => ({
-        date: appointment.date_time.slice(0, 10),
-        dateTime: appointment.date_time,
-        title: `${t("appointmentWith")} ${appointment.provider_name}`,
-        module: "health",
-        type: "appointment",
-        location: appointment.location ?? undefined,
-        status: appointment.status,
-      })),
+    ...occurrences.map((occurrence) => ({
+      date: occurrence.occurrenceStart.slice(0, 10),
+      dateTime: occurrence.occurrenceStart,
+      title: occurrence.appointment.title ?? occurrence.appointment.provider_name ?? t("appointmentWith"),
+      module: "health",
+      type: "appointment",
+      location: occurrence.appointment.location ?? undefined,
+      status: occurrence.appointment.status,
+      appointment: occurrence.appointment,
+      occurrenceStart: occurrence.occurrenceStart,
+    })),
   ].sort((a, b) => a.date.localeCompare(b.date));
 
   return (
@@ -61,6 +62,7 @@ export default async function CalendarPage() {
       subtitle={t("subtitle")}
       entries={entries}
       addAction={<AppointmentAddButton conditions={conditions} />}
+      conditions={conditions}
     />
   );
 }

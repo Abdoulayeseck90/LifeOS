@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Appointment, Condition } from "@/types/health/entities";
+import { AppointmentEntryModal } from "@/components/calendar/appointment-entry-modal";
 
 export type CalendarEntry = {
   date: string; // "YYYY-MM-DD"
@@ -13,6 +15,11 @@ export type CalendarEntry = {
   type: string; // e.g. "appointment" | "monitoring" — translated via calendar.types.*
   location?: string;
   status?: string; // translated via calendar.statuses.* when present; omitted entirely when it wouldn't add information
+  // Present only for appointment-sourced entries — what makes an entry
+  // clickable into View/Edit/Delete. Monitoring entries stay static, as
+  // before (monitoring items are managed from Health, not Calendar).
+  appointment?: Appointment;
+  occurrenceStart?: string;
 };
 
 const FILTER_MODULES = ["health", "planning", "travel", "business", "finance", "projects"] as const;
@@ -49,9 +56,34 @@ function buildMonthGrid(focusMonth: Date): Date[] {
   });
 }
 
-function EventCard({ entry, t, locale }: { entry: CalendarEntry; t: ReturnType<typeof useTranslations>; locale: string }) {
+function buildWeekGrid(anchor: Date): Date[] {
+  const start = new Date(anchor);
+  start.setDate(start.getDate() - start.getDay());
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    return d;
+  });
+}
+
+function EventCard({
+  entry,
+  t,
+  locale,
+  onClick,
+}: {
+  entry: CalendarEntry;
+  t: ReturnType<typeof useTranslations>;
+  locale: string;
+  onClick?: () => void;
+}) {
+  const Wrapper = onClick ? "button" : "div";
   return (
-    <div className="rounded-card border border-surface bg-white p-3">
+    <Wrapper
+      type={onClick ? "button" : undefined}
+      onClick={onClick}
+      className={`w-full rounded-card border border-surface bg-white p-3 text-left ${onClick ? "cursor-pointer hover:bg-surface" : ""}`}
+    >
       <div className="flex items-start gap-2">
         <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${moduleDotClass(entry.module)}`} />
         <div className="min-w-0 flex-1">
@@ -73,30 +105,36 @@ function EventCard({ entry, t, locale }: { entry: CalendarEntry; t: ReturnType<t
           )}
         </div>
       </div>
-    </div>
+    </Wrapper>
   );
 }
 
-// Agenda (default) and Month views over the same entries array — no
-// separate data-fetching per view. Designed so future modules
-// (Planning/Travel/etc.) only ever need to add more entries with their
-// own `module` value — see calendar/page.tsx and MODULE_DOT_CLASSES.
+// Agenda (default), Month, Week, and Day views over the same entries
+// array — no separate data-fetching per view. Designed so future
+// modules (Planning/Travel/etc.) only ever need to add more entries with
+// their own `module` value — see calendar/page.tsx and
+// MODULE_DOT_CLASSES. Any entry carrying an `appointment` is clickable
+// into View/Edit/Delete (AppointmentEntryModal); entries without one
+// (monitoring) stay display-only, unchanged.
 export function CalendarView({
   title,
   subtitle,
   entries,
   addAction,
+  conditions,
 }: {
   title: string;
   subtitle: string;
   entries: CalendarEntry[];
   addAction: React.ReactNode;
+  conditions: Condition[];
 }) {
   const t = useTranslations("calendar");
   const { locale } = useParams<{ locale: string }>();
-  const [view, setView] = useState<"agenda" | "month">("agenda");
+  const [view, setView] = useState<"agenda" | "month" | "week" | "day">("agenda");
   const [moduleFilter, setModuleFilter] = useState<string>("all");
-  const [focusMonth, setFocusMonth] = useState(() => new Date());
+  const [anchorDate, setAnchorDate] = useState(() => new Date());
+  const [selectedEntry, setSelectedEntry] = useState<CalendarEntry | null>(null);
 
   const filteredEntries = moduleFilter === "all" ? entries : entries.filter((e) => e.module === moduleFilter);
 
@@ -117,8 +155,25 @@ export function CalendarView({
     return map;
   }, [filteredEntries]);
 
-  const monthGrid = useMemo(() => buildMonthGrid(focusMonth), [focusMonth]);
+  const monthGrid = useMemo(() => buildMonthGrid(anchorDate), [anchorDate]);
+  const weekGrid = useMemo(() => buildWeekGrid(anchorDate), [anchorDate]);
   const todayStr = toDateOnly(new Date());
+  const dayStr = toDateOnly(anchorDate);
+  const dayEntries = (entriesByDate[dayStr] ?? []).slice().sort((a, b) => (a.dateTime ?? "").localeCompare(b.dateTime ?? ""));
+
+  function shiftAnchor(amount: number) {
+    setAnchorDate((prev) => {
+      const next = new Date(prev);
+      if (view === "month") next.setMonth(next.getMonth() + amount);
+      else if (view === "week") next.setDate(next.getDate() + amount * 7);
+      else next.setDate(next.getDate() + amount);
+      return next;
+    });
+  }
+
+  function renderEntryCard(entry: CalendarEntry, key: string | number) {
+    return <EventCard key={key} entry={entry} t={t} locale={locale} onClick={entry.appointment ? () => setSelectedEntry(entry) : undefined} />;
+  }
 
   return (
     <div>
@@ -130,51 +185,50 @@ export function CalendarView({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => setFocusMonth(new Date())}
+            onClick={() => setAnchorDate(new Date())}
             className="inline-flex min-h-11 items-center rounded border border-surface px-3 text-sm text-secondary hover:bg-surface"
           >
             {t("today")}
           </button>
           <div className="flex rounded border border-surface p-0.5">
-            <button
-              type="button"
-              onClick={() => setView("agenda")}
-              aria-pressed={view === "agenda"}
-              className={`inline-flex min-h-11 items-center rounded px-3 text-sm ${view === "agenda" ? "bg-primary text-primary-foreground" : "text-secondary"}`}
-            >
-              {t("viewAgenda")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setView("month")}
-              aria-pressed={view === "month"}
-              className={`inline-flex min-h-11 items-center rounded px-3 text-sm ${view === "month" ? "bg-primary text-primary-foreground" : "text-secondary"}`}
-            >
-              {t("viewMonth")}
-            </button>
+            {(["agenda", "day", "week", "month"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
+                aria-pressed={view === v}
+                className={`inline-flex min-h-11 items-center rounded px-3 text-sm ${view === v ? "bg-primary text-primary-foreground" : "text-secondary"}`}
+              >
+                {t(`view${v.charAt(0).toUpperCase()}${v.slice(1)}`)}
+              </button>
+            ))}
           </div>
           {addAction}
         </div>
       </div>
 
       <div className="mb-6 mt-4 flex flex-wrap items-center justify-between gap-3">
-        {view === "month" ? (
+        {view !== "agenda" ? (
           <div className="flex items-center gap-1">
             <button
               type="button"
               aria-label={t("previous")}
-              onClick={() => setFocusMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+              onClick={() => shiftAnchor(-1)}
               className="flex min-h-11 min-w-11 items-center justify-center rounded border border-surface text-secondary hover:bg-surface"
             >
               <ChevronLeft size={16} />
             </button>
             <span className="min-w-32 px-1 text-center text-sm font-medium text-secondary">
-              {focusMonth.toLocaleDateString(locale, { month: "long", year: "numeric" })}
+              {view === "month"
+                ? anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" })
+                : view === "day"
+                  ? anchorDate.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" })
+                  : `${weekGrid[0]!.toLocaleDateString(locale, { month: "short", day: "numeric" })} – ${weekGrid[6]!.toLocaleDateString(locale, { month: "short", day: "numeric" })}`}
             </span>
             <button
               type="button"
               aria-label={t("next")}
-              onClick={() => setFocusMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+              onClick={() => shiftAnchor(1)}
               className="flex min-h-11 min-w-11 items-center justify-center rounded border border-surface text-secondary hover:bg-surface"
             >
               <ChevronRight size={16} />
@@ -199,8 +253,8 @@ export function CalendarView({
         </select>
       </div>
 
-      {view === "agenda" ? (
-        agendaDateKeys.length === 0 ? (
+      {view === "agenda" &&
+        (agendaDateKeys.length === 0 ? (
           <div className="rounded-card border border-dashed border-surface p-10 text-center">
             <p className="text-sm font-medium text-secondary">{t("emptyTitle")}</p>
             <p className="mt-1 text-sm text-muted">{t("empty")}</p>
@@ -219,16 +273,46 @@ export function CalendarView({
                     {date.toLocaleDateString(locale, { month: "long", day: "numeric" })}
                   </h2>
                   <div className="flex flex-col gap-2">
-                    {(agendaGroups[dateKey] ?? []).map((entry, index) => (
-                      <EventCard key={`${dateKey}-${index}`} entry={entry} t={t} locale={locale} />
-                    ))}
+                    {(agendaGroups[dateKey] ?? []).map((entry, index) => renderEntryCard(entry, index))}
                   </div>
                 </div>
               );
             })}
           </div>
-        )
-      ) : (
+        ))}
+
+      {view === "day" &&
+        (dayEntries.length === 0 ? (
+          <div className="rounded-card border border-dashed border-surface p-10 text-center">
+            <p className="text-sm text-muted">{t("empty")}</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">{dayEntries.map((entry, index) => renderEntryCard(entry, index))}</div>
+        ))}
+
+      {view === "week" && (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-7">
+          {weekGrid.map((day) => {
+            const dateKey = toDateOnly(day);
+            const isToday = dateKey === todayStr;
+            const columnEntries = (entriesByDate[dateKey] ?? []).slice().sort((a, b) => (a.dateTime ?? "").localeCompare(b.dateTime ?? ""));
+            return (
+              <div key={dateKey} className="flex flex-col gap-2">
+                <p className={`text-xs font-semibold uppercase tracking-wide ${isToday ? "text-primary" : "text-muted"}`}>
+                  {day.toLocaleDateString(locale, { weekday: "short", day: "numeric" })}
+                </p>
+                {columnEntries.length === 0 ? (
+                  <p className="text-xs text-muted">—</p>
+                ) : (
+                  <div className="flex flex-col gap-1.5">{columnEntries.map((entry, index) => renderEntryCard(entry, index))}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {view === "month" && (
         <div className="overflow-x-auto">
           <div className="grid min-w-[560px] grid-cols-7 gap-px overflow-hidden rounded-card border border-surface bg-surface text-xs font-semibold uppercase tracking-wide text-muted sm:min-w-0">
             {[0, 1, 2, 3, 4, 5, 6].map((weekday) => (
@@ -240,9 +324,9 @@ export function CalendarView({
           <div className="grid min-w-[560px] grid-cols-7 gap-px overflow-hidden rounded-b-card border border-t-0 border-surface bg-surface sm:min-w-0">
             {monthGrid.map((day) => {
               const dateKey = toDateOnly(day);
-              const inFocusMonth = day.getMonth() === focusMonth.getMonth();
+              const inFocusMonth = day.getMonth() === anchorDate.getMonth();
               const isToday = dateKey === todayStr;
-              const dayEntries = entriesByDate[dateKey] ?? [];
+              const cellEntries = entriesByDate[dateKey] ?? [];
 
               return (
                 <div key={dateKey} className={`min-h-20 bg-white p-1.5 sm:min-h-24 ${inFocusMonth ? "" : "bg-surface/40"}`}>
@@ -258,14 +342,20 @@ export function CalendarView({
                     {day.getDate()}
                   </span>
                   <div className="mt-1 flex flex-col gap-0.5">
-                    {dayEntries.slice(0, 2).map((entry, index) => (
-                      <div key={index} className="flex items-center gap-1 truncate text-[11px] text-secondary">
+                    {cellEntries.slice(0, 2).map((entry, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => entry.appointment && setSelectedEntry(entry)}
+                        disabled={!entry.appointment}
+                        className="flex w-full items-center gap-1 truncate text-left text-[11px] text-secondary disabled:cursor-default"
+                      >
                         <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${moduleDotClass(entry.module)}`} />
                         <span className="truncate">{entry.title}</span>
-                      </div>
+                      </button>
                     ))}
-                    {dayEntries.length > 2 && (
-                      <p className="text-[11px] text-muted">{t("moreCount", { count: dayEntries.length - 2 })}</p>
+                    {cellEntries.length > 2 && (
+                      <p className="text-[11px] text-muted">{t("moreCount", { count: cellEntries.length - 2 })}</p>
                     )}
                   </div>
                 </div>
@@ -273,6 +363,16 @@ export function CalendarView({
             })}
           </div>
         </div>
+      )}
+
+      {selectedEntry?.appointment && selectedEntry.occurrenceStart && (
+        <AppointmentEntryModal
+          open={Boolean(selectedEntry)}
+          onOpenChange={(open) => !open && setSelectedEntry(null)}
+          appointment={selectedEntry.appointment}
+          occurrenceStart={selectedEntry.occurrenceStart}
+          conditions={conditions}
+        />
       )}
     </div>
   );

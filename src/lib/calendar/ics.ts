@@ -1,13 +1,22 @@
 // RFC 5545 iCalendar generation for the one-way LifeOS -> Apple Calendar
-// feed. Deliberately minimal: no VTIMEZONE block, no RRULE. Appointments'
-// date_time is already a precise UTC instant (Postgres timestamptz), so
-// emitting it with a Z suffix needs no timezone conversion at all —
-// every calendar client (including Apple Calendar) converts a UTC
-// instant to the viewer's local time automatically. Monitoring items'
-// next_due_at is a plain calendar date with no time component, so it
-// becomes an all-day VEVENT (DTSTART;VALUE=DATE) — also inherently
-// timezone-free, and matches how the in-app Calendar page already
-// treats it (CalendarEntry.dateTime: null for monitoring).
+// feed. Deliberately minimal: no VTIMEZONE block. Appointments' date_time
+// is already a precise UTC instant (Postgres timestamptz), so emitting it
+// with a Z suffix needs no timezone conversion at all — every calendar
+// client (including Apple Calendar) converts a UTC instant to the
+// viewer's local time automatically. Monitoring items' next_due_at is a
+// plain calendar date with no time component, so it becomes an all-day
+// VEVENT (DTSTART;VALUE=DATE) — also inherently timezone-free, and
+// matches how the in-app Calendar page already treats it
+// (CalendarEntry.dateTime: null for monitoring).
+//
+// Recurring appointments (Calendar spec): a recurring master emits ONE
+// VEVENT carrying RRULE (+ EXDATE for cancelled occurrences) instead of
+// one VEVENT per future occurrence — every calendar client already knows
+// how to expand RRULE itself. A single-occurrence override (a moved/
+// edited instance) emits its own VEVENT sharing the MASTER's UID plus a
+// RECURRENCE-ID identifying which original instant it replaces (RFC 5545
+// §3.8.4.4) — this is what tells Apple Calendar "this replaces one
+// instance of that series," never an unrelated duplicate event.
 export interface CalendarFeedEvent {
   source: "appointment" | "monitoring";
   id: string;
@@ -18,6 +27,10 @@ export interface CalendarFeedEvent {
   location: string | null;
   createdAt: string;
   updatedAt: string;
+  recurrenceRule: string | null; // set only on a recurring master
+  recurrenceExcludedOccurrences: string[]; // ISO instants; only meaningful on a recurring master
+  recurrenceParentId: string | null; // set only on an override row
+  recurrenceOriginalStart: string | null; // set only on an override row
 }
 
 const CRLF = "\r\n";
@@ -75,7 +88,11 @@ function formatDateOnly(dateStr: string): string {
 }
 
 function buildVEvent(event: CalendarFeedEvent, now: string): string {
-  const uid = `lifeos-${event.source}-${event.id}@lifeos.local`;
+  // An override row shares its MASTER's UID (not its own id) — that's
+  // what identifies it to a calendar client as "an instance of that
+  // series" rather than an unrelated event.
+  const uidSourceId = event.recurrenceParentId ?? event.id;
+  const uid = `lifeos-${event.source}-${uidSourceId}@lifeos.local`;
   const lines: string[] = [];
   lines.push("BEGIN:VEVENT");
   lines.push(formatIcsLine("UID", uid));
@@ -85,6 +102,16 @@ function buildVEvent(event: CalendarFeedEvent, now: string): string {
     lines.push(`DTSTART:${formatDateTimeUtc(event.startsAt)}`);
   } else if (event.dueDate) {
     lines.push(`DTSTART;VALUE=DATE:${formatDateOnly(event.dueDate)}`);
+  }
+
+  if (event.recurrenceRule) {
+    lines.push(`RRULE:${event.recurrenceRule}`);
+    for (const excluded of event.recurrenceExcludedOccurrences) {
+      lines.push(`EXDATE:${formatDateTimeUtc(excluded)}`);
+    }
+  }
+  if (event.recurrenceOriginalStart) {
+    lines.push(`RECURRENCE-ID:${formatDateTimeUtc(event.recurrenceOriginalStart)}`);
   }
 
   lines.push(formatIcsLine("SUMMARY", event.title));

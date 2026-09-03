@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RRule } from "rrule";
 
 // Server-side validation per Spec Section 30 — same pattern as
 // src/lib/validation/health.ts.
@@ -398,3 +399,94 @@ export const duaUserDataUpdateSchema = z.object({
   notes: z.string().max(2000).optional(),
 });
 export type DuaUserDataUpdateInput = z.infer<typeof duaUserDataUpdateSchema>;
+
+// Appointments moved here from validation/health.ts — Calendar spec:
+// appointments are now a global Calendar feature, not Health-specific.
+// title/provider_name: at least one required (mirrors the
+// appointments_has_label DB check constraint) — every pre-existing
+// medical appointment has provider_name; new non-medical ones use
+// title instead. recurrence_rule is validated as a real, parseable
+// RFC 5545 rule before it ever reaches the database — a malformed rule
+// here would otherwise surface much later as a silently-empty calendar
+// (generateOccurrences() swallows a parse failure per-row so one bad
+// rule can't break the whole page) rather than a clear save-time error.
+const appointmentCategorySchema = z.enum(["medical", "work", "personal", "financial", "travel", "other"]);
+
+export const appointmentInputSchema = z
+  .object({
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().optional(),
+    provider_name: z.string().min(1).max(200).optional(),
+    specialty: z.string().optional(),
+    appointment_type: z.string().optional(),
+    date_time: z.string().datetime().or(z.string().min(1)),
+    // Nullable (not just optional): the client always sends an explicit
+    // value for these four — null when clearing/leaving unset, a real
+    // value otherwise — rather than omitting the key, so create (this
+    // schema) and update (appointmentUpdateSchema below) both need to
+    // accept null, not just undefined.
+    end_time: z.string().datetime().or(z.string().min(1)).nullable().optional(),
+    location: z.string().optional(),
+    category: appointmentCategorySchema.default("medical"),
+    status: z.enum(["scheduled", "completed", "cancelled", "no_show"]).default("scheduled"),
+    preparation_notes: z.string().optional(),
+    clinician_instructions: z.string().optional(),
+    follow_up_date: z.string().date().optional(),
+    related_condition_id: z.string().uuid().nullable().optional(),
+    notes: z.string().optional(),
+    reminder_lead_minutes: z.number().int().positive().nullable().optional(),
+    recurrence_rule: z
+      .string()
+      .refine((rule) => {
+        try {
+          RRule.parseString(rule);
+          return true;
+        } catch {
+          return false;
+        }
+      }, "Invalid recurrence rule")
+      .nullable()
+      .optional(),
+  })
+  .refine((data) => Boolean(data.title || data.provider_name), {
+    message: "Please provide a title.",
+    path: ["title"],
+  });
+
+export type AppointmentInput = z.infer<typeof appointmentInputSchema>;
+
+const appointmentScopeSchema = z.enum(["series", "this", "following"]);
+
+// PATCH: every field optional (an edit may touch just one field — the
+// base schema's end_time/related_condition_id/reminder_lead_minutes/
+// recurrence_rule are already nullable, so .partial() keeps them
+// nullable-and-optional here too, letting the client explicitly clear
+// one with a real `null` distinct from simply not touching it), plus
+// the edit-scope fields the Calendar spec requires — occurrence_start
+// identifies which generated occurrence "this"/"following" applies to,
+// required for those two scopes and meaningless for "series".
+export const appointmentUpdateSchema = appointmentInputSchema
+  .innerType()
+  .partial()
+  .extend({
+    scope: appointmentScopeSchema.default("series"),
+    occurrence_start: z.string().datetime().optional(),
+  })
+  .refine((data) => data.scope === "series" || Boolean(data.occurrence_start), {
+    message: "occurrence_start is required for this/following scope.",
+    path: ["occurrence_start"],
+  });
+
+export type AppointmentUpdateInput = z.infer<typeof appointmentUpdateSchema>;
+
+export const appointmentDeleteSchema = z
+  .object({
+    scope: appointmentScopeSchema.default("series"),
+    occurrence_start: z.string().datetime().optional(),
+  })
+  .refine((data) => data.scope === "series" || Boolean(data.occurrence_start), {
+    message: "occurrence_start is required for this/following scope.",
+    path: ["occurrence_start"],
+  });
+
+export type AppointmentDeleteInput = z.infer<typeof appointmentDeleteSchema>;

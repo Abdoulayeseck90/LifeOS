@@ -419,6 +419,8 @@
     "appointmentWith": "Rendez-vous avec",
     "viewAgenda": "Agenda",
     "viewMonth": "Mois",
+    "viewWeek": "Semaine",
+    "viewDay": "Jour",
     "today": "Aujourd'hui",
     "previous": "Précédent",
     "next": "Suivant",
@@ -442,6 +444,22 @@
       "completed": "Terminé",
       "cancelled": "Annulé",
       "no_show": "Absence"
+    },
+    "categories": {
+      "medical": "Médical",
+      "work": "Travail",
+      "personal": "Personnel",
+      "financial": "Financier",
+      "travel": "Voyage",
+      "other": "Autre"
+    },
+    "recurrenceScope": {
+      "editTitle": "Modifier ce rendez-vous",
+      "deleteTitle": "Supprimer ce rendez-vous",
+      "this": "Cette occurrence",
+      "following": "Celui-ci et les suivants",
+      "series": "Série entière",
+      "recurring": "Fait partie d'une série récurrente"
     }
   },
   "monitoring": {
@@ -569,8 +587,16 @@
       "editTitle": "Modifier le rendez-vous",
       "providerName": "Nom du prestataire",
       "providerRequired": "Veuillez entrer le nom du prestataire.",
+      "titleLabel": "Titre",
+      "titlePlaceholder": "ex. Rendez-vous médical, Entretien d'embauche, Entretien voiture",
+      "titleRequired": "Veuillez entrer un titre.",
+      "description": "Description",
+      "date": "Date",
+      "startTime": "Heure de début",
+      "endTime": "Heure de fin",
       "dateTime": "Date et heure",
       "dateTimeRequired": "Veuillez choisir une date et une heure.",
+      "category": "Catégorie",
       "status": "Statut",
       "statusOptions": {
         "scheduled": "Planifié",
@@ -590,7 +616,62 @@
       "clinicianInstructions": "Instructions du clinicien",
       "notes": "Notes",
       "save": "Enregistrer le rendez-vous",
-      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "reminder": "Rappel",
+      "reminderHelper": "Recevoir une notification avant ce rendez-vous.",
+      "reminderOptions": {
+        "none": "Aucun",
+        "thirtyMinutes": "30 minutes avant",
+        "oneHour": "1 heure avant",
+        "oneDay": "1 jour avant",
+        "oneWeek": "1 semaine avant",
+        "custom": "Personnalisé"
+      },
+      "reminderCustomMinutes": "Minutes avant",
+      "repeats": "Ce rendez-vous se répète",
+      "recurrenceAppliesNote": "Ces paramètres s'appliquent si vous choisissez « Série entière » ou « Celui-ci et les suivants » lors de l'enregistrement.",
+      "frequency": "Répéter",
+      "recurrenceFrequency": {
+        "daily": "Quotidien",
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "yearly": "Annuel",
+        "custom": "Personnalisé"
+      },
+      "weeklyDays": "Se répète le",
+      "weeklyDaysRequired": "Veuillez choisir au moins un jour.",
+      "weekdaysShort": {
+        "0": "Dim",
+        "1": "Lun",
+        "2": "Mar",
+        "3": "Mer",
+        "4": "Jeu",
+        "5": "Ven",
+        "6": "Sam"
+      },
+      "monthlyPattern": "Se répète",
+      "monthlyPatternOptions": {
+        "same_day": "Mensuel à cette date",
+        "first_weekday": "Mensuel le premier jour de semaine",
+        "last_weekday": "Mensuel le dernier jour de semaine"
+      },
+      "customEvery": "Tous les",
+      "customUnit": "Unité",
+      "customUnitOptions": {
+        "days": "Jours",
+        "weeks": "Semaines",
+        "months": "Mois",
+        "years": "Ans"
+      },
+      "recurrenceEnd": "Se termine",
+      "recurrenceEndOptions": {
+        "never": "Jamais",
+        "on_date": "À une date",
+        "after_count": "Après un nombre d'occurrences"
+      },
+      "recurrenceEndDate": "Date de fin",
+      "endDateRequired": "Veuillez choisir une date de fin.",
+      "recurrenceEndCount": "Nombre d'occurrences"
     }
   },
   "symptoms": {
@@ -2774,6 +2855,8 @@
     "recentNotes": "Notes récentes",
     "pin": "Épingler",
     "unpin": "Désépingler",
+    "untitled": "Note sans titre",
+    "updatedOn": "Mise à jour le {date}",
     "form": {
       "title": "Titre",
       "titlePlaceholder": "Titre facultatif",

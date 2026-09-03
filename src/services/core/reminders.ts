@@ -4,9 +4,11 @@ import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Reminder, ReminderDeliveryChannel, LeadTimeBucket, NotificationCategoryPreference } from "@/types/core/entities";
 import { getEmailSender, buildReminderEmail } from "@/services/core/email";
 import { getProfile } from "@/services/core/profile";
-import { computeScheduledFor, buildReminderKey, LEAD_DAYS_BY_BUCKET } from "@/lib/notifications/scheduling";
+import { computeScheduledFor, computeScheduledForMinutesBefore, buildReminderKey, LEAD_DAYS_BY_BUCKET } from "@/lib/notifications/scheduling";
 import { listMonitoringItems } from "@/services/health/monitoring";
-import { listAppointments } from "@/services/health/appointments";
+import { listAppointments } from "@/services/core/appointments";
+import { generateOccurrences } from "@/lib/calendar/recurrence";
+import type { Appointment } from "@/types/health/entities";
 import { listBills } from "@/services/core/bills";
 import { listSubscriptions } from "@/services/core/subscriptions";
 import { listPersonalDocuments } from "@/services/core/personal-documents";
@@ -204,6 +206,154 @@ export async function scheduleRemindersForEvent(input: {
     console.error("[reminders] scheduleRemindersForEvent failed (entity save is unaffected):", {
       relatedEntityType: input.relatedEntityType,
       relatedEntityId: input.relatedEntityId,
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
+}
+
+const APPOINTMENT_REMINDER_LOOKAHEAD_DAYS = 90;
+
+// Recurring appointments can't have their reminders scheduled once at
+// creation the way a fixed due date can — new occurrences keep
+// appearing indefinitely. This reconciles reminders for every
+// occurrence of one appointment series in the next 90 days: cancel
+// every currently-pending virtual-occurrence reminder for the series
+// first, then re-schedule exactly what the freshly regenerated
+// occurrence list says should exist. That reconcile-from-scratch shape
+// (rather than trying to diff old vs. new occurrences) is what makes a
+// plain edit, a split ("this and following"), and a cancelled
+// occurrence all "just re-run this" instead of three separate cases —
+// re-run from the same opportunistic processDueReminders() sweep every
+// other "interim substitute for a cron" mechanism in this file already
+// uses, so the window keeps sliding forward with regular app use. A
+// non-recurring appointment has exactly one occurrence (itself), so
+// this reduces to scheduling that appointment's own reminder once.
+// Virtual (non-override) occurrences use relatedEntityId
+// "<masterId>:<occurrenceIso>" so each gets its own idempotent reminder
+// row without a real DB row existing for it; an override IS a real row
+// and is scheduled under its own id via the normal per-entity path
+// instead (see the API routes, which call cancelRemindersForEntity/
+// scheduleRemindersForEvent directly for override rows).
+export async function scheduleAppointmentSeriesReminders(masterId: string): Promise<void> {
+  try {
+    const user = await getAuthenticatedUser();
+    if (!user) return;
+
+    const supabase = await createClient();
+
+    await supabase
+      .from("reminders")
+      .update({ status: "cancelled" })
+      .eq("related_entity_type", "appointment")
+      .like("related_entity_id", `${masterId}:%`)
+      .eq("status", "pending");
+
+    const profile = await getProfile();
+    if (!profile) return;
+    const categoryPref = profile.notification_preferences.appointments;
+    if (!categoryPref.push && !categoryPref.in_app && !categoryPref.email) return;
+
+    const { data, error } = await supabase.from("appointments").select("*").or(`id.eq.${masterId},recurrence_parent_id.eq.${masterId}`);
+    if (error) throw error;
+    const rows = (data ?? []) as Appointment[];
+    const master = rows.find((r) => r.id === masterId);
+    if (!master || master.status !== "scheduled") return;
+
+    const now = new Date();
+    const rangeEnd = new Date(now.getTime() + APPOINTMENT_REMINDER_LOOKAHEAD_DAYS * 86_400_000);
+    const occurrences = generateOccurrences(rows, now, rangeEnd).filter((o) => !o.isOverride);
+
+    for (const [i, occurrence] of occurrences.entries()) {
+      const title = occurrence.appointment.title ?? occurrence.appointment.provider_name ?? "Appointment";
+      const relatedEntityId = `${masterId}:${occurrence.occurrenceStart}`;
+      const leadMinutes = occurrence.appointment.reminder_lead_minutes;
+
+      if (leadMinutes) {
+        const scheduledFor = computeScheduledForMinutesBefore(occurrence.occurrenceStart, leadMinutes);
+        if (new Date(scheduledFor).getTime() <= Date.now()) continue;
+
+        if (categoryPref.push) {
+          await upsertReminder({ userId: user.id, relatedEntityType: "appointment", relatedEntityId, deliveryChannel: "push", bucket: "custom", scheduledFor, title });
+        }
+        if (categoryPref.in_app) {
+          await upsertReminder({ userId: user.id, relatedEntityType: "appointment", relatedEntityId, deliveryChannel: "in_app", bucket: "custom", scheduledFor, title });
+        }
+        if (categoryPref.email) {
+          await upsertReminder({ userId: user.id, relatedEntityType: "appointment", relatedEntityId, deliveryChannel: "email", bucket: "custom", scheduledFor, title });
+        }
+      } else if (i === 0) {
+        // No custom lead set on this occurrence's own row — fall back to
+        // the standard day-based buckets, but only for the very next
+        // occurrence. Scheduling day-based reminders for every future
+        // occurrence of an indefinitely recurring series would be
+        // unbounded and mostly redundant with this sweep re-running as
+        // time passes and today's "next" occurrence changes.
+        await scheduleRemindersForEvent({
+          relatedEntityType: "appointment",
+          relatedEntityId,
+          dueAt: occurrence.occurrenceStart,
+          isDateOnly: false,
+          category: "appointments",
+          title,
+        });
+      }
+    }
+  } catch (err) {
+    console.error("[reminders] scheduleAppointmentSeriesReminders failed (entity save is unaffected):", {
+      masterId,
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
+}
+
+// A single-occurrence override row (a moved/edited instance of a
+// recurring series — Calendar spec's "exceptions") is a real row with
+// its own id, unlike a plain generated occurrence, so it's scheduled
+// directly by that id rather than through the composite-key virtual-
+// occurrence machinery scheduleAppointmentSeriesReminders() uses.
+export async function scheduleAppointmentReminder(appointment: Appointment): Promise<void> {
+  if (appointment.status !== "scheduled") {
+    await cancelRemindersForEntity("appointment", appointment.id);
+    return;
+  }
+
+  const title = appointment.title ?? appointment.provider_name ?? "Appointment";
+
+  if (!appointment.reminder_lead_minutes) {
+    await scheduleRemindersForEvent({
+      relatedEntityType: "appointment",
+      relatedEntityId: appointment.id,
+      dueAt: appointment.date_time,
+      isDateOnly: false,
+      category: "appointments",
+      title,
+    });
+    return;
+  }
+
+  try {
+    const user = await getAuthenticatedUser();
+    if (!user) return;
+    const profile = await getProfile();
+    if (!profile) return;
+    const categoryPref = profile.notification_preferences.appointments;
+    if (!categoryPref.push && !categoryPref.in_app && !categoryPref.email) return;
+
+    const scheduledFor = computeScheduledForMinutesBefore(appointment.date_time, appointment.reminder_lead_minutes);
+    if (new Date(scheduledFor).getTime() <= Date.now()) return;
+
+    if (categoryPref.push) {
+      await upsertReminder({ userId: user.id, relatedEntityType: "appointment", relatedEntityId: appointment.id, deliveryChannel: "push", bucket: "custom", scheduledFor, title });
+    }
+    if (categoryPref.in_app) {
+      await upsertReminder({ userId: user.id, relatedEntityType: "appointment", relatedEntityId: appointment.id, deliveryChannel: "in_app", bucket: "custom", scheduledFor, title });
+    }
+    if (categoryPref.email) {
+      await upsertReminder({ userId: user.id, relatedEntityType: "appointment", relatedEntityId: appointment.id, deliveryChannel: "email", bucket: "custom", scheduledFor, title });
+    }
+  } catch (err) {
+    console.error("[reminders] scheduleAppointmentReminder failed (entity save is unaffected):", {
+      id: appointment.id,
       error: err instanceof Error ? err.message : String(err),
     });
   }
@@ -469,10 +619,17 @@ async function runOverdueSweep(userId: string): Promise<void> {
   }
 
   for (const appointment of appointments) {
+    // A recurring master's own date_time is just its DTSTART (often
+    // long past) — "overdue" only means something for a genuine
+    // one-time miss, so recurring masters are skipped here entirely; a
+    // standalone appointment or a single-occurrence override row (both
+    // always have recurrence_rule = null) still get the normal check.
+    if (appointment.recurrence_rule) continue;
     const dueAt = new Date(appointment.date_time);
     if (appointment.status !== "scheduled" || dueAt >= now) continue;
     const daysOverdue = Math.floor((now.getTime() - dueAt.getTime()) / 86_400_000);
-    await scheduleOverdue("appointment", appointment.id, appointment.provider_name, prefs.appointments, daysOverdue);
+    const title = appointment.title ?? appointment.provider_name ?? "Appointment";
+    await scheduleOverdue("appointment", appointment.id, title, prefs.appointments, daysOverdue);
   }
 
   for (const bill of bills) {

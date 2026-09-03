@@ -255,20 +255,40 @@ export interface Medication {
   updated_at: string;
 }
 
+export type AppointmentCategory = "medical" | "work" | "personal" | "financial" | "travel" | "other";
+export type RecurrenceEditScope = "series" | "this" | "following";
+
+// This appointment record now belongs to the global Calendar feature,
+// not Health specifically — category/title/description/end_time/
+// recurrence_* are generic to any kind of appointment. provider_name
+// stays as the medical-specific label every pre-existing (and any new
+// medical) appointment uses; related_condition_id is the optional
+// Health-relationship facet, independent of category. Kept here rather
+// than moved to types/core to avoid rewriting ~10 unrelated Health
+// files' import paths for a purely organizational change.
 export interface Appointment {
   id: string;
   user_id: string;
-  provider_name: string;
+  title: string | null;
+  description: string | null;
+  provider_name: string | null;
   specialty: string | null;
   appointment_type: string | null;
   date_time: string;
+  end_time: string | null;
   location: string | null;
+  category: AppointmentCategory;
   status: "scheduled" | "completed" | "cancelled" | "no_show";
   preparation_notes: string | null;
   clinician_instructions: string | null;
   follow_up_date: string | null;
   related_condition_id: string | null;
   notes: string | null;
+  reminder_lead_minutes: number | null;
+  recurrence_rule: string | null;
+  recurrence_excluded_occurrences: string[];
+  recurrence_parent_id: string | null;
+  recurrence_original_start: string | null;
   created_at: string;
   updated_at: string;
 }

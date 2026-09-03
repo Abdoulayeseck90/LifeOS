@@ -3,7 +3,7 @@ import { HeartPulse, Activity, TestTube, Pill, FileText, MonitorCheck, CalendarD
 import { Link } from "@/lib/i18n/navigation";
 import { listConditions } from "@/services/health/conditions";
 import { listMedications } from "@/services/health/medications";
-import { listAppointments } from "@/services/health/appointments";
+import { listAppointments } from "@/services/core/appointments";
 import { listLabResults } from "@/services/health/labs";
 import { listBodyMetrics } from "@/services/health/body-metrics";
 import { listVitals } from "@/services/health/vitals";

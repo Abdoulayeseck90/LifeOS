@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { AddRecordButton } from "@/components/core/add-record-button";
-import { AppointmentForm } from "@/components/health/appointment-form";
+import { AppointmentForm } from "@/components/calendar/appointment-form";
 import type { Condition } from "@/types/health/entities";
 
 // Thin client-side glue: a Server Component can pass plain data

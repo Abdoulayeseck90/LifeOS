@@ -53,6 +53,10 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     location: (row.location as string | null) ?? null,
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
+    recurrenceRule: (row.recurrence_rule as string | null) ?? null,
+    recurrenceExcludedOccurrences: (row.recurrence_excluded_occurrences as string[] | null) ?? [],
+    recurrenceParentId: (row.recurrence_parent_id as string | null) ?? null,
+    recurrenceOriginalStart: (row.recurrence_original_start as string | null) ?? null,
   }));
 
   const ics = buildIcsFeed(events);

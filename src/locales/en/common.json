@@ -419,6 +419,8 @@
     "appointmentWith": "Appointment with",
     "viewAgenda": "Agenda",
     "viewMonth": "Month",
+    "viewWeek": "Week",
+    "viewDay": "Day",
     "today": "Today",
     "previous": "Previous",
     "next": "Next",
@@ -442,6 +444,22 @@
       "completed": "Completed",
       "cancelled": "Cancelled",
       "no_show": "No-show"
+    },
+    "categories": {
+      "medical": "Medical",
+      "work": "Work",
+      "personal": "Personal",
+      "financial": "Financial",
+      "travel": "Travel",
+      "other": "Other"
+    },
+    "recurrenceScope": {
+      "editTitle": "Edit this appointment",
+      "deleteTitle": "Delete this appointment",
+      "this": "This occurrence",
+      "following": "This and following occurrences",
+      "series": "Entire series",
+      "recurring": "Part of a recurring series"
     }
   },
   "monitoring": {
@@ -569,8 +587,16 @@
       "editTitle": "Edit appointment",
       "providerName": "Provider name",
       "providerRequired": "Please enter a provider name.",
+      "titleLabel": "Title",
+      "titlePlaceholder": "e.g. Doctor appointment, Job interview, Car service",
+      "titleRequired": "Please enter a title.",
+      "description": "Description",
+      "date": "Date",
+      "startTime": "Start time",
+      "endTime": "End time",
       "dateTime": "Date & time",
       "dateTimeRequired": "Please choose a date and time.",
+      "category": "Category",
       "status": "Status",
       "statusOptions": {
         "scheduled": "Scheduled",
@@ -590,7 +616,62 @@
       "clinicianInstructions": "Clinician instructions",
       "notes": "Notes",
       "save": "Save appointment",
-      "saveError": "Failed to save. Please try again."
+      "saveError": "Failed to save. Please try again.",
+      "reminder": "Reminder",
+      "reminderHelper": "Get a notification before this appointment.",
+      "reminderOptions": {
+        "none": "None",
+        "thirtyMinutes": "30 minutes before",
+        "oneHour": "1 hour before",
+        "oneDay": "1 day before",
+        "oneWeek": "1 week before",
+        "custom": "Custom"
+      },
+      "reminderCustomMinutes": "Minutes before",
+      "repeats": "This appointment repeats",
+      "recurrenceAppliesNote": "These settings apply if you choose \"Entire series\" or \"This and following\" when you save.",
+      "frequency": "Repeat",
+      "recurrenceFrequency": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "custom": "Custom"
+      },
+      "weeklyDays": "Repeat on",
+      "weeklyDaysRequired": "Please choose at least one day.",
+      "weekdaysShort": {
+        "0": "Sun",
+        "1": "Mon",
+        "2": "Tue",
+        "3": "Wed",
+        "4": "Thu",
+        "5": "Fri",
+        "6": "Sat"
+      },
+      "monthlyPattern": "Repeats",
+      "monthlyPatternOptions": {
+        "same_day": "Monthly on this date",
+        "first_weekday": "Monthly on the first weekday",
+        "last_weekday": "Monthly on the last weekday"
+      },
+      "customEvery": "Every",
+      "customUnit": "Unit",
+      "customUnitOptions": {
+        "days": "Days",
+        "weeks": "Weeks",
+        "months": "Months",
+        "years": "Years"
+      },
+      "recurrenceEnd": "Ends",
+      "recurrenceEndOptions": {
+        "never": "Never",
+        "on_date": "On a date",
+        "after_count": "After a number of occurrences"
+      },
+      "recurrenceEndDate": "End date",
+      "endDateRequired": "Please choose an end date.",
+      "recurrenceEndCount": "Number of occurrences"
     }
   },
   "symptoms": {
@@ -2774,6 +2855,8 @@
     "recentNotes": "Recent Notes",
     "pin": "Pin",
     "unpin": "Unpin",
+    "untitled": "Untitled note",
+    "updatedOn": "Updated {date}",
     "form": {
       "title": "Title",
       "titlePlaceholder": "Optional title",

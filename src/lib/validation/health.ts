@@ -88,27 +88,8 @@ export type MedicationInput = z.infer<typeof medicationInputSchema>;
 export const medicationUpdateSchema = medicationInputSchema.partial();
 export type MedicationUpdateInput = z.infer<typeof medicationUpdateSchema>;
 
-export const appointmentInputSchema = z.object({
-  provider_name: z.string().min(1).max(200),
-  specialty: z.string().optional(),
-  appointment_type: z.string().optional(),
-  date_time: z.string().datetime().or(z.string().min(1)),
-  location: z.string().optional(),
-  status: z.enum(["scheduled", "completed", "cancelled", "no_show"]).default("scheduled"),
-  preparation_notes: z.string().optional(),
-  clinician_instructions: z.string().optional(),
-  follow_up_date: z.string().date().optional(),
-  related_condition_id: z.string().uuid().optional(),
-  notes: z.string().optional(),
-});
-
-export type AppointmentInput = z.infer<typeof appointmentInputSchema>;
-
-// PATCH: every field optional (an edit may touch just one field), but
-// still validated the same way as create — never trust the client just
-// because it's an update.
-export const appointmentUpdateSchema = appointmentInputSchema.partial();
-export type AppointmentUpdateInput = z.infer<typeof appointmentUpdateSchema>;
+// Appointment schemas moved to src/lib/validation/core.ts — appointments
+// are now a global Calendar feature, not Health-specific (Calendar spec).
 
 export const symptomEntryInputSchema = z.object({
   symptom: z.string().min(1).max(200),

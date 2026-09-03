@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { listDocuments } from "@/services/core/documents";
 import { listConditions } from "@/services/health/conditions";
-import { listAppointments } from "@/services/health/appointments";
+import { listAppointments } from "@/services/core/appointments";
 import { listLabResults } from "@/services/health/labs";
 import { resolveDateRangeParams } from "@/lib/dates/server-range";
 import { DateRangeFilter } from "@/components/core/date-range-filter";

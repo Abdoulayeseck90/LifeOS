@@ -67,6 +67,20 @@ export function computeScheduledFor(
 }
 
 /**
+ * Appointments (Calendar spec) need genuine minute-precision leads —
+ * "30 minutes before," "1 hour before" — which computeScheduledFor's
+ * day-only bucket math can't express (it always anchors to a fixed
+ * local hour, never the event's own time of day). This is a plain
+ * instant subtraction instead: an appointment's date_time is already a
+ * precise timestamptz, so there's no local-calendar-day ambiguity or
+ * DST edge case to account for the way there is for a date-only due
+ * date.
+ */
+export function computeScheduledForMinutesBefore(startsAtIso: string, leadMinutes: number): string {
+  return new Date(new Date(startsAtIso).getTime() - leadMinutes * 60_000).toISOString();
+}
+
+/**
  * Idempotency key for a scheduled reminder: unique per user via a
  * partial unique index on reminders(user_id, reminder_key) — the same
  * (entity, bucket, channel) can only ever have one live row, so

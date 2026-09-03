@@ -39,15 +39,19 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-// Navigation & IA Redesign: Health-first sidebar — Dashboard, a
-// collapsible Health group (every Health sub-page), a collapsible
-// Planning group (Projects/Goals/Tasks/Business), then flat
-// Finance/Notes, then Settings. Calendar and Sign Out are deliberately
-// NOT here — Calendar lives only in the top Header (CalendarDays icon),
-// Sign Out lives only in Settings -> Account, so neither is duplicated
-// across the app. Health Timeline is likewise not a sidebar destination
-// any more (its recent-activity role moved into Health Overview) — the
-// page itself still exists and works, just isn't linked from here.
+// Navigation & IA Redesign, updated by the Calendar spec: Dashboard,
+// a collapsible Planning group (Projects/Goals/Tasks/Business), a
+// standalone Calendar link (Appointments moved out of Health and into
+// Calendar, which is now the one place appointments are managed — see
+// health/appointments/page.tsx, now just a redirect), a collapsible
+// Health group, then Finance, Faith, flat Notes/Documents, then
+// Settings — exactly one Calendar entry in this sidebar (the Header's
+// own separate CalendarDays quick-link is untouched, pre-existing, and
+// out of scope here). Sign Out is deliberately not here — it lives only
+// in Settings -> Account, so it isn't duplicated across the app. Health
+// Timeline is likewise not a sidebar destination (its recent-activity
+// role moved into Health Overview) — the page itself still exists and
+// works, just isn't linked from here.
 // Shared between the desktop/tablet AppSidebar (dark navy theme) and the
 // phone hamburger drawer (MobileSidebarDrawer, hosted inside the white
 // Modal — light theme) — one source of truth for the nav tree, themed
@@ -59,7 +63,6 @@ export const HEALTH_ITEMS: { href: string; key: string; icon: LucideIcon }[] = [
   { href: "/health/labs", key: "labResults", icon: TestTube },
   { href: "/health/diagnostic-tests", key: "diagnosticTests", icon: ScanLine },
   { href: "/health/medications", key: "medications", icon: Pill },
-  { href: "/health/appointments", key: "appointments", icon: CalendarDays },
   { href: "/health/symptoms", key: "symptoms", icon: Stethoscope },
   { href: "/health/exercise", key: "exercise", icon: Dumbbell },
   { href: "/health/nutrition", key: "nutrition", icon: Apple },
@@ -271,24 +274,34 @@ export function SidebarNavContent({
         />
 
         <CollapsibleNavGroup
-          id="sidebar-health-submenu"
-          label={t("health")}
-          icon={HeartPulse}
-          items={HEALTH_ITEMS}
-          collapsedHref="/health"
-          active={healthActive}
-          onNavigate={onNavigate}
-          theme={theme}
-          collapsed={collapsed}
-        />
-
-        <CollapsibleNavGroup
           id="sidebar-planning-submenu"
           label={t("planning")}
           icon={ClipboardList}
           items={PLANNING_ITEMS}
           collapsedHref="/projects"
           active={planningActive}
+          onNavigate={onNavigate}
+          theme={theme}
+          collapsed={collapsed}
+        />
+
+        <NavLink
+          href="/calendar"
+          label={t("calendar")}
+          icon={CalendarDays}
+          active={pathname === "/calendar"}
+          onNavigate={onNavigate}
+          theme={theme}
+          collapsed={collapsed}
+        />
+
+        <CollapsibleNavGroup
+          id="sidebar-health-submenu"
+          label={t("health")}
+          icon={HeartPulse}
+          items={HEALTH_ITEMS}
+          collapsedHref="/health"
+          active={healthActive}
           onNavigate={onNavigate}
           theme={theme}
           collapsed={collapsed}

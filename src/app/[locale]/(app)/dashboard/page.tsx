@@ -3,7 +3,7 @@ import { CalendarDays, TestTube, HeartPulse, Activity, Dumbbell, ScanLine, Monit
 import { Link } from "@/lib/i18n/navigation";
 import { getProfile } from "@/services/core/profile";
 import { listConditions } from "@/services/health/conditions";
-import { listAppointments } from "@/services/health/appointments";
+import { listAppointmentOccurrences } from "@/services/core/appointments";
 import { listLabResults } from "@/services/health/labs";
 import { getLabResultStatus, LAB_STATUS_BADGE_VARIANT } from "@/lib/health/lab-level";
 import { listMonitoringItems, getMonitoringItemDisplayStatus } from "@/services/health/monitoring";
@@ -55,10 +55,16 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const { locale } = await params;
   const t = await getTranslations("dashboard");
   const tDiagnosticTestType = await getTranslations("diagnosticTests.form.testTypeOptions");
+  const now = new Date();
+  // A recurring appointment's own date_time (DTSTART) can be long past —
+  // occurrences must be expanded, not read directly off the row. 90 days
+  // is comfortably enough for a "what's coming up" dashboard card.
+  const occurrenceRangeEnd = new Date(now.getTime() + 90 * 86_400_000);
+
   const [
     profile,
     conditions,
-    appointments,
+    upcomingAppointments,
     labResults,
     monitoringItems,
     timelineEvents,
@@ -70,7 +76,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   ] = await Promise.all([
     getProfile(),
     listConditions(),
-    listAppointments(),
+    listAppointmentOccurrences(now, occurrenceRangeEnd),
     listLabResults(),
     listMonitoringItems(),
     listTimelineEvents(),
@@ -81,10 +87,6 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     listReferenceStandardsForMetrics(["vital:blood_pressure"]),
   ]);
 
-  const now = new Date();
-  const upcomingAppointments = appointments
-    .filter((a) => new Date(a.date_time) >= now)
-    .sort((a, b) => new Date(a.date_time).getTime() - new Date(b.date_time).getTime());
   const nextAppointment = upcomingAppointments[0];
 
   const dueMonitoringItems = monitoringItems
@@ -114,7 +116,11 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const latestDiagnosticTest = diagnosticTests[0]; // listDiagnosticTests() is already ordered by study_date desc
 
   const upcoming = [
-    ...upcomingAppointments.map((a) => ({ date: a.date_time, title: `${t("appointmentWith")} ${a.provider_name}`, type: "appointment" as const })),
+    ...upcomingAppointments.map((a) => ({
+      date: a.occurrenceStart,
+      title: a.appointment.title ?? `${t("appointmentWith")} ${a.appointment.provider_name}`,
+      type: "appointment" as const,
+    })),
     ...dueMonitoringItems
       .filter((item) => item.next_due_at)
       .map((item) => ({ date: item.next_due_at as string, title: item.name, type: "monitoring" as const })),
@@ -145,11 +151,11 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           {nextAppointment ? (
             <>
               <p className="text-sm font-semibold text-secondary">
-                {new Date(nextAppointment.date_time).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
+                {new Date(nextAppointment.occurrenceStart).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
               </p>
-              <p className="mt-1 text-sm text-secondary">{nextAppointment.provider_name}</p>
-              {nextAppointment.appointment_type && (
-                <p className="text-xs text-muted">{nextAppointment.appointment_type}</p>
+              <p className="mt-1 text-sm text-secondary">{nextAppointment.appointment.title ?? nextAppointment.appointment.provider_name}</p>
+              {nextAppointment.appointment.appointment_type && (
+                <p className="text-xs text-muted">{nextAppointment.appointment.appointment_type}</p>
               )}
             </>
           ) : (

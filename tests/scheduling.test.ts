@@ -1,5 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { computeScheduledFor, buildReminderKey } from "@/lib/notifications/scheduling";
+import { computeScheduledFor, computeScheduledForMinutesBefore, buildReminderKey } from "@/lib/notifications/scheduling";
+
+describe("computeScheduledForMinutesBefore", () => {
+  it("subtracts the exact number of minutes from the appointment's start instant", () => {
+    expect(computeScheduledForMinutesBefore("2026-09-10T14:00:00.000Z", 30)).toBe("2026-09-10T13:30:00.000Z");
+    expect(computeScheduledForMinutesBefore("2026-09-10T14:00:00.000Z", 60)).toBe("2026-09-10T13:00:00.000Z");
+  });
+
+  it("correctly crosses a day boundary for a 1-day lead", () => {
+    expect(computeScheduledForMinutesBefore("2026-09-10T08:00:00.000Z", 1440)).toBe("2026-09-09T08:00:00.000Z");
+  });
+});
 
 // Notification Timing & Email Rules addendum: "7 days before" must land
 // on the right *local calendar day*, not "168 hours earlier in UTC" —

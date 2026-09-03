@@ -3,7 +3,7 @@ import { listVitals } from "@/services/health/vitals";
 import { listBodyMetrics } from "@/services/health/body-metrics";
 import { listConditions } from "@/services/health/conditions";
 import { listDocuments } from "@/services/core/documents";
-import { listAppointments } from "@/services/health/appointments";
+import { listAppointments } from "@/services/core/appointments";
 import { listReferenceStandardsForMetrics } from "@/services/health/reference-standards";
 import type { DateRange } from "@/lib/dates/range";
 import { VitalRecordButton } from "@/components/health/vital-record-button";
