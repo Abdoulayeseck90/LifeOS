@@ -284,6 +284,11 @@ export interface Appointment {
   follow_up_date: string | null;
   related_condition_id: string | null;
   notes: string | null;
+  // Gig Driving spec: facets specific to category="work" gig schedule
+  // items, following the same pattern as the medical-specific columns
+  // above (nullable, unused by every other category).
+  gig_platforms: string[] | null;
+  gig_earnings_goal: number | null;
   reminder_lead_minutes: number | null;
   recurrence_rule: string | null;
   recurrence_excluded_occurrences: string[];

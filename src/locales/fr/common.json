@@ -23,8 +23,16 @@
     "bills": "Factures",
     "subscriptions": "Abonnements",
     "creditAndLoans": "Crédit et prêts",
+    "taxes": "Impôts",
+    "work": "Livraison indépendante",
     "faith": "Foi",
+    "faithOverview": "Aperçu",
     "prayer": "Prière",
+    "quran": "Coran",
+    "dhikr": "Dhikr",
+    "faithGoals": "Objectifs",
+    "donations": "Dons / Charité",
+    "reflections": "Réflexions",
     "dua": "Dua",
     "projects": "Projets",
     "goals": "Objectifs",
@@ -93,6 +101,11 @@
     "diagnosticTestsLabel": "Tests diagnostiques récents",
     "viewDiagnosticTests": "Tout voir",
     "noDiagnosticTests": "Aucun test diagnostique pour le moment.",
+    "gigDrivingLabel": "Livraison indépendante",
+    "viewGigDriving": "Tout voir",
+    "gigThisWeek": "Cette semaine",
+    "gigNextShift": "Prochain quart",
+    "noGigActivity": "Aucune activité de livraison pour le moment.",
     "comingSoon": "Bientôt disponible",
     "comingSoonDescription": "LifeOS s'étendra pour gérer chaque aspect de votre vie."
   },
@@ -462,6 +475,256 @@
       "recurring": "Fait partie d'une série récurrente"
     }
   },
+  "gigDriving": {
+    "title": "Livraison indépendante",
+    "tabs": {
+      "overview": "Aperçu",
+      "schedule": "Horaire",
+      "shifts": "Quarts",
+      "earnings": "Revenus",
+      "mileage": "Kilométrage",
+      "expenses": "Dépenses",
+      "vehicle": "Véhicule",
+      "taxes": "Impôts",
+      "analytics": "Analytique"
+    },
+    "overview": {
+      "thisWeek": "Cette semaine",
+      "gross": "Brut",
+      "net": "Net estimé",
+      "miles": "Milles",
+      "hours": "Heures",
+      "nextShift": "Prochain quart prévu",
+      "untitledShift": "Quart"
+    },
+    "schedule": {
+      "addButton": "Ajouter un quart",
+      "empty": "Aucun quart prévu à venir.",
+      "untitled": "Quart",
+      "goal": "Objectif"
+    },
+    "quickShift": {
+      "startTitle": "Démarrage rapide du quart",
+      "endTitle": "Fin rapide du quart",
+      "startOdometer": "Odomètre de départ",
+      "endOdometer": "Odomètre de fin",
+      "startOdometerWas": "Départ à {value}",
+      "vehicle": "Véhicule",
+      "noVehicle": "Aucun véhicule",
+      "platforms": "Plateformes",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Autre"
+      },
+      "gross": "Brut",
+      "tips": "Pourboires",
+      "bonuses": "Bonis",
+      "expensesOptional": "Dépenses (optionnel)",
+      "expenseCategoryOptions": {
+        "fuel": "Essence",
+        "maintenance": "Entretien",
+        "tires": "Pneus",
+        "repairs": "Réparations",
+        "car_wash": "Lave-auto",
+        "parking": "Stationnement",
+        "tolls": "Péages",
+        "phone": "Téléphone",
+        "insurance": "Assurance",
+        "other": "Autre"
+      },
+      "amount": "Montant",
+      "addExpense": "Ajouter une dépense",
+      "startButton": "Démarrer le quart",
+      "endButton": "Terminer le quart",
+      "saving": "Enregistrement…",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "startValidation": "Veuillez entrer un relevé d'odomètre et sélectionner au moins une plateforme.",
+      "endValidation": "Veuillez entrer un relevé d'odomètre de fin égal ou supérieur au relevé de départ."
+    },
+    "shifts": {
+      "empty": "Aucun quart enregistré pour le moment.",
+      "deleteConfirm": "Supprimer ce quart ? Cette action est irréversible.",
+      "delete": "Supprimer",
+      "statusInProgress": "En cours",
+      "statusCancelled": "Annulé",
+      "gross": "brut",
+      "expenses": "dépenses",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Autre"
+      }
+    },
+    "earnings": {
+      "allPlatforms": "Toutes les plateformes",
+      "gross": "Brut",
+      "net": "Net estimé",
+      "grossPerHour": "Brut / heure",
+      "grossPerMile": "Brut / mille",
+      "hourAbbr": "h",
+      "mileAbbr": "mi",
+      "platform": "Plateforme",
+      "empty": "Aucun revenu enregistré pour le moment.",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Autre"
+      }
+    },
+    "mileage": {
+      "totalMiles": "Milles totaux",
+      "empty": "Aucun quart terminé pour le moment.",
+      "weekOf": "Semaine du",
+      "miles": "Milles"
+    },
+    "expenses": {
+      "addTitle": "Ajouter une dépense",
+      "category": "Catégorie",
+      "amount": "Montant",
+      "date": "Date",
+      "vehicle": "Véhicule",
+      "noVehicle": "Aucun véhicule",
+      "description": "Description",
+      "saving": "Enregistrement…",
+      "addButton": "Ajouter la dépense",
+      "amountRequired": "Veuillez entrer un montant supérieur à 0.",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "empty": "Aucune dépense enregistrée pour le moment.",
+      "deleteConfirm": "Supprimer cette dépense ? Cette action est irréversible.",
+      "delete": "Supprimer",
+      "categoryOptions": {
+        "fuel": "Essence",
+        "maintenance": "Entretien",
+        "tires": "Pneus",
+        "repairs": "Réparations",
+        "car_wash": "Lave-auto",
+        "parking": "Stationnement",
+        "tolls": "Péages",
+        "phone": "Téléphone",
+        "insurance": "Assurance",
+        "other": "Autre"
+      }
+    },
+    "vehicle": {
+      "addTitle": "Ajouter un véhicule",
+      "nickname": "Surnom",
+      "year": "Année",
+      "make": "Marque",
+      "model": "Modèle",
+      "saving": "Enregistrement…",
+      "addButton": "Ajouter le véhicule",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "empty": "Aucun véhicule ajouté pour le moment.",
+      "unnamed": "Véhicule",
+      "maintenance": "Entretien",
+      "delete": "Supprimer",
+      "deleteConfirm": "Supprimer ce véhicule ? Cette action est irréversible.",
+      "deleteMaintenanceConfirm": "Supprimer cet enregistrement d'entretien ?",
+      "cost": "Coût",
+      "addMaintenanceButton": "Ajouter",
+      "noMaintenance": "Aucun entretien enregistré pour le moment.",
+      "maintenanceTypeOptions": {
+        "oil_change": "Vidange d'huile",
+        "tire_rotation": "Rotation des pneus",
+        "tire_replacement": "Remplacement des pneus",
+        "brake_service": "Entretien des freins",
+        "repair": "Réparation",
+        "other": "Autre"
+      }
+    },
+    "taxes": {
+      "taxYear": "Année d'imposition",
+      "mileageRateTitle": "Taux kilométrique standard",
+      "mileageRate": "Taux par mille",
+      "mileageRateHelper": "Définissez votre propre taux pour cette année d'imposition — jamais une valeur par défaut intégrée.",
+      "saving": "Enregistrement…",
+      "saveRateButton": "Enregistrer le taux",
+      "rateRequired": "Veuillez entrer un taux kilométrique supérieur à 0.",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer.",
+      "estimateDisclaimer": "Ces chiffres sont une estimation basée sur vos quarts enregistrés et le taux que vous avez défini — ce n'est pas un conseil fiscal.",
+      "totalIncome": "Revenu total",
+      "businessMiles": "Milles d'affaires",
+      "recordedExpenses": "Dépenses enregistrées",
+      "mileageDeduction": "Déduction kilométrique est.",
+      "noRateSet": "Définir un taux",
+      "estimatedNetProfit": "Profit net est."
+    },
+    "taxExport": {
+      "title": "Export pour déclaration fiscale",
+      "vehicleFilter": "Véhicule",
+      "allVehicles": "Tous les véhicules",
+      "platformFilter": "Plateformes",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Autre"
+      },
+      "reviewButton": "Réviser l'année d'imposition",
+      "exportCsvButton": "Exporter en CSV",
+      "exportExcelButton": "Exporter en Excel",
+      "exportPdfButton": "Exporter en PDF",
+      "downloadPackageButton": "Télécharger le dossier fiscal",
+      "loading": "Traitement…",
+      "reviewError": "Échec du chargement de la révision. Veuillez réessayer.",
+      "exportError": "Échec de la génération de l'export. Veuillez réessayer.",
+      "pastExports": "Exports précédents",
+      "reviewTitle": "Révision de l'année d'imposition {year}",
+      "sectionIncome": "Revenus",
+      "total": "Total",
+      "sectionMileage": "Kilométrage",
+      "totalBusinessMiles": "Total des milles d'affaires",
+      "sectionExpenses": "Dépenses",
+      "noExpenses": "Aucune dépense enregistrée pour cette année d'imposition.",
+      "hasReceipt": "reçu joint",
+      "sectionMaintenance": "Journal d'entretien du véhicule",
+      "maintenanceDisclaimer": "À titre informatif seulement — non inclus dans le total des dépenses. Enregistrez aussi un coût d'entretien comme dépense si vous voulez qu'il soit compté.",
+      "sectionReceipts": "Index des reçus",
+      "estimateDisclaimer": "Les chiffres ci-dessous sont des estimations calculées à partir de vos données enregistrées et du taux kilométrique que vous avez configuré — ce n'est pas un conseil fiscal.",
+      "estimatedMileageDeduction": "Déduction kilométrique estimée",
+      "noRateSet": "aucun taux défini pour cette année",
+      "estimatedNetProfit": "Revenu net d'entreprise estimé"
+    },
+    "analytics": {
+      "byDayOfWeek": "Par jour de la semaine",
+      "day": "Jour",
+      "gross": "Brut",
+      "net": "Net",
+      "hours": "Heures",
+      "miles": "Milles",
+      "days": {
+        "sunday": "Dimanche",
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi"
+      },
+      "byMonth": "Par mois",
+      "empty": "Aucun quart terminé pour le moment.",
+      "month": "Mois",
+      "scheduleVsActual": "Prévu vs réel",
+      "scheduleVsActualEmpty": "Associez un quart à un élément prévu pour comparer le prévu et le réel.",
+      "planned": "Prévu",
+      "goal": "objectif",
+      "actual": "Réel"
+    },
+    "receipts": {
+      "attachReceipt": "Joindre un reçu",
+      "uploading": "Téléversement…",
+      "delete": "Retirer",
+      "deleteConfirm": "Retirer ce reçu joint ?",
+      "fileTypeInvalid": "Veuillez choisir un fichier PDF, JPEG, PNG ou WebP.",
+      "fileTooLarge": "Fichier trop volumineux (max 20 Mo).",
+      "uploadError": "Échec du téléversement. Veuillez réessayer.",
+      "saveError": "Échec de l'enregistrement. Veuillez réessayer."
+    }
+  },
   "monitoring": {
     "title": "Suivi de santé",
     "tabs": {
@@ -610,6 +873,14 @@
       "relatedCondition": "Condition associée",
       "noCondition": "Aucune",
       "followUpDate": "Date de suivi",
+      "gigPlatforms": "Plateformes",
+      "gigPlatformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Autre"
+      },
+      "gigEarningsGoal": "Objectif de gains",
       "moreDetails": "Plus de détails",
       "fewerDetails": "Moins de détails",
       "preparationNotes": "Notes de préparation",
@@ -2111,6 +2382,71 @@
         "Heures de prière",
         "Suivi des prières",
         "Direction de la Qibla"
+      ]
+    },
+    "faithOverview": {
+      "title": "Foi",
+      "description": "Une vue unifiée de votre pratique religieuse arrive bientôt.",
+      "features": [
+        "Prière",
+        "Coran",
+        "Dhikr",
+        "Objectifs",
+        "Dons"
+      ]
+    },
+    "quran": {
+      "title": "Coran",
+      "description": "Des outils de lecture et de suivi du Coran arrivent bientôt.",
+      "features": [
+        "Progression de lecture",
+        "Signets",
+        "Objectifs quotidiens"
+      ]
+    },
+    "dhikr": {
+      "title": "Dhikr",
+      "description": "Des compteurs et rappels de dhikr arrivent bientôt.",
+      "features": [
+        "Compteurs",
+        "Objectifs quotidiens",
+        "Rappels"
+      ]
+    },
+    "faithGoals": {
+      "title": "Objectifs",
+      "description": "La définition et le suivi de vos objectifs spirituels arrivent bientôt.",
+      "features": [
+        "Suivi des objectifs",
+        "Mises à jour de progression",
+        "Rappels"
+      ]
+    },
+    "donations": {
+      "title": "Dons / Charité",
+      "description": "Le suivi de vos dons et actes de charité arrive bientôt.",
+      "features": [
+        "Historique des dons",
+        "Bénéficiaires",
+        "Totaux annuels"
+      ]
+    },
+    "reflections": {
+      "title": "Réflexions",
+      "description": "Un espace pour vos réflexions spirituelles personnelles arrive bientôt.",
+      "features": [
+        "Entrées de journal",
+        "Suggestions",
+        "Recherche"
+      ]
+    },
+    "financeTaxes": {
+      "title": "Impôts",
+      "description": "Des outils d'organisation fiscale personnelle arrivent bientôt.",
+      "features": [
+        "Documents fiscaux",
+        "Déductions",
+        "Résumés annuels"
       ]
     },
     "notes": {

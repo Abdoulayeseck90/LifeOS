@@ -1,9 +1,12 @@
 import { getTranslations } from "next-intl/server";
-import { CalendarDays, TestTube, HeartPulse, Activity, Dumbbell, ScanLine, MonitorCheck } from "lucide-react";
+import { CalendarDays, TestTube, HeartPulse, Activity, Dumbbell, ScanLine, MonitorCheck, Car } from "lucide-react";
 import { Link } from "@/lib/i18n/navigation";
 import { getProfile } from "@/services/core/profile";
 import { listConditions } from "@/services/health/conditions";
 import { listAppointmentOccurrences } from "@/services/core/appointments";
+import { listGigShiftsWithRelations } from "@/services/work/gig-driving";
+import { computeGigMetrics } from "@/lib/work/gig-calculations";
+import { formatCurrency, formatHours, formatMiles } from "@/lib/work/gig-format";
 import { listLabResults } from "@/services/health/labs";
 import { getLabResultStatus, LAB_STATUS_BADGE_VARIANT } from "@/lib/health/lab-level";
 import { listMonitoringItems, getMonitoringItemDisplayStatus } from "@/services/health/monitoring";
@@ -60,6 +63,9 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   // occurrences must be expanded, not read directly off the row. 90 days
   // is comfortably enough for a "what's coming up" dashboard card.
   const occurrenceRangeEnd = new Date(now.getTime() + 90 * 86_400_000);
+  const weekStart = new Date(now);
+  weekStart.setHours(0, 0, 0, 0);
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
 
   const [
     profile,
@@ -73,6 +79,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     workouts,
     diagnosticTests,
     bloodPressureStandards,
+    gigShiftsThisWeek,
   ] = await Promise.all([
     getProfile(),
     listConditions(),
@@ -85,6 +92,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     listWorkouts(),
     listDiagnosticTests(),
     listReferenceStandardsForMetrics(["vital:blood_pressure"]),
+    listGigShiftsWithRelations(weekStart.toISOString().slice(0, 10)),
   ]);
 
   const nextAppointment = upcomingAppointments[0];
@@ -114,6 +122,9 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
   const fitnessSummary = computeFitnessSummary(workouts, now);
   const latestDiagnosticTest = diagnosticTests[0]; // listDiagnosticTests() is already ordered by study_date desc
+
+  const gigWeekMetrics = computeGigMetrics(gigShiftsThisWeek.filter((s) => s.status === "completed"));
+  const nextGigShift = upcomingAppointments.find((a) => a.appointment.category === "work");
 
   const upcoming = [
     ...upcomingAppointments.map((a) => ({
@@ -298,6 +309,26 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             </>
           ) : (
             <p className="text-sm text-muted">{t("noDiagnosticTests")}</p>
+          )}
+        </InfoCard>
+
+        <InfoCard icon={Car} label={t("gigDrivingLabel")} action={{ label: t("viewGigDriving"), href: "/work/gig-driving" }}>
+          {gigShiftsThisWeek.length > 0 || nextGigShift ? (
+            <div className="flex flex-col gap-1 text-sm text-secondary">
+              <p>
+                {t("gigThisWeek")}: <span className="font-semibold">{formatCurrency(gigWeekMetrics.grossEarnings)}</span>
+              </p>
+              <p className="text-xs text-muted">
+                {formatHours(gigWeekMetrics.hours)} · {formatMiles(gigWeekMetrics.miles)}
+              </p>
+              {nextGigShift && (
+                <p className="mt-1 text-xs text-muted">
+                  {t("gigNextShift")}: {new Date(nextGigShift.occurrenceStart).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted">{t("noGigActivity")}</p>
           )}
         </InfoCard>
       </div>

@@ -271,6 +271,8 @@ export const personalDocumentInputSchema = z.object({
   purchase_date: z.string().date().optional(),
   payment_method: z.string().max(100).optional(),
   related_expense_id: z.string().uuid().optional(),
+  related_gig_expense_id: z.string().uuid().optional(),
+  related_gig_maintenance_id: z.string().uuid().optional(),
 });
 export type PersonalDocumentInput = z.infer<typeof personalDocumentInputSchema>;
 
@@ -293,6 +295,8 @@ export const personalDocumentUpdateSchema = z.object({
   purchase_date: z.string().date().optional(),
   payment_method: z.string().max(100).optional(),
   related_expense_id: z.string().uuid().nullable().optional(),
+  related_gig_expense_id: z.string().uuid().nullable().optional(),
+  related_gig_maintenance_id: z.string().uuid().nullable().optional(),
 });
 export type PersonalDocumentUpdateInput = z.infer<typeof personalDocumentUpdateSchema>;
 
@@ -434,6 +438,11 @@ export const appointmentInputSchema = z
     follow_up_date: z.string().date().optional(),
     related_condition_id: z.string().uuid().nullable().optional(),
     notes: z.string().optional(),
+    // Gig Driving spec: facets for category="work" schedule items only —
+    // nullable/optional so every other category's appointments (which
+    // never set these) round-trip unaffected.
+    gig_platforms: z.array(z.enum(["doordash", "ubereats", "spark", "other"])).nullable().optional(),
+    gig_earnings_goal: z.number().nonnegative().nullable().optional(),
     reminder_lead_minutes: z.number().int().positive().nullable().optional(),
     recurrence_rule: z
       .string()

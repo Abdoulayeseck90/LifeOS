@@ -23,8 +23,16 @@
     "bills": "Bills",
     "subscriptions": "Subscriptions",
     "creditAndLoans": "Credit & Loans",
+    "taxes": "Taxes",
+    "work": "Gig Driving",
     "faith": "Faith",
+    "faithOverview": "Overview",
     "prayer": "Prayer",
+    "quran": "Quran",
+    "dhikr": "Dhikr",
+    "faithGoals": "Goals",
+    "donations": "Donations / Charity",
+    "reflections": "Reflections",
     "dua": "Dua",
     "projects": "Projects",
     "goals": "Goals",
@@ -93,6 +101,11 @@
     "diagnosticTestsLabel": "Recent Diagnostic Tests",
     "viewDiagnosticTests": "View All",
     "noDiagnosticTests": "No diagnostic tests yet.",
+    "gigDrivingLabel": "Gig Driving",
+    "viewGigDriving": "View All",
+    "gigThisWeek": "This week",
+    "gigNextShift": "Next shift",
+    "noGigActivity": "No gig activity yet.",
     "comingSoon": "More on the way",
     "comingSoonDescription": "LifeOS will grow to manage every part of your life."
   },
@@ -462,6 +475,256 @@
       "recurring": "Part of a recurring series"
     }
   },
+  "gigDriving": {
+    "title": "Gig Driving",
+    "tabs": {
+      "overview": "Overview",
+      "schedule": "Schedule",
+      "shifts": "Shifts",
+      "earnings": "Earnings",
+      "mileage": "Mileage",
+      "expenses": "Expenses",
+      "vehicle": "Vehicle",
+      "taxes": "Taxes",
+      "analytics": "Analytics"
+    },
+    "overview": {
+      "thisWeek": "This week",
+      "gross": "Gross",
+      "net": "Estimated net",
+      "miles": "Miles",
+      "hours": "Hours",
+      "nextShift": "Next scheduled shift",
+      "untitledShift": "Shift"
+    },
+    "schedule": {
+      "addButton": "Add Shift Schedule",
+      "empty": "No upcoming shifts scheduled.",
+      "untitled": "Shift",
+      "goal": "Goal"
+    },
+    "quickShift": {
+      "startTitle": "Quick Start Shift",
+      "endTitle": "Quick End Shift",
+      "startOdometer": "Starting odometer",
+      "endOdometer": "Ending odometer",
+      "startOdometerWas": "Started at {value}",
+      "vehicle": "Vehicle",
+      "noVehicle": "No vehicle",
+      "platforms": "Platforms",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Other"
+      },
+      "gross": "Gross",
+      "tips": "Tips",
+      "bonuses": "Bonuses",
+      "expensesOptional": "Expenses (optional)",
+      "expenseCategoryOptions": {
+        "fuel": "Fuel",
+        "maintenance": "Maintenance",
+        "tires": "Tires",
+        "repairs": "Repairs",
+        "car_wash": "Car wash",
+        "parking": "Parking",
+        "tolls": "Tolls",
+        "phone": "Phone",
+        "insurance": "Insurance",
+        "other": "Other"
+      },
+      "amount": "Amount",
+      "addExpense": "Add expense",
+      "startButton": "Start Shift",
+      "endButton": "End Shift",
+      "saving": "Saving…",
+      "saveError": "Failed to save. Please try again.",
+      "startValidation": "Please enter an odometer reading and select at least one platform.",
+      "endValidation": "Please enter an ending odometer reading at or above the starting reading."
+    },
+    "shifts": {
+      "empty": "No shifts recorded yet.",
+      "deleteConfirm": "Delete this shift? This cannot be undone.",
+      "delete": "Delete",
+      "statusInProgress": "In progress",
+      "statusCancelled": "Cancelled",
+      "gross": "gross",
+      "expenses": "expenses",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Other"
+      }
+    },
+    "earnings": {
+      "allPlatforms": "All platforms",
+      "gross": "Gross",
+      "net": "Estimated net",
+      "grossPerHour": "Gross / hour",
+      "grossPerMile": "Gross / mile",
+      "hourAbbr": "hr",
+      "mileAbbr": "mi",
+      "platform": "Platform",
+      "empty": "No earnings recorded yet.",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Other"
+      }
+    },
+    "mileage": {
+      "totalMiles": "Total miles",
+      "empty": "No completed shifts yet.",
+      "weekOf": "Week of",
+      "miles": "Miles"
+    },
+    "expenses": {
+      "addTitle": "Add expense",
+      "category": "Category",
+      "amount": "Amount",
+      "date": "Date",
+      "vehicle": "Vehicle",
+      "noVehicle": "No vehicle",
+      "description": "Description",
+      "saving": "Saving…",
+      "addButton": "Add Expense",
+      "amountRequired": "Please enter an amount greater than 0.",
+      "saveError": "Failed to save. Please try again.",
+      "empty": "No expenses recorded yet.",
+      "deleteConfirm": "Delete this expense? This cannot be undone.",
+      "delete": "Delete",
+      "categoryOptions": {
+        "fuel": "Fuel",
+        "maintenance": "Maintenance",
+        "tires": "Tires",
+        "repairs": "Repairs",
+        "car_wash": "Car wash",
+        "parking": "Parking",
+        "tolls": "Tolls",
+        "phone": "Phone",
+        "insurance": "Insurance",
+        "other": "Other"
+      }
+    },
+    "vehicle": {
+      "addTitle": "Add vehicle",
+      "nickname": "Nickname",
+      "year": "Year",
+      "make": "Make",
+      "model": "Model",
+      "saving": "Saving…",
+      "addButton": "Add Vehicle",
+      "saveError": "Failed to save. Please try again.",
+      "empty": "No vehicles added yet.",
+      "unnamed": "Vehicle",
+      "maintenance": "Maintenance",
+      "delete": "Delete",
+      "deleteConfirm": "Delete this vehicle? This cannot be undone.",
+      "deleteMaintenanceConfirm": "Delete this maintenance record?",
+      "cost": "Cost",
+      "addMaintenanceButton": "Add",
+      "noMaintenance": "No maintenance recorded yet.",
+      "maintenanceTypeOptions": {
+        "oil_change": "Oil change",
+        "tire_rotation": "Tire rotation",
+        "tire_replacement": "Tire replacement",
+        "brake_service": "Brake service",
+        "repair": "Repair",
+        "other": "Other"
+      }
+    },
+    "taxes": {
+      "taxYear": "Tax year",
+      "mileageRateTitle": "Standard mileage rate",
+      "mileageRate": "Rate per mile",
+      "mileageRateHelper": "Set your own rate for this tax year — never a built-in default.",
+      "saving": "Saving…",
+      "saveRateButton": "Save Rate",
+      "rateRequired": "Please enter a mileage rate greater than 0.",
+      "saveError": "Failed to save. Please try again.",
+      "estimateDisclaimer": "These figures are an estimate based on your recorded shifts and the mileage rate you set — not tax advice.",
+      "totalIncome": "Total income",
+      "businessMiles": "Business miles",
+      "recordedExpenses": "Recorded expenses",
+      "mileageDeduction": "Est. mileage deduction",
+      "noRateSet": "Set a rate",
+      "estimatedNetProfit": "Est. net profit"
+    },
+    "taxExport": {
+      "title": "Tax Filing Export",
+      "vehicleFilter": "Vehicle",
+      "allVehicles": "All vehicles",
+      "platformFilter": "Platforms",
+      "platformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Other"
+      },
+      "reviewButton": "Review Tax Year",
+      "exportCsvButton": "Export CSV",
+      "exportExcelButton": "Export Excel",
+      "exportPdfButton": "Export PDF",
+      "downloadPackageButton": "Download Tax Package",
+      "loading": "Working…",
+      "reviewError": "Failed to load the tax year review. Please try again.",
+      "exportError": "Failed to generate the export. Please try again.",
+      "pastExports": "Past exports",
+      "reviewTitle": "Tax Year {year} Review",
+      "sectionIncome": "Income",
+      "total": "Total",
+      "sectionMileage": "Mileage",
+      "totalBusinessMiles": "Total business miles",
+      "sectionExpenses": "Expenses",
+      "noExpenses": "No expenses recorded for this tax year.",
+      "hasReceipt": "receipt attached",
+      "sectionMaintenance": "Vehicle Maintenance Log",
+      "maintenanceDisclaimer": "Informational only — not included in Total Expenses. Record a maintenance cost as an Expense as well if you want it counted.",
+      "sectionReceipts": "Receipt Index",
+      "estimateDisclaimer": "Figures below are estimates calculated from your recorded data and the mileage rate you configured — not tax advice.",
+      "estimatedMileageDeduction": "Estimated mileage deduction",
+      "noRateSet": "no rate set for this year",
+      "estimatedNetProfit": "Estimated net business income"
+    },
+    "analytics": {
+      "byDayOfWeek": "By day of week",
+      "day": "Day",
+      "gross": "Gross",
+      "net": "Net",
+      "hours": "Hours",
+      "miles": "Miles",
+      "days": {
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday"
+      },
+      "byMonth": "By month",
+      "empty": "No completed shifts yet.",
+      "month": "Month",
+      "scheduleVsActual": "Schedule vs. actual",
+      "scheduleVsActualEmpty": "Link a shift to a scheduled item to compare planned vs. actual.",
+      "planned": "Planned",
+      "goal": "goal",
+      "actual": "Actual"
+    },
+    "receipts": {
+      "attachReceipt": "Attach receipt",
+      "uploading": "Uploading…",
+      "delete": "Remove",
+      "deleteConfirm": "Remove this attached receipt?",
+      "fileTypeInvalid": "Please choose a PDF, JPEG, PNG, or WebP file.",
+      "fileTooLarge": "File is too large (max 20 MB).",
+      "uploadError": "Failed to upload file. Please try again.",
+      "saveError": "Failed to save. Please try again."
+    }
+  },
   "monitoring": {
     "title": "Health Monitoring",
     "tabs": {
@@ -610,6 +873,14 @@
       "relatedCondition": "Related condition",
       "noCondition": "None",
       "followUpDate": "Follow-up date",
+      "gigPlatforms": "Platforms",
+      "gigPlatformOptions": {
+        "doordash": "DoorDash",
+        "ubereats": "Uber Eats",
+        "spark": "Walmart Spark",
+        "other": "Other"
+      },
+      "gigEarningsGoal": "Earnings goal",
       "moreDetails": "More details",
       "fewerDetails": "Fewer details",
       "preparationNotes": "Preparation notes",
@@ -2111,6 +2382,71 @@
         "Prayer times",
         "Prayer tracking",
         "Qibla direction"
+      ]
+    },
+    "faithOverview": {
+      "title": "Faith",
+      "description": "A unified view of your faith practice is coming soon.",
+      "features": [
+        "Prayer",
+        "Quran",
+        "Dhikr",
+        "Goals",
+        "Donations"
+      ]
+    },
+    "quran": {
+      "title": "Quran",
+      "description": "Quran reading and tracking tools are coming soon.",
+      "features": [
+        "Reading progress",
+        "Bookmarks",
+        "Daily goals"
+      ]
+    },
+    "dhikr": {
+      "title": "Dhikr",
+      "description": "Dhikr counters and reminders are coming soon.",
+      "features": [
+        "Counters",
+        "Daily targets",
+        "Reminders"
+      ]
+    },
+    "faithGoals": {
+      "title": "Goals",
+      "description": "Setting and tracking your faith goals is coming soon.",
+      "features": [
+        "Goal tracking",
+        "Progress updates",
+        "Reminders"
+      ]
+    },
+    "donations": {
+      "title": "Donations / Charity",
+      "description": "Tracking your donations and charitable giving is coming soon.",
+      "features": [
+        "Donation records",
+        "Recipients",
+        "Yearly totals"
+      ]
+    },
+    "reflections": {
+      "title": "Reflections",
+      "description": "A space for personal faith reflections is coming soon.",
+      "features": [
+        "Journal entries",
+        "Prompts",
+        "Search"
+      ]
+    },
+    "financeTaxes": {
+      "title": "Taxes",
+      "description": "Personal tax organization tools are coming soon.",
+      "features": [
+        "Tax documents",
+        "Deductions",
+        "Yearly summaries"
       ]
     },
     "notes": {

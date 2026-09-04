@@ -50,16 +50,20 @@ function combineDateTime(value: string): string {
 // (may differ from appointment.date_time — a recurring master's DTSTART
 // isn't necessarily the occurrence the user clicked on); required
 // whenever `appointment` is part of a recurring series.
+const GIG_PLATFORMS = ["doordash", "ubereats", "spark", "other"] as const;
+
 export function AppointmentForm({
   conditions,
   appointment,
   occurrenceStart,
+  defaultCategory,
   closeAfterSave,
   requestClose,
   registerDirty,
 }: {
   conditions: Condition[];
   occurrenceStart?: string;
+  defaultCategory?: AppointmentCategory;
 } & Partial<{ appointment: Appointment }> &
   RecordFormRenderProps) {
   const t = useTranslations("appointments.form");
@@ -73,7 +77,7 @@ export function AppointmentForm({
   const [description, setDescription] = useState(appointment?.description ?? "");
   const [dateTime, setDateTime] = useState(effectiveStart ? toDatetimeLocalValue(effectiveStart) : "");
   const [location, setLocation] = useState(appointment?.location ?? "");
-  const [category, setCategory] = useState<AppointmentCategory>(appointment?.category ?? "personal");
+  const [category, setCategory] = useState<AppointmentCategory>(appointment?.category ?? defaultCategory ?? "personal");
   const [status, setStatus] = useState<Appointment["status"]>(appointment?.status ?? "scheduled");
   const [appointmentType, setAppointmentType] = useState(appointment?.appointment_type ?? "");
   const [specialty, setSpecialty] = useState(appointment?.specialty ?? "");
@@ -81,6 +85,10 @@ export function AppointmentForm({
   const [preparationNotes, setPreparationNotes] = useState(appointment?.preparation_notes ?? "");
   const [clinicianInstructions, setClinicianInstructions] = useState(appointment?.clinician_instructions ?? "");
   const [followUpDate, setFollowUpDate] = useState(appointment?.follow_up_date ?? "");
+  const [gigPlatforms, setGigPlatforms] = useState<string[]>(appointment?.gig_platforms ?? []);
+  const [gigEarningsGoal, setGigEarningsGoal] = useState(
+    appointment?.gig_earnings_goal !== null && appointment?.gig_earnings_goal !== undefined ? String(appointment.gig_earnings_goal) : ""
+  );
   const [notes, setNotes] = useState(appointment?.notes ?? "");
   const [reminderPreset, setReminderPreset] = useState<string>(
     appointment?.reminder_lead_minutes
@@ -122,6 +130,8 @@ export function AppointmentForm({
     preparationNotes,
     clinicianInstructions,
     followUpDate,
+    gigPlatforms,
+    gigEarningsGoal,
     notes,
     reminderPreset,
     reminderCustomMinutes,
@@ -157,6 +167,8 @@ export function AppointmentForm({
       preparation_notes: category === "medical" ? preparationNotes.trim() || undefined : undefined,
       clinician_instructions: category === "medical" ? clinicianInstructions.trim() || undefined : undefined,
       follow_up_date: category === "medical" ? followUpDate || undefined : undefined,
+      gig_platforms: category === "work" ? (gigPlatforms.length > 0 ? gigPlatforms : null) : null,
+      gig_earnings_goal: category === "work" ? (gigEarningsGoal.trim() ? Number(gigEarningsGoal) : null) : null,
       notes: notes.trim() || undefined,
       reminder_lead_minutes: resolvedReminderLeadMinutes(),
       recurrence_rule: isRecurring ? buildRecurrenceRule(recurrence, new Date(dateTimeIso)) : null,
@@ -435,6 +447,38 @@ export function AppointmentForm({
               </FormField>
               <FormField label={t("clinicianInstructions")} htmlFor="appointment-clinician-instructions" optional className="sm:col-span-2">
                 <LifeOSTextarea id="appointment-clinician-instructions" value={clinicianInstructions} onChange={(e) => setClinicianInstructions(e.target.value)} rows={2} />
+              </FormField>
+            </>
+          )}
+
+          {category === "work" && (
+            <>
+              <div className="sm:col-span-2">
+                <p className="mb-1.5 text-sm font-medium text-secondary">{t("gigPlatforms")}</p>
+                <div className="flex flex-wrap gap-3">
+                  {GIG_PLATFORMS.map((platform) => (
+                    <LifeOSCheckbox
+                      key={platform}
+                      label={t(`gigPlatformOptions.${platform}`)}
+                      checked={gigPlatforms.includes(platform)}
+                      onChange={(e) =>
+                        setGigPlatforms(
+                          e.target.checked ? [...gigPlatforms, platform] : gigPlatforms.filter((p) => p !== platform)
+                        )
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+              <FormField label={t("gigEarningsGoal")} htmlFor="appointment-gig-earnings-goal" optional>
+                <LifeOSInput
+                  id="appointment-gig-earnings-goal"
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={gigEarningsGoal}
+                  onChange={(e) => setGigEarningsGoal(e.target.value)}
+                />
               </FormField>
             </>
           )}

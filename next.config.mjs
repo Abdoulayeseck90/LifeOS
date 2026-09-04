@@ -35,6 +35,19 @@ const CSP = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // archiver's transitive dependency readdir-glob@3.0.0 ships a
+  // package.json "exports" map with "default" listed before "types" in
+  // its conditions (a real upstream packaging bug, no fixed version
+  // published) -- Node's own resolver tolerates it, but webpack's
+  // stricter exports validation rejects it ("Default condition should
+  // be last one"), breaking the production build. Marking archiver as
+  // an external server package makes Next.js load it via plain
+  // require() at runtime instead of bundling it through webpack, which
+  // sidesteps the broken exports map entirely (Tax Filing Export ZIP
+  // generation).
+  experimental: {
+    serverComponentsExternalPackages: ["archiver"],
+  },
   async headers() {
     return [
       {

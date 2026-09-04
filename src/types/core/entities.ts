@@ -389,6 +389,11 @@ export interface PersonalDocument {
   purchase_date: string | null;
   payment_method: string | null;
   related_expense_id: string | null;
+  // Gig Driving spec: mirrors related_expense_id's pattern for
+  // attaching a receipt to a gig expense/maintenance record instead of
+  // a general finance transaction.
+  related_gig_expense_id: string | null;
+  related_gig_maintenance_id: string | null;
   created_at: string;
   updated_at: string;
 }

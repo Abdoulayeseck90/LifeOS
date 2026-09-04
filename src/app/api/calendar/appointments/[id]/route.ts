@@ -76,6 +76,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       clinician_instructions: changes.clinician_instructions ?? current.clinician_instructions,
       follow_up_date: changes.follow_up_date ?? current.follow_up_date,
       notes: changes.notes ?? current.notes,
+      gig_platforms: changes.gig_platforms !== undefined ? changes.gig_platforms : current.gig_platforms,
+      gig_earnings_goal: changes.gig_earnings_goal !== undefined ? changes.gig_earnings_goal : current.gig_earnings_goal,
       reminder_lead_minutes: changes.reminder_lead_minutes !== undefined ? changes.reminder_lead_minutes : current.reminder_lead_minutes,
       recurrence_rule: changes.recurrence_rule !== undefined ? changes.recurrence_rule : current.recurrence_rule,
     };
