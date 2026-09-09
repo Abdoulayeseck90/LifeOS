@@ -419,7 +419,12 @@ const appointmentCategorySchema = z.enum(["medical", "work", "personal", "financ
 export const appointmentInputSchema = z
   .object({
     title: z.string().min(1).max(200).optional(),
-    description: z.string().optional(),
+    // Nullable: buildPayload() in appointment-form.tsx always sends an
+    // explicit null when the field is left blank (rather than omitting
+    // the key) — same reasoning as end_time/related_condition_id/etc.
+    // below. A string-only schema here rejected every appointment saved
+    // without a description (the common case) with a 400.
+    description: z.string().nullable().optional(),
     provider_name: z.string().min(1).max(200).optional(),
     specialty: z.string().optional(),
     appointment_type: z.string().optional(),

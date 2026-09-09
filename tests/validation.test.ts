@@ -5,6 +5,7 @@ import {
   diagnosticTestInputSchema,
   documentInputSchema,
 } from "@/lib/validation/health";
+import { appointmentInputSchema } from "@/lib/validation/core";
 
 describe("labResultInputSchema", () => {
   const base = {
@@ -126,6 +127,48 @@ describe("documentInputSchema", () => {
     const parsed = documentInputSchema.safeParse({
       ...base,
       related_lab_result_ids: ["11111111-1111-1111-1111-111111111111", "22222222-2222-2222-2222-222222222222"],
+    });
+    expect(parsed.success).toBe(true);
+  });
+});
+
+describe("appointmentInputSchema", () => {
+  const base = {
+    title: "Test appointment",
+    date_time: "2026-09-05T21:00:00.000Z",
+    category: "personal",
+    status: "scheduled",
+  };
+
+  // Regression: appointment-form.tsx's buildPayload() always sends an
+  // explicit `description: null` when the field is left blank (the
+  // common case for a brand-new appointment), not an omitted key. A
+  // string-only (non-nullable) schema rejected every such save with a
+  // 400, surfaced to the user as "Failed to save. Please try again."
+  it("accepts an explicit null description (not just an omitted one)", () => {
+    expect(appointmentInputSchema.safeParse({ ...base, description: null }).success).toBe(true);
+  });
+
+  it("still accepts an omitted description", () => {
+    expect(appointmentInputSchema.safeParse(base).success).toBe(true);
+  });
+
+  it("accepts a real description string", () => {
+    expect(appointmentInputSchema.safeParse({ ...base, description: "Bring insurance card" }).success).toBe(true);
+  });
+
+  it("requires a title or provider_name", () => {
+    const { title, ...withoutTitle } = base;
+    expect(appointmentInputSchema.safeParse(withoutTitle).success).toBe(false);
+    expect(appointmentInputSchema.safeParse({ ...withoutTitle, provider_name: "Dr. Smith" }).success).toBe(true);
+  });
+
+  it("accepts a work-category appointment with gig fields", () => {
+    const parsed = appointmentInputSchema.safeParse({
+      ...base,
+      category: "work",
+      gig_platforms: ["doordash", "spark"],
+      gig_earnings_goal: 150,
     });
     expect(parsed.success).toBe(true);
   });
