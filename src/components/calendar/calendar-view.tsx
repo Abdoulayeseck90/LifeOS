@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import type { Appointment, Condition } from "@/types/health/entities";
 import { AppointmentEntryModal } from "@/components/calendar/appointment-entry-modal";
 import { Badge } from "@/components/core/badge";
@@ -147,17 +147,38 @@ export function CalendarView({
   const [moduleFilter, setModuleFilter] = useState<string>("all");
   const [anchorDate, setAnchorDate] = useState(() => new Date());
   const [selectedEntry, setSelectedEntry] = useState<CalendarEntry | null>(null);
+  const [showPast, setShowPast] = useState(false);
 
   const filteredEntries = moduleFilter === "all" ? entries : entries.filter((e) => e.module === moduleFilter);
 
-  const agendaGroups = useMemo(() => {
+  // Split by each entry's own past/future status (not just its date) so
+  // an appointment earlier today and one later today land in the right
+  // section — a non-appointment entry (monitoring's "due" items) is
+  // never past here since those are already pre-filtered to due-or-later
+  // server-side. The Agenda view's default list is Upcoming-only so a
+  // long history doesn't push what's actually relevant below the fold;
+  // Past stays one click away, not deleted/hidden.
+  function isEntryPast(entry: CalendarEntry): boolean {
+    return Boolean(entry.appointment && entry.dateTime && isAppointmentPast(entry.dateTime, entry.occurrenceEnd ?? null));
+  }
+
+  function groupByDate(list: CalendarEntry[]): Record<string, CalendarEntry[]> {
     const groups: Record<string, CalendarEntry[]> = {};
-    for (const entry of filteredEntries) {
+    for (const entry of list) {
       (groups[entry.date] ??= []).push(entry);
     }
     return groups;
-  }, [filteredEntries]);
+  }
+
+  const upcomingEntries = useMemo(() => filteredEntries.filter((e) => !isEntryPast(e)), [filteredEntries]);
+  const pastEntries = useMemo(() => filteredEntries.filter((e) => isEntryPast(e)), [filteredEntries]);
+
+  const agendaGroups = useMemo(() => groupByDate(upcomingEntries), [upcomingEntries]);
   const agendaDateKeys = Object.keys(agendaGroups).sort();
+
+  const pastAgendaGroups = useMemo(() => groupByDate(pastEntries), [pastEntries]);
+  // Most recent past first — the reverse of Upcoming's chronological order.
+  const pastAgendaDateKeys = Object.keys(pastAgendaGroups).sort().reverse();
 
   const entriesByDate = useMemo(() => {
     const map: Record<string, CalendarEntry[]> = {};
@@ -266,7 +287,7 @@ export function CalendarView({
       </div>
 
       {view === "agenda" &&
-        (agendaDateKeys.length === 0 ? (
+        (agendaDateKeys.length === 0 && pastAgendaDateKeys.length === 0 ? (
           <div className="rounded-card border border-dashed border-surface p-10 text-center">
             <p className="text-sm font-medium text-secondary">{t("emptyTitle")}</p>
             <p className="mt-1 text-sm text-muted">{t("empty")}</p>
@@ -274,22 +295,65 @@ export function CalendarView({
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            {agendaDateKeys.map((dateKey) => {
-              const date = new Date(`${dateKey}T00:00:00`);
-              return (
-                <div key={dateKey}>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                    {date.toLocaleDateString(locale, { weekday: "long" })}
-                  </p>
-                  <h2 className="mb-2 text-sm font-semibold text-secondary">
-                    {date.toLocaleDateString(locale, { month: "long", day: "numeric" })}
-                  </h2>
-                  <div className="flex flex-col gap-2">
-                    {(agendaGroups[dateKey] ?? []).map((entry, index) => renderEntryCard(entry, index))}
+            {agendaDateKeys.length === 0 ? (
+              <p className="text-sm text-muted">{t("noUpcoming")}</p>
+            ) : (
+              agendaDateKeys.map((dateKey) => {
+                const date = new Date(`${dateKey}T00:00:00`);
+                return (
+                  <div key={dateKey}>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                      {date.toLocaleDateString(locale, { weekday: "long" })}
+                    </p>
+                    <h2 className="mb-2 text-sm font-semibold text-secondary">
+                      {date.toLocaleDateString(locale, { month: "long", day: "numeric" })}
+                    </h2>
+                    <div className="flex flex-col gap-2">
+                      {(agendaGroups[dateKey] ?? []).map((entry, index) => renderEntryCard(entry, index))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
+
+            {/* Past appointments get their own section, collapsed by
+                default, rather than being interleaved into the same
+                chronological list — a ±2 year history would otherwise
+                push what's actually upcoming below the fold. Still
+                fully accessible/searchable, never hidden or deleted. */}
+            {pastAgendaDateKeys.length > 0 && (
+              <div className="border-t border-surface pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowPast((v) => !v)}
+                  aria-expanded={showPast}
+                  className="flex w-full items-center gap-1.5 text-sm font-semibold text-secondary"
+                >
+                  {showPast ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  {t("pastSectionTitle", { count: pastEntries.length })}
+                </button>
+                {showPast && (
+                  <div className="mt-4 flex flex-col gap-6">
+                    {pastAgendaDateKeys.map((dateKey) => {
+                      const date = new Date(`${dateKey}T00:00:00`);
+                      return (
+                        <div key={dateKey}>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                            {date.toLocaleDateString(locale, { weekday: "long" })}
+                          </p>
+                          <h2 className="mb-2 text-sm font-semibold text-secondary">
+                            {date.toLocaleDateString(locale, { month: "long", day: "numeric" })}
+                          </h2>
+                          <div className="flex flex-col gap-2">
+                            {(pastAgendaGroups[dateKey] ?? []).map((entry, index) => renderEntryCard(entry, index))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ))}
 

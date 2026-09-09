@@ -439,6 +439,8 @@
     "next": "Next",
     "dueLabel": "Due",
     "pastLabel": "Past",
+    "noUpcoming": "No upcoming appointments.",
+    "pastSectionTitle": "{count, plural, one {Past (# appointment)} other {Past (# appointments)}}",
     "filterLabel": "Filter by module",
     "filterAll": "All",
     "moreCount": "{count, plural, one {+# more} other {+# more}}",

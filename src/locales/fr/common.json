@@ -439,6 +439,8 @@
     "next": "Suivant",
     "dueLabel": "Échéance",
     "pastLabel": "Passé",
+    "noUpcoming": "Aucun rendez-vous à venir.",
+    "pastSectionTitle": "{count, plural, one {Passé (# rendez-vous)} other {Passé (# rendez-vous)}}",
     "filterLabel": "Filtrer par module",
     "filterAll": "Tous",
     "moreCount": "{count, plural, one {+# de plus} other {+# de plus}}",
