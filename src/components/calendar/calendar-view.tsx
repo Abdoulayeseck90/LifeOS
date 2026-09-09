@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Appointment, Condition } from "@/types/health/entities";
 import { AppointmentEntryModal } from "@/components/calendar/appointment-entry-modal";
+import { Badge } from "@/components/core/badge";
+import { isAppointmentPast } from "@/lib/calendar/appointment-status";
 
 export type CalendarEntry = {
   date: string; // "YYYY-MM-DD"
@@ -20,6 +22,7 @@ export type CalendarEntry = {
   // before (monitoring items are managed from Health, not Calendar).
   appointment?: Appointment;
   occurrenceStart?: string;
+  occurrenceEnd?: string | null;
 };
 
 const FILTER_MODULES = ["health", "planning", "travel", "business", "finance", "projects"] as const;
@@ -78,6 +81,12 @@ function EventCard({
   onClick?: () => void;
 }) {
   const Wrapper = onClick ? "button" : "div";
+  // Past/upcoming is only meaningful for appointment-sourced entries
+  // (monitoring "due" entries have their own overdue semantics already)
+  // and is derived purely from the occurrence's own start/end instant —
+  // never from when the row was created, never stored.
+  const past = entry.appointment && entry.dateTime ? isAppointmentPast(entry.dateTime, entry.occurrenceEnd ?? null) : false;
+
   return (
     <Wrapper
       type={onClick ? "button" : undefined}
@@ -87,11 +96,14 @@ function EventCard({
       <div className="flex items-start gap-2">
         <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${moduleDotClass(entry.module)}`} />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-medium text-muted">
-            {entry.dateTime
-              ? new Date(entry.dateTime).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })
-              : t("dueLabel")}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-medium text-muted">
+              {entry.dateTime
+                ? new Date(entry.dateTime).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })
+                : t("dueLabel")}
+            </p>
+            {past && <Badge variant="neutral">{t("pastLabel")}</Badge>}
+          </div>
           <p className="mt-0.5 truncate text-sm font-semibold text-secondary">{entry.title}</p>
           <p className="mt-0.5 text-xs text-muted">
             {t(`types.${entry.type}`)} · {t(`modules.${entry.module}`)}
@@ -371,6 +383,7 @@ export function CalendarView({
           onOpenChange={(open) => !open && setSelectedEntry(null)}
           appointment={selectedEntry.appointment}
           occurrenceStart={selectedEntry.occurrenceStart}
+          occurrenceEnd={selectedEntry.occurrenceEnd ?? null}
           conditions={conditions}
         />
       )}

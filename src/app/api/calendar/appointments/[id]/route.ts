@@ -3,6 +3,8 @@ import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import { appointmentUpdateSchema, appointmentDeleteSchema } from "@/lib/validation/core";
 import { getAppointment, updateAppointment, deleteAppointment } from "@/services/core/appointments";
 import { cancelRemindersForEntity, scheduleAppointmentReminder, scheduleAppointmentSeriesReminders } from "@/services/core/reminders";
+import { mergeAppointmentFields } from "@/lib/calendar/appointment-merge";
+import { UserFacingError } from "@/lib/errors";
 
 // Moved from src/app/api/health/appointments/[id]/route.ts — appointments
 // are now a global Calendar feature (Calendar spec), not Health-specific.
@@ -51,36 +53,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     }
 
     const { scope, occurrence_start, ...changes } = parsed.data;
-    // update_appointment_scoped() writes the FULL field set every time
-    // (an insert for "this"/"following", a full update for "series") —
-    // it has no concept of "leave unspecified fields alone," so the
-    // current row's values fill in anything this PATCH didn't touch.
-    // end_time/related_condition_id/reminder_lead_minutes/
-    // recurrence_rule use an explicit undefined-check (not `??`) since
-    // those four can be intentionally cleared with a real `null` —
-    // `??` would incorrectly treat that null as "unset" and fall back
-    // to the old value instead of clearing it.
-    const mergedFields = {
-      title: changes.title ?? current.title,
-      description: changes.description ?? current.description,
-      provider_name: changes.provider_name ?? current.provider_name,
-      specialty: changes.specialty ?? current.specialty,
-      appointment_type: changes.appointment_type ?? current.appointment_type,
-      date_time: changes.date_time ?? current.date_time,
-      end_time: changes.end_time !== undefined ? changes.end_time : current.end_time,
-      location: changes.location ?? current.location,
-      category: changes.category ?? current.category,
-      status: changes.status ?? current.status,
-      related_condition_id: changes.related_condition_id !== undefined ? changes.related_condition_id : current.related_condition_id,
-      preparation_notes: changes.preparation_notes ?? current.preparation_notes,
-      clinician_instructions: changes.clinician_instructions ?? current.clinician_instructions,
-      follow_up_date: changes.follow_up_date ?? current.follow_up_date,
-      notes: changes.notes ?? current.notes,
-      gig_platforms: changes.gig_platforms !== undefined ? changes.gig_platforms : current.gig_platforms,
-      gig_earnings_goal: changes.gig_earnings_goal !== undefined ? changes.gig_earnings_goal : current.gig_earnings_goal,
-      reminder_lead_minutes: changes.reminder_lead_minutes !== undefined ? changes.reminder_lead_minutes : current.reminder_lead_minutes,
-      recurrence_rule: changes.recurrence_rule !== undefined ? changes.recurrence_rule : current.recurrence_rule,
-    };
+    const mergedFields = mergeAppointmentFields(current, changes);
 
     const result = await updateAppointment(id, mergedFields, scope, occurrence_start ?? null);
 
@@ -111,7 +84,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     return NextResponse.json({ data: result });
   } catch (err) {
-    return NextResponse.json({ error: "Failed to update appointment" }, { status: 500 });
+    const message = err instanceof UserFacingError ? err.message : "Failed to update appointment";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

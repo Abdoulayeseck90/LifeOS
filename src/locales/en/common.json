@@ -438,6 +438,7 @@
     "previous": "Previous",
     "next": "Next",
     "dueLabel": "Due",
+    "pastLabel": "Past",
     "filterLabel": "Filter by module",
     "filterAll": "All",
     "moreCount": "{count, plural, one {+# more} other {+# more}}",

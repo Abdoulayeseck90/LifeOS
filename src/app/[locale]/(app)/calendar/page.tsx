@@ -53,6 +53,7 @@ export default async function CalendarPage() {
       status: occurrence.appointment.status,
       appointment: occurrence.appointment,
       occurrenceStart: occurrence.occurrenceStart,
+      occurrenceEnd: occurrence.occurrenceEnd,
     })),
   ].sort((a, b) => a.date.localeCompare(b.date));
 

@@ -22,12 +22,14 @@ export function AppointmentEntryModal({
   onOpenChange,
   appointment,
   occurrenceStart,
+  occurrenceEnd = null,
   conditions,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   appointment: Appointment;
   occurrenceStart: string;
+  occurrenceEnd?: string | null;
   conditions: Condition[];
 }) {
   const t = useTranslations("appointments");
@@ -75,7 +77,7 @@ export function AppointmentEntryModal({
 
   return (
     <Modal open={open} onOpenChange={handleOpenChange} title={title}>
-      <AppointmentDetail appointment={appointment} occurrenceStart={occurrenceStart} />
+      <AppointmentDetail appointment={appointment} occurrenceStart={occurrenceStart} occurrenceEnd={occurrenceEnd} />
       <div className="mt-4 flex justify-end gap-4 border-t border-surface pt-4">
         <button type="button" onClick={() => setMode("edit")} className="text-sm text-primary hover:underline">
           {tCommon("edit")}

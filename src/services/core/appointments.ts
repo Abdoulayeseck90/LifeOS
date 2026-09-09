@@ -2,6 +2,21 @@ import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Appointment, RecurrenceEditScope } from "@/types/health/entities";
 import type { UtcBounds } from "@/lib/dates/range";
 import { generateOccurrences, type AppointmentOccurrence } from "@/lib/calendar/recurrence";
+import { UserFacingError } from "@/lib/errors";
+
+// update_appointment_scoped() raises these as plain SQL exceptions for
+// genuinely actionable, already-safe-to-display conditions (a stale
+// "this occurrence" edit on a row that's since been overridden, a
+// missing occurrence_start, etc.) — surfaced to the user as-is rather
+// than the generic "Failed to update appointment" every other error
+// falls back to.
+const KNOWN_SCOPED_UPDATE_ERRORS = [
+  "Appointment not found",
+  "occurrence_start required for scope=this",
+  "occurrence_start required for scope=following",
+  'Cannot apply "this occurrence" scope to an already-overridden occurrence',
+  'Cannot apply "this and following" scope to a non-recurring appointment',
+];
 
 // Global Calendar's appointment CRUD (moved from
 // services/health/appointments.ts — Calendar spec: "Move the primary
@@ -101,7 +116,12 @@ export async function updateAppointment(
     p_fields: fields,
   });
 
-  if (error) throw error;
+  if (error) {
+    if (KNOWN_SCOPED_UPDATE_ERRORS.some((known) => error.message?.includes(known))) {
+      throw new UserFacingError(error.message);
+    }
+    throw error;
+  }
   return data as Appointment;
 }
 
