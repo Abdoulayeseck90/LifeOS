@@ -1,5 +1,7 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
 import type { PushSubscriptionRecord } from "@/types/core/entities";
+import type { Database } from "@/types/core/database";
 
 // Follows the Conditions pattern. Multiple active rows per user are
 // expected and normal (Spec Section 7: one per device/browser), not an
@@ -25,9 +27,14 @@ export async function listMyActivePushSubscriptions(): Promise<PushSubscriptionR
 // Used by the reminder engine (services/core/reminders.ts) to send to
 // every active device for a given user — not scoped to "the current
 // request's user" like every other service function here, since this
-// runs from a background sweep, not a user-initiated request.
-export async function listActivePushSubscriptionsForUser(userId: string): Promise<PushSubscriptionRecord[]> {
-  const supabase = await createClient();
+// runs from a background sweep, not a user-initiated request. Accepts an
+// optional pre-built client so the cron sweep (processDueRemindersGlobally,
+// which has no session/cookies to build the default client from) can pass
+// in the service-role admin client (src/lib/supabase/admin.ts) instead —
+// the explicit .eq("user_id", userId) filter above is what keeps that safe
+// even though the admin client bypasses RLS entirely.
+export async function listActivePushSubscriptionsForUser(userId: string, client?: SupabaseClient<Database>): Promise<PushSubscriptionRecord[]> {
+  const supabase = client ?? (await createClient());
   const { data, error } = await supabase.from("push_subscriptions").select("*").eq("user_id", userId).eq("status", "active");
 
   if (error) throw error;
@@ -88,9 +95,10 @@ export async function deactivatePushSubscriptionByEndpoint(endpoint: string): Pr
 // Called by the reminder engine when a push send comes back 404/410
 // (Spec Section 16: "detect the failure, deactivate/remove the invalid
 // subscription, do not repeatedly retry"). Not scoped to the current
-// request's user for the same reason as listActivePushSubscriptionsForUser.
-export async function deactivatePushSubscriptionById(id: string): Promise<void> {
-  const supabase = await createClient();
+// request's user for the same reason as listActivePushSubscriptionsForUser,
+// and accepts the same optional client override.
+export async function deactivatePushSubscriptionById(id: string, client?: SupabaseClient<Database>): Promise<void> {
+  const supabase = client ?? (await createClient());
   const { error } = await supabase.from("push_subscriptions").update({ status: "inactive" }).eq("id", id);
   if (error) throw error;
 }

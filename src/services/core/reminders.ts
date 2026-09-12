@@ -1,7 +1,10 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { format, addDays } from "date-fns";
 import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
-import type { Reminder, ReminderDeliveryChannel, LeadTimeBucket, NotificationCategoryPreference } from "@/types/core/entities";
+import { createAdminClient } from "@/lib/supabase/admin";
+import type { Database } from "@/types/core/database";
+import type { Reminder, ReminderDeliveryChannel, LeadTimeBucket, NotificationCategoryPreference, PushSubscriptionRecord } from "@/types/core/entities";
 import { getEmailSender, buildReminderEmail } from "@/services/core/email";
 import { getProfile } from "@/services/core/profile";
 import { computeScheduledFor, computeScheduledForMinutesBefore, buildReminderKey, LEAD_DAYS_BY_BUCKET } from "@/lib/notifications/scheduling";
@@ -522,8 +525,15 @@ async function sendPushToUser(userId: string, payload: Parameters<typeof sendPus
   );
 }
 
-async function listPendingDueReminders(): Promise<Reminder[]> {
-  const supabase = await createClient();
+// Accepts an optional pre-built client. Given the default (per-request,
+// cookie-scoped) client, RLS naturally limits this to "whoever is making
+// this request"'s own rows — exactly today's per-user behavior. Given the
+// service-role admin client (src/lib/supabase/admin.ts, which bypasses RLS
+// entirely), this has no user filter of its own and so naturally returns
+// EVERY user's due reminders in one query — precisely what
+// processDueRemindersGlobally() below needs for the cron sweep.
+async function listPendingDueReminders(client?: SupabaseClient<Database>): Promise<Reminder[]> {
+  const supabase = client ?? (await createClient());
   const { data, error } = await supabase
     .from("reminders")
     .select("*")
@@ -726,20 +736,131 @@ async function ensureDailyDuaReminders(userId: string): Promise<void> {
   }
 }
 
-// Interim substitute for a real scheduled trigger (Addendum Section 21:
-// on Vercel this would be a Cron job hitting a route that runs this on a
-// schedule — that route/config doesn't exist yet, since it only takes
-// effect once actually deployed, not in local dev). Until then, this
-// runs opportunistically wherever an authenticated page calls it
-// (currently the (app) layout), so a due reminder — push, in-app, or
-// email — fires the next time the user has the app open rather than at
-// the exact scheduled moment.
+// The one piece of business logic both processDueReminders() (per-request,
+// below) and processDueRemindersGlobally() (the actual cron sweep — see
+// its own comment) call to actually deliver one due reminder and record
+// the outcome. Never throws — every failure is caught and recorded on the
+// reminder row itself (status: "failed" + failure_reason) so one bad
+// reminder can never abort a batch. Returns true on a recorded success.
+async function dispatchDueReminder(
+  supabase: SupabaseClient<Database>,
+  reminder: Reminder,
+  ctx: {
+    userEmail: string | null;
+    getPushSubscriptions: () => Promise<PushSubscriptionRecord[]>;
+    appUrl: string;
+  }
+): Promise<boolean> {
+  try {
+    if (reminder.delivery_channel === "push") {
+      if (!isPushConfigured()) throw new Error("Push is not configured (missing VAPID keys)");
+
+      const subscriptions = await ctx.getPushSubscriptions();
+      if (subscriptions.length === 0) throw new Error("No active push subscription for this user");
+
+      const isOverdue = reminder.lead_time_bucket === "overdue";
+      const payload = buildPushPayload(reminder.related_entity_type, ctx.appUrl, isOverdue);
+
+      // Fan out to every device; the push service only ever confirms
+      // acceptance, never on-device display (Spec Section 14) — this
+      // reminder counts as "sent" once at least one device accepted it.
+      let anySucceeded = false;
+      for (const subscription of subscriptions) {
+        try {
+          await sendPushNotification(
+            { endpoint: subscription.endpoint, p256dh: subscription.p256dh, auth: subscription.auth_key },
+            payload
+          );
+          anySucceeded = true;
+        } catch (sendErr) {
+          if (isSubscriptionGone(sendErr)) {
+            await deactivatePushSubscriptionById(subscription.id, supabase).catch(() => undefined);
+          } else {
+            console.error("[push] Send failed for reminder:", {
+              reminderId: reminder.id,
+              subscriptionId: subscription.id,
+              error: sendErr instanceof Error ? sendErr.message : String(sendErr),
+            });
+          }
+        }
+      }
+
+      if (!anySucceeded) throw new Error("Push delivery failed for every active device");
+
+      const { error: reminderError } = await supabase
+        .from("reminders")
+        .update({ status: "sent", sent_at: new Date().toISOString() })
+        .eq("id", reminder.id);
+
+      if (reminderError) throw reminderError;
+    } else if (reminder.delivery_channel === "in_app") {
+      const { data: notification, error: notificationError } = await supabase
+        .from("notifications")
+        .insert({
+          user_id: reminder.user_id,
+          category: "reminder",
+          title: reminder.title,
+          body: reminder.body,
+          related_entity_type: reminder.related_entity_type,
+          related_entity_id: reminder.related_entity_id,
+        })
+        .select()
+        .single();
+
+      if (notificationError) throw notificationError;
+
+      const { error: reminderError } = await supabase
+        .from("reminders")
+        .update({ status: "sent", sent_at: new Date().toISOString(), notification_id: notification.id })
+        .eq("id", reminder.id);
+
+      if (reminderError) throw reminderError;
+    } else if (reminder.delivery_channel === "email" && ctx.userEmail) {
+      const isOverdue = reminder.lead_time_bucket === "overdue";
+      const email = buildReminderEmail(reminder.related_entity_type, ctx.appUrl, isOverdue);
+      await getEmailSender().send({ to: ctx.userEmail, ...email });
+
+      const { error: reminderError } = await supabase
+        .from("reminders")
+        .update({ status: "sent", sent_at: new Date().toISOString() })
+        .eq("id", reminder.id);
+
+      if (reminderError) throw reminderError;
+    } else {
+      // email channel with no known address for this user — nothing to do.
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    // One failed reminder (e.g. Resend rejects a send) must not abort
+    // the rest of the batch — record the failure and keep going.
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("[reminders] Failed to process reminder:", { id: reminder.id, channel: reminder.delivery_channel, error: message });
+
+    await supabase.from("reminders").update({ status: "failed", failure_reason: message }).eq("id", reminder.id);
+    return false;
+  }
+}
+
+// Interim substitute for a real scheduled trigger for the two sweeps below
+// (runOverdueSweep/ensureDailyDuaReminders) — those still only run for
+// "whichever user is making this specific request," so they stay here,
+// invoked opportunistically wherever an authenticated page renders
+// (currently the (app) layout). The actual due-reminder DISPATCH below,
+// however, no longer depends on this: see processDueRemindersGlobally(),
+// which the cron route (src/app/api/cron/process-reminders/route.ts) calls
+// on a schedule independent of any user request — that's what makes a due
+// reminder fire at its scheduled moment even while the app is closed.
+// This per-request path still runs the same dispatch too (via
+// dispatchDueReminder), so opening the app also synchronizes immediately
+// rather than waiting for the next cron tick.
 export async function processDueReminders(): Promise<void> {
   const supabase = await createClient();
   const user = await getAuthenticatedUser();
   if (!user) return;
   const userId = user.id;
-  const userEmail = user.email;
+  const userEmail = user.email ?? null;
 
   // Each sweep is independent — one bad entity (a corrupted due_date, a
   // transient DB error) must not prevent the OTHER sweep from running,
@@ -760,103 +881,77 @@ export async function processDueReminders(): Promise<void> {
     console.error("[reminders] ensureDailyDuaReminders failed:", err instanceof Error ? err.message : String(err));
   }
 
-  const due = await listPendingDueReminders();
+  const due = await listPendingDueReminders(supabase);
   if (due.length === 0) return;
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
   // Fetched once and reused for every push reminder in this batch —
   // they all belong to the same authenticated user.
-  let pushSubscriptions: Awaited<ReturnType<typeof listActivePushSubscriptionsForUser>> | null = null;
+  let pushSubscriptions: PushSubscriptionRecord[] | null = null;
   async function getPushSubscriptions() {
-    if (pushSubscriptions === null) pushSubscriptions = await listActivePushSubscriptionsForUser(userId);
+    if (pushSubscriptions === null) pushSubscriptions = await listActivePushSubscriptionsForUser(userId, supabase);
     return pushSubscriptions;
   }
 
   for (const reminder of due) {
-    try {
-      if (reminder.delivery_channel === "push") {
-        if (!isPushConfigured()) throw new Error("Push is not configured (missing VAPID keys)");
-
-        const subscriptions = await getPushSubscriptions();
-        if (subscriptions.length === 0) throw new Error("No active push subscription for this user");
-
-        const isOverdue = reminder.lead_time_bucket === "overdue";
-        const payload = buildPushPayload(reminder.related_entity_type, appUrl, isOverdue);
-
-        // Fan out to every device; the push service only ever confirms
-        // acceptance, never on-device display (Spec Section 14) — this
-        // reminder counts as "sent" once at least one device accepted it.
-        let anySucceeded = false;
-        for (const subscription of subscriptions) {
-          try {
-            await sendPushNotification(
-              { endpoint: subscription.endpoint, p256dh: subscription.p256dh, auth: subscription.auth_key },
-              payload
-            );
-            anySucceeded = true;
-          } catch (sendErr) {
-            if (isSubscriptionGone(sendErr)) {
-              await deactivatePushSubscriptionById(subscription.id).catch(() => undefined);
-            } else {
-              console.error("[push] Send failed for reminder:", {
-                reminderId: reminder.id,
-                subscriptionId: subscription.id,
-                error: sendErr instanceof Error ? sendErr.message : String(sendErr),
-              });
-            }
-          }
-        }
-
-        if (!anySucceeded) throw new Error("Push delivery failed for every active device");
-
-        const { error: reminderError } = await supabase
-          .from("reminders")
-          .update({ status: "sent", sent_at: new Date().toISOString() })
-          .eq("id", reminder.id);
-
-        if (reminderError) throw reminderError;
-      } else if (reminder.delivery_channel === "in_app") {
-        const { data: notification, error: notificationError } = await supabase
-          .from("notifications")
-          .insert({
-            user_id: userId,
-            category: "reminder",
-            title: reminder.title,
-            body: reminder.body,
-            related_entity_type: reminder.related_entity_type,
-            related_entity_id: reminder.related_entity_id,
-          })
-          .select()
-          .single();
-
-        if (notificationError) throw notificationError;
-
-        const { error: reminderError } = await supabase
-          .from("reminders")
-          .update({ status: "sent", sent_at: new Date().toISOString(), notification_id: notification.id })
-          .eq("id", reminder.id);
-
-        if (reminderError) throw reminderError;
-      } else if (reminder.delivery_channel === "email" && userEmail) {
-        const isOverdue = reminder.lead_time_bucket === "overdue";
-        const email = buildReminderEmail(reminder.related_entity_type, appUrl, isOverdue);
-        await getEmailSender().send({ to: userEmail, ...email });
-
-        const { error: reminderError } = await supabase
-          .from("reminders")
-          .update({ status: "sent", sent_at: new Date().toISOString() })
-          .eq("id", reminder.id);
-
-        if (reminderError) throw reminderError;
-      }
-    } catch (err) {
-      // One failed reminder (e.g. Resend rejects a send) must not abort
-      // the rest of the batch — record the failure and keep going.
-      const message = err instanceof Error ? err.message : "Unknown error";
-      console.error("[reminders] Failed to process reminder:", { id: reminder.id, channel: reminder.delivery_channel, error: message });
-
-      await supabase.from("reminders").update({ status: "failed", failure_reason: message }).eq("id", reminder.id);
-    }
+    await dispatchDueReminder(supabase, reminder, { userEmail, getPushSubscriptions, appUrl });
   }
+}
+
+// The real fix: a cron-safe sweep independent of any authenticated
+// request. Uses the service-role admin client (no RLS, no cookies needed)
+// to find EVERY user's due reminders in one query and dispatch each one —
+// this is what public/sw.js's push handler actually receives a message
+// to react to while every user's browser is closed/backgrounded, since
+// nothing else in this app ever calls sendPushNotification() outside of a
+// live page request otherwise. Called only from
+// src/app/api/cron/process-reminders/route.ts, which gates it behind
+// CRON_SECRET.
+export async function processDueRemindersGlobally(): Promise<{ processed: number; failed: number }> {
+  const supabase = createAdminClient();
+  const due = await listPendingDueReminders(supabase);
+  if (due.length === 0) return { processed: 0, failed: 0 };
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+  // Cached per run (not per reminder) — a user with several due reminders
+  // in the same sweep only needs one email/subscription lookup each.
+  const emailCache = new Map<string, string | null>();
+  const subscriptionsCache = new Map<string, PushSubscriptionRecord[]>();
+
+  async function getUserEmail(userId: string): Promise<string | null> {
+    if (!emailCache.has(userId)) {
+      try {
+        const { data, error } = await supabase.auth.admin.getUserById(userId);
+        emailCache.set(userId, error ? null : (data.user?.email ?? null));
+      } catch {
+        emailCache.set(userId, null);
+      }
+    }
+    return emailCache.get(userId) ?? null;
+  }
+
+  async function getPushSubscriptionsForUser(userId: string): Promise<PushSubscriptionRecord[]> {
+    if (!subscriptionsCache.has(userId)) {
+      subscriptionsCache.set(userId, await listActivePushSubscriptionsForUser(userId, supabase));
+    }
+    return subscriptionsCache.get(userId) ?? [];
+  }
+
+  let processed = 0;
+  let failed = 0;
+
+  for (const reminder of due) {
+    const userEmail = reminder.delivery_channel === "email" ? await getUserEmail(reminder.user_id) : null;
+    const succeeded = await dispatchDueReminder(supabase, reminder, {
+      userEmail,
+      getPushSubscriptions: () => getPushSubscriptionsForUser(reminder.user_id),
+      appUrl,
+    });
+    if (succeeded) processed += 1;
+    else failed += 1;
+  }
+
+  return { processed, failed };
 }

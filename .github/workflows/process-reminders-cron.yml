@@ -1,0 +1,33 @@
+name: Process due reminders
+
+# Vercel Hobby's Cron Jobs only support a once-a-day schedule, which is
+# too coarse for time-sensitive reminders (e.g. "30 minutes before an
+# appointment") — GitHub Actions' schedule trigger supports 5-minute
+# granularity at no cost, so this workflow is the actual periodic trigger
+# for src/app/api/cron/process-reminders/route.ts until/unless this
+# project moves to a Vercel plan with frequent Cron Jobs, at which point
+# this file can be deleted and replaced with a `crons` entry in
+# vercel.json pointing at the same route — no application code changes
+# either way.
+#
+# Requires two repo secrets (Settings > Secrets and variables > Actions):
+#   APP_URL     — the deployed app's base URL, e.g. https://your-app.vercel.app
+#   CRON_SECRET — must match the CRON_SECRET env var configured on the
+#                 deployment; the route 401s without it.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  process-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call process-reminders cron route
+        run: |
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/process-reminders"
