@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Appointment, Condition, RecurrenceEditScope } from "@/types/health/entities";
@@ -39,6 +39,10 @@ export function AppointmentEntryModal({
   const router = useRouter();
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [deleteScopeOpen, setDeleteScopeOpen] = useState(false);
+  // Same synchronous re-entrancy guard as AppointmentForm.submit() -- a
+  // double-click/double-tap on Delete before React re-renders could
+  // otherwise fire two DELETE requests for the same row.
+  const deleteInFlightRef = useRef(false);
 
   const isPartOfSeries = isRecurringMaster(appointment);
 
@@ -48,14 +52,20 @@ export function AppointmentEntryModal({
   }
 
   async function handleDelete(scope: RecurrenceEditScope) {
-    const response = await fetch(`/api/calendar/appointments/${appointment.id}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scope, occurrence_start: occurrenceStart }),
-    });
-    if (response.ok) {
-      handleOpenChange(false);
-      router.refresh();
+    if (deleteInFlightRef.current) return;
+    deleteInFlightRef.current = true;
+    try {
+      const response = await fetch(`/api/calendar/appointments/${appointment.id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scope, occurrence_start: occurrenceStart }),
+      });
+      if (response.ok) {
+        handleOpenChange(false);
+        router.refresh();
+      }
+    } finally {
+      deleteInFlightRef.current = false;
     }
   }
 

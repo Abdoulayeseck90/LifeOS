@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/core/modal";
 import type { RecurrenceEditScope } from "@/types/health/entities";
@@ -25,12 +25,22 @@ export function RecurrenceScopeDialog({
   const t = useTranslations("calendar.recurrenceScope");
   const tCommon = useTranslations("common");
   const [submitting, setSubmitting] = useState<RecurrenceEditScope | null>(null);
+  // Same synchronous re-entrancy guard as AppointmentForm.submit() -- the
+  // `disabled={submitting !== null}` below only blocks a second click once
+  // React has re-rendered, which a fast double-click/double-tap can beat.
+  const inFlightRef = useRef(false);
 
   async function handleChoose(scope: RecurrenceEditScope) {
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
     setSubmitting(scope);
-    await onConfirm(scope);
-    setSubmitting(null);
-    onOpenChange(false);
+    try {
+      await onConfirm(scope);
+    } finally {
+      inFlightRef.current = false;
+      setSubmitting(null);
+      onOpenChange(false);
+    }
   }
 
   return (

@@ -119,6 +119,15 @@ export function AppointmentForm({
   const [submitting, setSubmitting] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [scopeDialogOpen, setScopeDialogOpen] = useState(false);
+  // Root cause of duplicate schedules: the `disabled={submitting}` on the
+  // submit button only takes effect once React re-renders, but two clicks
+  // (double-click, a slow tap registering twice, Enter fired while a click
+  // is still in flight) can both invoke submit() before that repaint ever
+  // happens, firing two POSTs for one "Save" -- each one a genuine new
+  // appointment row, since create is never idempotent by itself. A ref
+  // updates synchronously and is checked before any state/render is
+  // involved, closing that race regardless of render timing.
+  const submitInFlightRef = useRef(false);
 
   const isPartOfSeries = Boolean(appointment && isRecurringMaster(appointment));
 
@@ -203,29 +212,34 @@ export function AppointmentForm({
   }
 
   async function submit(scope: RecurrenceEditScope) {
+    if (submitInFlightRef.current) return;
+    submitInFlightRef.current = true;
     setSubmitting(true);
     setError(null);
 
-    const payload = buildPayload();
-    const body = JSON.stringify(
-      appointment ? { ...payload, scope, occurrence_start: effectiveStart } : payload
-    );
+    try {
+      const payload = buildPayload();
+      const body = JSON.stringify(
+        appointment ? { ...payload, scope, occurrence_start: effectiveStart } : payload
+      );
 
-    const response = appointment
-      ? await fetch(`/api/calendar/appointments/${appointment.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body })
-      : await fetch("/api/calendar/appointments", { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      const response = appointment
+        ? await fetch(`/api/calendar/appointments/${appointment.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body })
+        : await fetch("/api/calendar/appointments", { method: "POST", headers: { "Content-Type": "application/json" }, body });
 
-    setSubmitting(false);
+      if (!response.ok) {
+        const responseBody = await response.json().catch(() => null);
+        setError(typeof responseBody?.error === "string" ? responseBody.error : t("saveError"));
+        return;
+      }
 
-    if (!response.ok) {
-      const responseBody = await response.json().catch(() => null);
-      setError(typeof responseBody?.error === "string" ? responseBody.error : t("saveError"));
-      return;
+      registerDirty(false);
+      closeAfterSave();
+      router.refresh();
+    } finally {
+      submitInFlightRef.current = false;
+      setSubmitting(false);
     }
-
-    registerDirty(false);
-    closeAfterSave();
-    router.refresh();
   }
 
   async function handleSubmit(event: FormEvent) {
