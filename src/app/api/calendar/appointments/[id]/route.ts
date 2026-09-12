@@ -95,6 +95,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     return NextResponse.json({ data: result });
   } catch (err) {
+    // TEMP DIAGNOSTIC (per live-debug request): this catch previously
+    // swallowed the real error entirely -- if update_appointment_scoped
+    // raises, or the RLS policy blocks the write, or Postgres rejects the
+    // row (e.g. a CHECK constraint), this log is the only way to see why.
+    console.error("[appointments PATCH] update failed:", {
+      id,
+      scope: parsed.data.scope,
+      occurrence_start: parsed.data.occurrence_start ?? null,
+      error: err instanceof Error ? err.message : String(err),
+      raw: err,
+    });
     const message = err instanceof UserFacingError ? err.message : "Failed to update appointment";
     return NextResponse.json({ error: message }, { status: 500 });
   }
@@ -140,6 +151,16 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     return NextResponse.json({ data: { id } });
   } catch (err) {
+    // TEMP DIAGNOSTIC (per live-debug request): same as the PATCH handler
+    // above -- this previously swallowed the real delete_appointment_scoped
+    // error/RLS failure entirely.
+    console.error("[appointments DELETE] delete failed:", {
+      id,
+      scope: parsed.data.scope,
+      occurrence_start: parsed.data.occurrence_start ?? null,
+      error: err instanceof Error ? err.message : String(err),
+      raw: err,
+    });
     return NextResponse.json({ error: "Failed to delete appointment" }, { status: 500 });
   }
 }
