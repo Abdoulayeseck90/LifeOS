@@ -416,8 +416,25 @@ export type DuaUserDataUpdateInput = z.infer<typeof duaUserDataUpdateSchema>;
 // rule can't break the whole page) rather than a clear save-time error.
 const appointmentCategorySchema = z.enum(["medical", "work", "personal", "financial", "travel", "other"]);
 
-export const appointmentInputSchema = z
-  .object({
+// Gig Driving spec: every work-category schedule must have a real
+// start AND end time so planned duration can be computed. Every other
+// category keeps end_time fully optional, so this check is scoped to
+// category === "work", not applied globally. Shared between the create
+// schema below (full payload always present) and the PATCH route
+// (src/app/api/calendar/appointments/[id]/route.ts), which must check
+// it against the *merged* result since appointmentUpdateSchema is a
+// .partial() and a patch touching only e.g. `notes` won't carry
+// category/end_time at all. Mirrors the appointments_work_requires_end_time
+// DB constraint (0052_gig_schedule_required_times.sql), which is the
+// final backstop if this is ever bypassed.
+export function workScheduleTimeError(category: string, dateTime: string, endTime: string | null | undefined): string | null {
+  if (category !== "work") return null;
+  if (!endTime) return "End time is required for a work schedule.";
+  if (new Date(endTime).getTime() <= new Date(dateTime).getTime()) return "End time must be after start time.";
+  return null;
+}
+
+const appointmentObjectSchema = z.object({
     title: z.string().min(1).max(200).optional(),
     // Nullable: buildPayload() in appointment-form.tsx always sends an
     // explicit null when the field is left blank (rather than omitting
@@ -461,10 +478,16 @@ export const appointmentInputSchema = z
       }, "Invalid recurrence rule")
       .nullable()
       .optional(),
-  })
+  });
+
+export const appointmentInputSchema = appointmentObjectSchema
   .refine((data) => Boolean(data.title || data.provider_name), {
     message: "Please provide a title.",
     path: ["title"],
+  })
+  .superRefine((data, ctx) => {
+    const message = workScheduleTimeError(data.category, data.date_time, data.end_time);
+    if (message) ctx.addIssue({ code: z.ZodIssueCode.custom, message, path: ["end_time"] });
   });
 
 export type AppointmentInput = z.infer<typeof appointmentInputSchema>;
@@ -478,9 +501,13 @@ const appointmentScopeSchema = z.enum(["series", "this", "following"]);
 // one with a real `null` distinct from simply not touching it), plus
 // the edit-scope fields the Calendar spec requires — occurrence_start
 // identifies which generated occurrence "this"/"following" applies to,
-// required for those two scopes and meaningless for "series".
-export const appointmentUpdateSchema = appointmentInputSchema
-  .innerType()
+// required for those two scopes and meaningless for "series". Built
+// from appointmentObjectSchema directly (not appointmentInputSchema)
+// since a partial update may touch neither category nor end_time at
+// all — the work-schedule-requires-end-time rule is instead re-checked
+// in the route against the *merged* result (mergeAppointmentFields
+// output), where the full picture is actually known.
+export const appointmentUpdateSchema = appointmentObjectSchema
   .partial()
   .extend({
     scope: appointmentScopeSchema.default("series"),
@@ -504,3 +531,14 @@ export const appointmentDeleteSchema = z
   });
 
 export type AppointmentDeleteInput = z.infer<typeof appointmentDeleteSchema>;
+
+// Plan Week / Plan Month (Gig Driving spec): one request creates every
+// selected shift atomically via create_appointments_bulk() — each item
+// is validated exactly like a single create (including the work-
+// schedule end_time rule above), so a bad item is rejected before the
+// RPC is ever called rather than surfacing as a partial batch.
+export const appointmentBulkInputSchema = z.object({
+  items: z.array(appointmentInputSchema).min(1).max(100),
+});
+
+export type AppointmentBulkInput = z.infer<typeof appointmentBulkInputSchema>;

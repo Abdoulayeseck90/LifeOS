@@ -14,6 +14,8 @@ import {
   type MonthlyPattern,
   type CustomUnit,
 } from "@/lib/calendar/recurrence-builder";
+import { isRecurringMaster } from "@/lib/calendar/appointment-status";
+import { combineWorkScheduleTimes, splitDateTimeLocal } from "@/lib/calendar/work-schedule-time";
 import { FormField } from "@/components/core/form/form-field";
 import { LifeOSInput } from "@/components/core/form/lifeos-input";
 import { LifeOSSelect } from "@/components/core/form/lifeos-select";
@@ -50,7 +52,7 @@ function combineDateTime(value: string): string {
 // (may differ from appointment.date_time — a recurring master's DTSTART
 // isn't necessarily the occurrence the user clicked on); required
 // whenever `appointment` is part of a recurring series.
-const GIG_PLATFORMS = ["doordash", "ubereats", "spark", "other"] as const;
+export const GIG_PLATFORMS = ["doordash", "ubereats", "spark", "other"] as const;
 
 export function AppointmentForm({
   conditions,
@@ -76,6 +78,9 @@ export function AppointmentForm({
   const [title, setTitle] = useState(appointment?.title ?? appointment?.provider_name ?? "");
   const [description, setDescription] = useState(appointment?.description ?? "");
   const [dateTime, setDateTime] = useState(effectiveStart ? toDatetimeLocalValue(effectiveStart) : "");
+  const [workDate, setWorkDate] = useState(effectiveStart ? splitDateTimeLocal(effectiveStart).date : "");
+  const [workStartTime, setWorkStartTime] = useState(effectiveStart ? splitDateTimeLocal(effectiveStart).time : "");
+  const [workEndTime, setWorkEndTime] = useState(appointment?.end_time ? splitDateTimeLocal(appointment.end_time).time : "");
   const [location, setLocation] = useState(appointment?.location ?? "");
   const [category, setCategory] = useState<AppointmentCategory>(appointment?.category ?? defaultCategory ?? "personal");
   const [status, setStatus] = useState<Appointment["status"]>(appointment?.status ?? "scheduled");
@@ -115,12 +120,15 @@ export function AppointmentForm({
   const [expanded, setExpanded] = useState(false);
   const [scopeDialogOpen, setScopeDialogOpen] = useState(false);
 
-  const isPartOfSeries = Boolean(appointment?.recurrence_rule || appointment?.recurrence_parent_id);
+  const isPartOfSeries = Boolean(appointment && isRecurringMaster(appointment));
 
   const fieldValues = {
     title,
     description,
     dateTime,
+    workDate,
+    workStartTime,
+    workEndTime,
     location,
     category,
     status,
@@ -153,11 +161,15 @@ export function AppointmentForm({
   }
 
   function buildPayload(): Record<string, unknown> {
-    const dateTimeIso = combineDateTime(dateTime);
+    const isWork = category === "work";
+    const { start: startIso, end: endIso } = isWork
+      ? combineWorkScheduleTimes(workDate, workStartTime, workEndTime)
+      : { start: combineDateTime(dateTime), end: null as string | null };
     return {
       title: title.trim(),
       description: description.trim() || null,
-      date_time: dateTimeIso,
+      date_time: startIso,
+      end_time: isWork ? endIso : undefined,
       location: location.trim() || undefined,
       category,
       status,
@@ -167,17 +179,24 @@ export function AppointmentForm({
       preparation_notes: category === "medical" ? preparationNotes.trim() || undefined : undefined,
       clinician_instructions: category === "medical" ? clinicianInstructions.trim() || undefined : undefined,
       follow_up_date: category === "medical" ? followUpDate || undefined : undefined,
-      gig_platforms: category === "work" ? (gigPlatforms.length > 0 ? gigPlatforms : null) : null,
-      gig_earnings_goal: category === "work" ? (gigEarningsGoal.trim() ? Number(gigEarningsGoal) : null) : null,
+      gig_platforms: isWork ? (gigPlatforms.length > 0 ? gigPlatforms : null) : null,
+      gig_earnings_goal: isWork ? (gigEarningsGoal.trim() ? Number(gigEarningsGoal) : null) : null,
       notes: notes.trim() || undefined,
       reminder_lead_minutes: resolvedReminderLeadMinutes(),
-      recurrence_rule: isRecurring ? buildRecurrenceRule(recurrence, new Date(dateTimeIso)) : null,
+      recurrence_rule: isRecurring ? buildRecurrenceRule(recurrence, new Date(startIso)) : null,
     };
   }
 
   function validate(): string | null {
     if (!title.trim()) return t("titleRequired");
-    if (!dateTime) return t("dateTimeRequired");
+    if (category === "work") {
+      if (!workDate) return t("dateRequired");
+      if (!workStartTime) return t("startTimeRequired");
+      if (!workEndTime) return t("endTimeRequired");
+      if (workStartTime === workEndTime) return t("endTimeEqualsStart");
+    } else if (!dateTime) {
+      return t("dateTimeRequired");
+    }
     if (isRecurring && recurrence.frequency === "weekly" && recurrence.weeklyDays.length === 0) return t("weeklyDaysRequired");
     if (isRecurring && recurrence.endType === "on_date" && !recurrence.endDate) return t("endDateRequired");
     return null;
@@ -234,19 +253,60 @@ export function AppointmentForm({
         <LifeOSInput id="appointment-title" type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("titlePlaceholder")} />
       </FormField>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <FormField label={t("dateTime")} htmlFor="appointment-datetime" required>
-          <LifeOSInput id="appointment-datetime" type="datetime-local" required value={dateTime} onChange={(e) => setDateTime(e.target.value)} />
-        </FormField>
-        <FormField label={t("status")} htmlFor="appointment-status">
-          <LifeOSSelect id="appointment-status" value={status} onChange={(e) => setStatus(e.target.value as Appointment["status"])}>
-            <option value="scheduled">{t("statusOptions.scheduled")}</option>
-            <option value="completed">{t("statusOptions.completed")}</option>
-            <option value="cancelled">{t("statusOptions.cancelled")}</option>
-            <option value="no_show">{t("statusOptions.no_show")}</option>
-          </LifeOSSelect>
-        </FormField>
-      </div>
+      {(() => {
+        const statusField = (
+          <FormField label={t("status")} htmlFor="appointment-status">
+            <LifeOSSelect id="appointment-status" value={status} onChange={(e) => setStatus(e.target.value as Appointment["status"])}>
+              <option value="scheduled">{t("statusOptions.scheduled")}</option>
+              <option value="completed">{t("statusOptions.completed")}</option>
+              <option value="cancelled">{t("statusOptions.cancelled")}</option>
+              <option value="no_show">{t("statusOptions.no_show")}</option>
+            </LifeOSSelect>
+          </FormField>
+        );
+
+        if (category === "work") {
+          // Gig Driving spec: start AND end time are required (never a
+          // bare date/time-only field for a work schedule) so planned
+          // duration can always be computed. A separate date + two
+          // time-of-day inputs (rather than two datetime-local fields)
+          // matches how the user actually thinks about a shift ("Friday,
+          // 5pm to 11pm") and lets combineWorkScheduleTimes() support an
+          // overnight shift with one rollover rule instead of a second
+          // end-date picker.
+          return (
+            <>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <FormField label={t("date")} htmlFor="appointment-work-date" required>
+                  <LifeOSInput id="appointment-work-date" type="date" required value={workDate} onChange={(e) => setWorkDate(e.target.value)} />
+                </FormField>
+                <FormField label={t("startTime")} htmlFor="appointment-work-start" required>
+                  <LifeOSInput
+                    id="appointment-work-start"
+                    type="time"
+                    required
+                    value={workStartTime}
+                    onChange={(e) => setWorkStartTime(e.target.value)}
+                  />
+                </FormField>
+                <FormField label={t("endTime")} htmlFor="appointment-work-end" required>
+                  <LifeOSInput id="appointment-work-end" type="time" required value={workEndTime} onChange={(e) => setWorkEndTime(e.target.value)} />
+                </FormField>
+              </div>
+              {statusField}
+            </>
+          );
+        }
+
+        return (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <FormField label={t("dateTime")} htmlFor="appointment-datetime" required>
+              <LifeOSInput id="appointment-datetime" type="datetime-local" required value={dateTime} onChange={(e) => setDateTime(e.target.value)} />
+            </FormField>
+            {statusField}
+          </div>
+        );
+      })()}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <FormField label={t("location")} htmlFor="appointment-location" optional>

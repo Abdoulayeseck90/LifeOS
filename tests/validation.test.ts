@@ -5,7 +5,7 @@ import {
   diagnosticTestInputSchema,
   documentInputSchema,
 } from "@/lib/validation/health";
-import { appointmentInputSchema } from "@/lib/validation/core";
+import { appointmentInputSchema, appointmentBulkInputSchema, workScheduleTimeError } from "@/lib/validation/core";
 
 describe("labResultInputSchema", () => {
   const base = {
@@ -163,13 +163,75 @@ describe("appointmentInputSchema", () => {
     expect(appointmentInputSchema.safeParse({ ...withoutTitle, provider_name: "Dr. Smith" }).success).toBe(true);
   });
 
-  it("accepts a work-category appointment with gig fields", () => {
+  it("accepts a work-category appointment with gig fields and a valid end_time", () => {
     const parsed = appointmentInputSchema.safeParse({
       ...base,
       category: "work",
+      end_time: "2026-09-06T03:00:00.000Z",
       gig_platforms: ["doordash", "spark"],
       gig_earnings_goal: 150,
     });
     expect(parsed.success).toBe(true);
+  });
+
+  // Gig Driving spec: every work-category schedule must have a real
+  // start AND end time so planned duration can always be computed.
+  it("rejects a work-category appointment with no end_time", () => {
+    const parsed = appointmentInputSchema.safeParse({ ...base, category: "work" });
+    expect(parsed.success).toBe(false);
+  });
+
+  it("rejects a work-category appointment whose end_time is not after date_time", () => {
+    const parsed = appointmentInputSchema.safeParse({ ...base, category: "work", end_time: base.date_time });
+    expect(parsed.success).toBe(false);
+  });
+
+  it("does not require end_time for a non-work category", () => {
+    expect(appointmentInputSchema.safeParse(base).success).toBe(true);
+  });
+});
+
+describe("workScheduleTimeError", () => {
+  it("is null for a non-work category regardless of end_time", () => {
+    expect(workScheduleTimeError("personal", "2026-09-05T21:00:00.000Z", null)).toBeNull();
+  });
+
+  it("requires end_time for category=work", () => {
+    expect(workScheduleTimeError("work", "2026-09-05T21:00:00.000Z", null)).not.toBeNull();
+  });
+
+  it("requires end_time to be strictly after date_time for category=work", () => {
+    expect(workScheduleTimeError("work", "2026-09-05T21:00:00.000Z", "2026-09-05T21:00:00.000Z")).not.toBeNull();
+    expect(workScheduleTimeError("work", "2026-09-05T21:00:00.000Z", "2026-09-05T20:00:00.000Z")).not.toBeNull();
+  });
+
+  it("accepts a valid work-category start/end pair, including overnight", () => {
+    expect(workScheduleTimeError("work", "2026-09-05T21:00:00.000Z", "2026-09-06T02:00:00.000Z")).toBeNull();
+  });
+});
+
+describe("appointmentBulkInputSchema", () => {
+  it("accepts a batch of valid work-category items", () => {
+    const parsed = appointmentBulkInputSchema.safeParse({
+      items: [
+        { title: "Shift", date_time: "2026-09-18T21:00:00.000Z", end_time: "2026-09-19T02:00:00.000Z", category: "work" },
+        { title: "Shift", date_time: "2026-09-19T14:00:00.000Z", end_time: "2026-09-19T19:00:00.000Z", category: "work" },
+      ],
+    });
+    expect(parsed.success).toBe(true);
+  });
+
+  it("rejects the whole batch if any single item is invalid (missing end_time)", () => {
+    const parsed = appointmentBulkInputSchema.safeParse({
+      items: [
+        { title: "Shift", date_time: "2026-09-18T21:00:00.000Z", end_time: "2026-09-19T02:00:00.000Z", category: "work" },
+        { title: "Shift", date_time: "2026-09-19T14:00:00.000Z", category: "work" },
+      ],
+    });
+    expect(parsed.success).toBe(false);
+  });
+
+  it("rejects an empty batch", () => {
+    expect(appointmentBulkInputSchema.safeParse({ items: [] }).success).toBe(false);
   });
 });

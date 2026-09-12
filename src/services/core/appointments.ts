@@ -125,6 +125,20 @@ export async function updateAppointment(
   return data as Appointment;
 }
 
+// Plan Week / Plan Month (Gig Driving spec): creates every item in
+// `items` atomically via create_appointments_bulk() (0052_gig_schedule_required_times.sql)
+// -- one PL/pgSQL call, one transaction, so a bad item aborts the whole
+// batch instead of leaving a partial set of shifts behind. Every row is
+// a standalone appointment (no recurrence_rule/parent), so each behaves
+// exactly like a manually created single shift -- independently
+// editable/deletable from the moment it's created.
+export async function createAppointmentsBulk(items: Record<string, unknown>[]): Promise<Appointment[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("create_appointments_bulk", { p_items: items });
+  if (error) throw error;
+  return data as Appointment[];
+}
+
 export async function deleteAppointment(
   id: string,
   scope: RecurrenceEditScope = "series",

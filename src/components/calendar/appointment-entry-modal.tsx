@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Appointment, Condition, RecurrenceEditScope } from "@/types/health/entities";
+import { isRecurringMaster } from "@/lib/calendar/appointment-status";
 import { Modal } from "@/components/core/modal";
 import { AppointmentDetail } from "@/components/calendar/appointment-detail";
 import { AppointmentForm } from "@/components/calendar/appointment-form";
@@ -39,7 +40,7 @@ export function AppointmentEntryModal({
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [deleteScopeOpen, setDeleteScopeOpen] = useState(false);
 
-  const isPartOfSeries = Boolean(appointment.recurrence_rule || appointment.recurrence_parent_id);
+  const isPartOfSeries = isRecurringMaster(appointment);
 
   function handleOpenChange(next: boolean) {
     if (!next) setMode("view");

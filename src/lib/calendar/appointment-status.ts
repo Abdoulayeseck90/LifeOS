@@ -15,3 +15,17 @@ export function isAppointmentPast(occurrenceStart: string, occurrenceEnd: string
   const cutoff = occurrenceEnd ?? occurrenceStart;
   return new Date(cutoff).getTime() < now.getTime();
 }
+
+// Whether editing/deleting this appointment should prompt for a
+// this/following/series scope. True only for an actual recurring
+// master (recurrence_rule set). An "override" row (recurrence_parent_id
+// set, recurrence_rule always null per appointments_override_shape)
+// already represents exactly one resolved occurrence -- there is
+// nothing left to disambiguate, and the this/following RPC branches
+// only support a master (they raise on an override). Checking
+// recurrence_parent_id here too was the actual bug: it made every
+// already-edited occurrence pop the scope dialog again, and "this"/
+// "following" would then fail every time.
+export function isRecurringMaster(appointment: { recurrence_rule: string | null }): boolean {
+  return Boolean(appointment.recurrence_rule);
+}

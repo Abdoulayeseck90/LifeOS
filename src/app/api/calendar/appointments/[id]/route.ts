@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient, getAuthenticatedUser } from "@/lib/supabase/server";
-import { appointmentUpdateSchema, appointmentDeleteSchema } from "@/lib/validation/core";
+import { appointmentUpdateSchema, appointmentDeleteSchema, workScheduleTimeError } from "@/lib/validation/core";
 import { getAppointment, updateAppointment, deleteAppointment } from "@/services/core/appointments";
 import { cancelRemindersForEntity, scheduleAppointmentReminder, scheduleAppointmentSeriesReminders } from "@/services/core/reminders";
 import { mergeAppointmentFields } from "@/lib/calendar/appointment-merge";
@@ -54,6 +54,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     const { scope, occurrence_start, ...changes } = parsed.data;
     const mergedFields = mergeAppointmentFields(current, changes);
+
+    // appointmentUpdateSchema is a .partial() (a patch may touch neither
+    // category nor end_time), so the work-schedule-requires-end-time
+    // rule can only be checked here, against the fully merged result —
+    // the DB constraint (appointments_work_requires_end_time) is the
+    // final backstop, but this gives a clean 400 instead of a raw
+    // constraint-violation 500.
+    const workTimeError = workScheduleTimeError(mergedFields.category as string, mergedFields.date_time as string, mergedFields.end_time as string | null);
+    if (workTimeError) {
+      return NextResponse.json({ error: workTimeError }, { status: 400 });
+    }
 
     const result = await updateAppointment(id, mergedFields, scope, occurrence_start ?? null);
 

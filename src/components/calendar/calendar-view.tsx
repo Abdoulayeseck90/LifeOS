@@ -99,7 +99,11 @@ function EventCard({
           <div className="flex items-center gap-2">
             <p className="text-xs font-medium text-muted">
               {entry.dateTime
-                ? new Date(entry.dateTime).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })
+                ? entry.occurrenceEnd
+                  ? `${new Date(entry.dateTime).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })} – ${new Date(
+                      entry.occurrenceEnd
+                    ).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })}`
+                  : new Date(entry.dateTime).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })
                 : t("dueLabel")}
             </p>
             {past && <Badge variant="neutral">{t("pastLabel")}</Badge>}
