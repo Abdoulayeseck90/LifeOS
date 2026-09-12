@@ -511,7 +511,22 @@ export const appointmentUpdateSchema = appointmentObjectSchema
   .partial()
   .extend({
     scope: appointmentScopeSchema.default("series"),
-    occurrence_start: z.string().datetime().optional(),
+    // Root cause of edit/delete failing on real (non-recurring-master)
+    // appointments: occurrence_start is always sourced straight from a
+    // DB-returned timestamptz (appointment.date_time / occurrenceStart),
+    // never freshly generated client-side like date_time/end_time above.
+    // Postgres/PostgREST serializes timestamptz as offset notation (e.g.
+    // "2026-09-19T17:00:00+00:00"), not the "Z"-suffixed format
+    // Date#toISOString() produces -- Zod's bare .datetime() only accepts
+    // "Z", so it rejected that value on essentially every edit/delete of
+    // an existing appointment, returning a 400 whose error is a
+    // validation-issue object (not a string), which the client can't
+    // render and silently falls back to a generic message for (or, in
+    // AppointmentEntryModal's delete handler, isn't surfaced at all).
+    // date_time/end_time already carry the same .or(z.string().min(1))
+    // fallback above for exactly this reason -- occurrence_start needs it
+    // too.
+    occurrence_start: z.string().datetime().or(z.string().min(1)).optional(),
   })
   .refine((data) => data.scope === "series" || Boolean(data.occurrence_start), {
     message: "occurrence_start is required for this/following scope.",
@@ -523,7 +538,22 @@ export type AppointmentUpdateInput = z.infer<typeof appointmentUpdateSchema>;
 export const appointmentDeleteSchema = z
   .object({
     scope: appointmentScopeSchema.default("series"),
-    occurrence_start: z.string().datetime().optional(),
+    // Root cause of edit/delete failing on real (non-recurring-master)
+    // appointments: occurrence_start is always sourced straight from a
+    // DB-returned timestamptz (appointment.date_time / occurrenceStart),
+    // never freshly generated client-side like date_time/end_time above.
+    // Postgres/PostgREST serializes timestamptz as offset notation (e.g.
+    // "2026-09-19T17:00:00+00:00"), not the "Z"-suffixed format
+    // Date#toISOString() produces -- Zod's bare .datetime() only accepts
+    // "Z", so it rejected that value on essentially every edit/delete of
+    // an existing appointment, returning a 400 whose error is a
+    // validation-issue object (not a string), which the client can't
+    // render and silently falls back to a generic message for (or, in
+    // AppointmentEntryModal's delete handler, isn't surfaced at all).
+    // date_time/end_time already carry the same .or(z.string().min(1))
+    // fallback above for exactly this reason -- occurrence_start needs it
+    // too.
+    occurrence_start: z.string().datetime().or(z.string().min(1)).optional(),
   })
   .refine((data) => data.scope === "series" || Boolean(data.occurrence_start), {
     message: "occurrence_start is required for this/following scope.",

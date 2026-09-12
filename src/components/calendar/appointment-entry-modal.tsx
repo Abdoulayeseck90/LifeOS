@@ -39,6 +39,7 @@ export function AppointmentEntryModal({
   const router = useRouter();
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [deleteScopeOpen, setDeleteScopeOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   // Same synchronous re-entrancy guard as AppointmentForm.submit() -- a
   // double-click/double-tap on Delete before React re-renders could
   // otherwise fire two DELETE requests for the same row.
@@ -51,9 +52,13 @@ export function AppointmentEntryModal({
     onOpenChange(next);
   }
 
+  // Previously swallowed a failed response entirely -- if the DELETE
+  // request came back non-2xx for any reason, this did nothing at all:
+  // no error, no closed modal, no visible reaction to the click.
   async function handleDelete(scope: RecurrenceEditScope) {
     if (deleteInFlightRef.current) return;
     deleteInFlightRef.current = true;
+    setDeleteError(null);
     try {
       const response = await fetch(`/api/calendar/appointments/${appointment.id}`, {
         method: "DELETE",
@@ -63,7 +68,10 @@ export function AppointmentEntryModal({
       if (response.ok) {
         handleOpenChange(false);
         router.refresh();
+        return;
       }
+      const responseBody = await response.json().catch(() => null);
+      setDeleteError(typeof responseBody?.error === "string" ? responseBody.error : t("form.saveError"));
     } finally {
       deleteInFlightRef.current = false;
     }
@@ -89,6 +97,7 @@ export function AppointmentEntryModal({
   return (
     <Modal open={open} onOpenChange={handleOpenChange} title={title}>
       <AppointmentDetail appointment={appointment} occurrenceStart={occurrenceStart} occurrenceEnd={occurrenceEnd} />
+      {deleteError && <p className="mt-2 text-sm text-status-urgent">{deleteError}</p>}
       <div className="mt-4 flex justify-end gap-4 border-t border-surface pt-4">
         <button type="button" onClick={() => setMode("edit")} className="text-sm text-primary hover:underline">
           {tCommon("edit")}

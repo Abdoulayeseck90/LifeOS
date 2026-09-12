@@ -5,7 +5,13 @@ import {
   diagnosticTestInputSchema,
   documentInputSchema,
 } from "@/lib/validation/health";
-import { appointmentInputSchema, appointmentBulkInputSchema, workScheduleTimeError } from "@/lib/validation/core";
+import {
+  appointmentInputSchema,
+  appointmentBulkInputSchema,
+  appointmentUpdateSchema,
+  appointmentDeleteSchema,
+  workScheduleTimeError,
+} from "@/lib/validation/core";
 
 describe("labResultInputSchema", () => {
   const base = {
@@ -233,5 +239,40 @@ describe("appointmentBulkInputSchema", () => {
 
   it("rejects an empty batch", () => {
     expect(appointmentBulkInputSchema.safeParse({ items: [] }).success).toBe(false);
+  });
+});
+
+// Regression: occurrence_start is always sourced straight from a
+// DB-returned timestamptz (appointment.date_time / an occurrence's own
+// start), never freshly generated client-side -- Postgres/PostgREST
+// serializes timestamptz in offset notation ("...+00:00"), not the
+// "Z"-suffixed format Date#toISOString() produces. A bare z.string()
+// .datetime() only accepts "Z", so every edit/delete of a real,
+// existing appointment was rejected with a 400 (silently, since the
+// error is a validation-issue object, not a string the UI can show).
+describe("appointmentUpdateSchema / appointmentDeleteSchema occurrence_start", () => {
+  const postgrestOffsetTimestamp = "2026-09-19T17:00:00+00:00";
+
+  it("accepts a PostgREST-style offset-notation occurrence_start on update (not just Z-suffixed)", () => {
+    const parsed = appointmentUpdateSchema.safeParse({
+      title: "Shift",
+      scope: "series",
+      occurrence_start: postgrestOffsetTimestamp,
+    });
+    expect(parsed.success).toBe(true);
+  });
+
+  it("accepts a PostgREST-style offset-notation occurrence_start on delete", () => {
+    const parsed = appointmentDeleteSchema.safeParse({
+      scope: "series",
+      occurrence_start: postgrestOffsetTimestamp,
+    });
+    expect(parsed.success).toBe(true);
+  });
+
+  it("still accepts a Z-suffixed occurrence_start (the client-generated case)", () => {
+    const iso = new Date().toISOString();
+    expect(appointmentUpdateSchema.safeParse({ scope: "series", occurrence_start: iso }).success).toBe(true);
+    expect(appointmentDeleteSchema.safeParse({ scope: "series", occurrence_start: iso }).success).toBe(true);
   });
 });
